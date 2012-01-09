@@ -7,33 +7,14 @@ class DataAccessObjectFromCollection extends DataAccessObject
 		parent::__construct($row);
 	}
 	
-	/*
 	static function findSubId($id)
 	{
-		$factory = static::getFactory();
-		$factory = new $factory();
-		return reset($factory->findId($id));
+		die("findSubId");
 	}
-	*/
 	
 	function cloneNewObject()
 	{
 		die("cloneNewObject");
-		/*
-		$obj = new static();
-
-		// clone data
-		$obj->data = $this->data;
-		
-		// set object_id to NEW_OBJECT_ID (-1)
-		$obj->data[static::getIdField()] = static::NEW_OBJECT_ID;
-		
-		// set all modified colums to 1
-		$obj->modifiedColumns = static::getDefaultRow();
-		array_walk($obj->modifiedColumns,function(&$v,$k){ $v = 1; });
-		
-		return $obj;
-		*/
 	}
 	
 	function toJsonArray()

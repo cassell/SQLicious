@@ -2,8 +2,9 @@
 
 class DataAccessObjectFactoryWithCollections extends DataAccessObjectFactory
 {
-	const DEFAULT_SUB_ID_FIELD = 'sub_id';
-	const DEFAULT_SUB_ID_COLLECTION_ID_FIELD = 'organization_id';
+	
+// 	const DEFAULT_SUB_ID_FIELD = 'sub_id';
+// 	const DEFAULT_SUB_ID_COLLECTION_ID_FIELD = 'organization_id';
 	
 	// overridden
 	private function getOutputFromMysqlQuery($sql)
@@ -36,13 +37,13 @@ class DataAccessObjectFactoryWithCollections extends DataAccessObjectFactory
 			}
 			mysql_free_result($result);
 			
-			if($this->getReturnType() == self::RETURN_TYPE_JSON_ARRAY)
+			if($this->getReturnType() == self::RETURN_TYPE_JSON_STRING)
 			{
-				return $data;
+				return self::jsonEncodeArray($data);
 			}
 			else
 			{
-				return self::jsonEncodeArray($data);
+				return $data;
 			}
 		}
 		else 
@@ -55,6 +56,8 @@ class DataAccessObjectFactoryWithCollections extends DataAccessObjectFactory
 	// overridden
 	function save($object)
 	{
+		die("save");
+		/*
 		$conn = $this->openMasterConnection();
 		
 		if(!empty($object->modifiedColumns))
@@ -101,6 +104,7 @@ class DataAccessObjectFactoryWithCollections extends DataAccessObjectFactory
 			@mysql_free_result($result);
 			unset($object->modifiedColumns);
 		}
+		*/
 	}
 	
 	function addCollectionIdBinding($collectionId)
@@ -118,12 +122,14 @@ class DataAccessObjectFactoryWithCollections extends DataAccessObjectFactory
 	
 	function getSubIdFieldName()
 	{
-		return static::DEFAULT_SUB_ID_FIELD;
+		die("getSubIdFieldName");
+		//return static::DEFAULT_SUB_ID_FIELD;
 	}
 	
 	function getSubIdCollectionIdFieldName()
 	{
-		return static::DEFAULT_SUB_ID_COLLECTION_ID_FIELD;
+		die("getSubIdCollectionIdFieldName");
+		//return static::DEFAULT_SUB_ID_COLLECTION_ID_FIELD;
 	}
 	
 	function getNextSubId($collectionId)

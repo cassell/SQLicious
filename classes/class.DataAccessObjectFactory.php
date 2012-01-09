@@ -2,6 +2,13 @@
 
 abstract class DataAccessObjectFactory
 {
+	// generated classes create these
+	abstract function getDatabaseName();
+	abstract function getTableName();
+	abstract function getIdField();
+	abstract function getFields();
+	
+	// these constants represent the different types of return data/objects
 	const RETURN_TYPE_OBJECTS = 'objects';
 	const RETURN_TYPE_ARRAY = 'array';
 	const RETURN_TYPE_JSON_ARRAY = 'json';
@@ -14,9 +21,6 @@ abstract class DataAccessObjectFactory
 	private $groupByClause = '';
 	private $orderByClause = '';
 	
-	abstract function getDatabaseName();
-	abstract function getTableName();
-	abstract function getIdField();
 	
 	function __construct()
 	{	
@@ -25,7 +29,7 @@ abstract class DataAccessObjectFactory
 		$this->fields = $this->getFields();
 		$this->conditional = new FactoryConditional();
 		
-		// defaults
+		// default the return type to objects
 		$this->setReturnType(self::RETURN_TYPE_OBJECTS);
 	}
 	
@@ -79,7 +83,8 @@ abstract class DataAccessObjectFactory
 			}
 		}
 		
-		if($this->additionalSelectFields != null && is_array($this->additionalSelectFields) && count($this->additionalSelectFields) > 0)
+		// additional select fields can only be added to no object queries
+		if($this->getReturnType() != self::RETURN_TYPE_OBJECTS && $this->additionalSelectFields != null && is_array($this->additionalSelectFields) && count($this->additionalSelectFields) > 0)
 		{
 			foreach($this->fields as $field)
 			{
@@ -180,10 +185,17 @@ abstract class DataAccessObjectFactory
 	
 	function addSelectField($field)
 	{
-		$this->additionalSelectFields[] = $field;
+		if($this->getReturnType() != self::RETURN_TYPE_OBJECTS)
+		{
+			$this->additionalSelectFields[] = $field;
+		}
+		else
+		{
+			die("Additional select fields are only used with data return types.");
+		}
 	}
 	
-	// save
+	// save an object
 	function save($object)
 	{
 		$conn = $this->openMasterConnection();
@@ -208,12 +220,12 @@ abstract class DataAccessObjectFactory
 			if($object->getId() != DataAccessObject::NEW_OBJECT_ID)
 			{
 				$sql = 'UPDATE ' . $this->getTableName() . " SET " .  implode(",",$sql) . " WHERE " . $this->getTableName() . "." . $this->getIdField() . ' = ' . $object->getId();
-				$result = mysql_query($sql,$this->openMasterConnection()) or trigger_error("DAOFactory Update Error: ". htmlentities($sql), E_USER_ERROR);
+				$result = $this->getMySQLResult($sql);
 			}
 			else
 			{
 				$sql = 'INSERT INTO ' . $this->getTableName() . " SET " .  implode(",",$sql);
-				$result = mysql_query($sql,$this->openMasterConnection()) or trigger_error("DAOFactory Insert Error: ". htmlentities($sql), E_USER_ERROR);
+				$result = $this->getMySQLResult($sql);
 				$object->data[$this->getIdField()] = mysql_insert_id();
 			}
 			
@@ -223,11 +235,11 @@ abstract class DataAccessObjectFactory
 	}
 	
 	// delete
-	function deleteWhere($where)
+	function deleteWhere($whereClause)
 	{
 		if($where != "")
 		{
-			return $this->executeGenericSQL("DELETE FROM " . $this->getTableName() . " WHERE ".$where);
+			return $this->executeGenericSQL("DELETE FROM " . $this->getTableName() . " WHERE " . $whereClause);
 		}
 		else
 		{
@@ -358,15 +370,9 @@ abstract class DataAccessObjectFactory
 		$this->executeGenericSQL("TRUNCATE TABLE ". $this->getTableName());
 	}
 	
-	// deprecate later
-	function exists($object)
-	{
-		die("exists");
-	}
-	
 	private function getMySQLResult($sql)
 	{
-		$result = mysql_query($sql, $this->openMasterConnection()) or trigger_error("DAOFactory Query Error: ". htmlentities($sql), E_USER_ERROR);
+		$result = mysql_query($sql, $this->openMasterConnection()) or trigger_error("DAOFactory Error: ". htmlentities($sql), E_USER_ERROR);
 		
 		return $result;
 	}
@@ -410,7 +416,7 @@ abstract class DataAccessObjectFactory
 					{
 						if($field == $this->getIdField())
 						{
-							// push sub_id as id
+							// push primary key as as id
 							$j['id'] = $value;
 						}
 						else if($field != $this->getIdField()) // skip the primary key
@@ -499,6 +505,30 @@ abstract class DataAccessObjectFactory
 }
 
 
+class SQLField
+{
+	
+	function __construct($fieldName = null,$type = null,$defaultValue = null,$length = null)
+	{
+		$this->setFieldName($fieldName);
+		$this->setType($type);
+		$this->setDefaultValue($defaultValue);
+		$this->setLength($length);
+	}
+	
+	function setFieldName($val) { $this->fieldName = $val; }
+	function getFieldName() { return $this->fieldName; }
+	
+	function setType($val) { $this->type = $val; }
+	function getType() { return $this->type; }
+	
+	function setDefaultValue($val) { $this->defaultValue = $val; }
+	function getDefaultValue() { return $this->defaultValue; }
+	
+	function setLength($val) { $this->length = $val; }
+	function getLength() { return $this->length; }
+
+}
 
 
 
@@ -702,7 +732,7 @@ class InBinding extends SQLString
 				$this->array[$key] = mysql_real_escape_string($item);
 			}
 			
-			return mysql_real_escape_string($this->field) . " in (" . implode(",",$this->array) . ")";
+			return mysql_real_escape_string($this->field) . " IN (" . implode(",",$this->array) . ")";
 		}
 		else
 		{
@@ -729,7 +759,7 @@ class NotInBinding extends SQLString
 				$this->array[$key] = mysql_real_escape_string($item);
 			}
 			
-			return mysql_real_escape_string($this->field) . " not in (" . implode(",",$this->array) . ")";
+			return mysql_real_escape_string($this->field) . " NOT IN (" . implode(",",$this->array) . ")";
 		}
 		else
 		{

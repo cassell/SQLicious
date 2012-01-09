@@ -74,7 +74,15 @@ class SQLiciousGeneratorDatabase
 				{
 					$idFieldName = $column['Field'];
 				}
-				$setsAndGetsPack[] = "\tfinal function set" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '($val) { $this->setFieldValue(\'' . $column['Field'] .'\',$val); }' . "\n" . "\tfinal function get" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '() { return $this->getFieldValue(\'' . $column['Field'] .'\'); }' . "\n";
+				
+				if($column['Type'] == "datetime")
+				{
+					$setsAndGetsPack[] = "\tfinal function set" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '($val) { $this->setDatetimeFieldValue(\'' . $column['Field'] .'\',$val); }' . "\n" . "\tfinal function get" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '() { return $this->getFieldValue(\'' . $column['Field'] .'\'); }' . "\n";
+				}
+				else
+				{
+					$setsAndGetsPack[] = "\tfinal function set" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '($val) { $this->setFieldValue(\'' . $column['Field'] .'\',$val); }' . "\n" . "\tfinal function get" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '() { return $this->getFieldValue(\'' . $column['Field'] .'\'); }' . "\n";
+				}
 				
 				if($column['Default'] == null)
 				{
