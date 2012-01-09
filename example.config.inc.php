@@ -19,7 +19,7 @@ $tools = new SQLiciousTools();
 $tools->setLookForExtendedObjects(true);
 $tools->addIncludePath("/Library/WebServer/Documents/dao");
 $tools->addIncludePath("/Library/WebServer/Documents/project");
-$tools->addIncludePathStringReplace("/Library/WebServer/Documents/lib/trunk/source/", "Properties::LIB",true);
-$tools->addIncludePathStringReplace("/Library/WebServer/Documents/intranet/trunk/source/", "Properties::DOC",true);
+$tools->addIncludePathStringReplace("/Library/WebServer/Documents/dao/", "Properties::DAO",true);
+$tools->addIncludePathStringReplace("/Library/WebServer/Documents/project/trunk/source/", "Properties::DOC",true);
 
 ?>
