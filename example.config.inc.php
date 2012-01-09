@@ -11,7 +11,7 @@ $exampleDatabase->setDatabaseName('example');
 $exampleDatabase->setDatabaseHost('127.0.0.1');
 $exampleDatabase->setDatabaseUsername('user');
 $exampleDatabase->setDatabasePassword('password');
-$exampleDatabase->setGeneratorDestinationDirectory('/Library/WebServer/Documents/dao/intranet');
+$exampleDatabase->setGeneratorDestinationDirectory('/Library/WebServer/Documents/dao/example');
 
 $generator->addDatabase($exampleDatabase);
 
