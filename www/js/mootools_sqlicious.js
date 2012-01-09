@@ -46,7 +46,7 @@ Request.WithErrorHandling = new Class(
 	
 	onFailed: function()
 	{
-		alert('An error occurred.  Please check your network connection.  It is also possible that the Intranet is unavailable.');
+		alert('An error occurred.  Please check your network connection.');
 	}
 
 });
