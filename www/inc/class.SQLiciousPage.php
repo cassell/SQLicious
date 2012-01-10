@@ -5,23 +5,23 @@ class SQLiciousPage
 	var $scripts;
 	var $styleSheets;
 	
-	const FAVICON_PNG = 'www/img/favicon.png';
-	const TOUCH_ICON_PNG = 'www/img/touch_icon.png';
+	const FAVICON_PNG = 'img/favicon.png';
+	const TOUCH_ICON_PNG = 'img/touch_icon.png';
 	
 	function __construct($sqlicious)
 	{
 		$this->sqlicious = $sqlicious;
 		
-		$this->insertScript('www/js/mootools_core.js');
-		$this->insertScript('www/js/mootools_more.js');
-		$this->insertScript('www/js/mootools_sqlicious.js');
+		$this->insertScript('js/mootools_core.js');
+		$this->insertScript('js/mootools_more.js');
+		$this->insertScript('js/mootools_sqlicious.js');
 		
-		$this->insertScript('www/js/onhashchange.js');
-		$this->insertScript('www/js/page.js');
-		$this->insertScript('www/js/tools.js');
+		$this->insertScript('js/onhashchange.js');
+		$this->insertScript('js/page.js');
+		$this->insertScript('js/tools.js');
 		
-		$this->insertStyleSheet('www/css/reset.css');
-		$this->insertStyleSheet('www/css/sqlicious.css');
+		$this->insertStyleSheet('css/reset.css');
+		$this->insertStyleSheet('css/sqlicious.css');
 		
 		$this->insertJavascriptData($this->getConfigData(),'config');
 		

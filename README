@@ -5,7 +5,7 @@ Setup
 
 
 
-Example Apache Config:
+Example Mac Apache Config:
 =============
 <VirtualHost *:80>
         DocumentRoot /Library/WebServer/Documents/sqlicious/www

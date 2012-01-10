@@ -13,20 +13,20 @@ var Page = new Class
 		
 		var logo = new Element('div',{'class' : 'logo'}).inject(header);
 		var logoLink = new Element('a',{'href' : '#/'}).inject(logo);
-		var logoImage = new Element('img',{'src' : 'www/img/logo_top.png'}).inject(logoLink);
+		var logoImage = new Element('img',{'src' : 'img/logo_top.png'}).inject(logoLink);
 		
 		var actions = new Element('div',{'class' : 'actions'}).inject(header);
 		
 		var toolsLink = new Element('a',{'href' : '#/tools'}).inject(actions);
-			new Element('img',{'src' : 'www/img/wrench_plus_16.png'}).inject(toolsLink);
+			new Element('img',{'src' : 'img/wrench_plus_16.png'}).inject(toolsLink);
 			new Element('span',{'text' : 'Coding Tools'}).inject(toolsLink);
 		
 		var regenerateLink = new Element('a',{'href' : '#/regenerate'}).inject(actions); //new Element('a').inject(actions);
-			new Element('img',{'src' : 'www/img/refresh_icon_16.png'}).inject(regenerateLink);
+			new Element('img',{'src' : 'img/refresh_icon_16.png'}).inject(regenerateLink);
 			new Element('span',{'text' : 'Regenerate'}).inject(regenerateLink);
 			
 //		var settingsLink = new Element('a',{'href' : '#/settings'}).inject(actions);
-//			new Element('img',{'src' : 'www/img/cog_icon_16.png'}).inject(settingsLink);
+//			new Element('img',{'src' : 'img/cog_icon_16.png'}).inject(settingsLink);
 //			new Element('span',{'text' : 'Settings'}).inject(settingsLink);
 		
 		new Element('div',{'class' : 'cb'}).inject(header);
@@ -55,7 +55,7 @@ var Page = new Class
 	
 	getAjaxUrl: function(url)
 	{
-		return window.location.href.replace(window.location.hash,"").replace("index.php","") + "www/ajax/" + url;
+		return window.location.href.replace(window.location.hash,"").replace("index.php","") + "ajax/" + url;
 	},
 	
 	parseURL: function(relativeURL,rewrite)
@@ -82,7 +82,7 @@ var Page = new Class
 			new Element('br').inject(content);
 			
 			var pacman = new Element('div',{ 'class' : 'pacman' }).inject(content);
-			new Element('img',{'src' : 'www/img/pacman.gif'}).inject(pacman);
+			new Element('img',{'src' : 'img/pacman.gif'}).inject(pacman);
 			new Element('span',{'html' : '.&nbsp;&nbsp;.&nbsp;&nbsp;.'}).inject(pacman);
 			
 			new Request.WithErrorHandling({'url': this.getAjaxUrl('generate.php'), onSuccess: function(resp) { window.location = '#/'; } }).send();
@@ -142,12 +142,12 @@ var Page = new Class
 		var content = new Element('div',{'styles' : {'margin':'20px'}}).inject(this.content);
 		
 		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-		new Element('img',{'src' : 'www/img/round_plus_48.png'}).inject(div);
+		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 		new Element('div',{'text' : 'PHP Server Tools'}).inject(div);
 		div.addEvent('click',function(){ window.location = '#/tools/server'; }.bind(this));
 		
 //		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'www/img/round_plus_48.png'}).inject(div);
+//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 //		new Element('div',{'text' : 'Clientside Tools'}).inject(div);
 //		div.addEvent('click',function(){ window.location = '#/tools/client'; }.bind(this));
 		
@@ -217,7 +217,7 @@ var Page = new Class
 		config.db.each(function(db)
 		{
 			var item = new Element('li').inject(databaseList);
-			new Element('img',{'src' : 'www/img/db_32.png'}).inject(item);
+			new Element('img',{'src' : 'img/db_32.png'}).inject(item);
 			new Element('span',{'text' : db.name}).inject(item);
 
 			item.addEvent('click',function(){ window.location = '#/database/' + db.name; });
@@ -247,7 +247,7 @@ var Page = new Class
 		resp.tables.each(function(table)
 		{
 			var item = new Element('li').inject(tableList);
-			new Element('img',{'src' : 'www/img/align_just_16.png'}).inject(item);
+			new Element('img',{'src' : 'img/align_just_16.png'}).inject(item);
 			new Element('span',{'text' : table}).inject(item);
 	
 			item.addEvent('click',function(){ window.location = '#/database/' + this.database + "/table/" + table; }.bind(this));
@@ -302,22 +302,22 @@ var Page = new Class
 		var content = new Element('div',{'styles' : {'margin':'20px'}}).inject(this.content);
 		
 		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-		new Element('img',{'src' : 'www/img/round_plus_48.png'}).inject(div);
+		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 		new Element('div',{'text' : 'Object Creation'}).inject(div);
 		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/new'; }.bind(this));
 		
 //		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'www/img/round_plus_48.png'}).inject(div);
+//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 //		new Element('div',{'text' : 'Query Builder'}).inject(div);
 //		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/query'; }.bind(this));
 //		
 //		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'www/img/round_plus_48.png'}).inject(div);
+//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 //		new Element('div',{'text' : 'Extended Object Stubs'}).inject(div);
 //		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/extensions'; }.bind(this));
 //		
 //		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'www/img/cogs_48.png'}).inject(div);
+//		new Element('img',{'src' : 'img/cogs_48.png'}).inject(div);
 //		new Element('div',{'text' : 'Table Structure'}).inject(div);
 //		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/structure'; }.bind(this));
 		
