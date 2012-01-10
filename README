@@ -2,3 +2,13 @@ Setup
 =============
 
 1. Use the example.config.inc.php to build config.inc.php
+
+
+
+Example Apache Config:
+=============
+<VirtualHost *:80>
+        DocumentRoot /Library/WebServer/Documents/sqlicious/www
+        ServerName sqlicious.local
+        RewriteEngine on
+</VirtualHost>
