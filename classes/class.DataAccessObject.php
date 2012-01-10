@@ -33,26 +33,7 @@ abstract class DataAccessObject
 		return reset($factory->findId($id));
 	}
 	
-	function setFieldValue($fieldName,$val)
-	{
-		if(strcmp($this->data[$fieldName],$val) !== 0)
-		{	
-			$this->modifiedColumns[$fieldName] = 1;
-		}
-		$this->data[$fieldName] = $val;
-	}
 	
-	function getFieldValue($fieldName)
-	{
-		if(array_key_exists($fieldName,$this->data))
-		{
-			return $this->data[$fieldName];
-		}
-		else
-		{
-			trigger_error($fieldName . ' not initilized for get method in ' . get_class($this));
-		}
-	}
 	
 	function save()
 	{
@@ -116,6 +97,39 @@ abstract class DataAccessObject
 	function toJSONString()
 	{
 		return DataAccessObjectFactory::JSONEncodeArray($this->toJSONArray());
+	}
+	
+	function setFieldValue($fieldName,$val)
+	{
+		if(strcmp($this->data[$fieldName],$val) !== 0)
+		{	
+			$this->modifiedColumns[$fieldName] = 1;
+		}
+		$this->data[$fieldName] = $val;
+	}
+	
+	function setDatetimeFieldValue($fieldName,$val)
+	{
+		if($val != "" && $val != '')
+		{
+			$this->setFieldValue($fieldName, $val);
+		}
+		else
+		{
+			$this->setFieldValue($fieldName, NULL);
+		}
+	}
+	
+	function getFieldValue($fieldName)
+	{
+		if(array_key_exists($fieldName,$this->data))
+		{
+			return $this->data[$fieldName];
+		}
+		else
+		{
+			trigger_error($fieldName . ' not initilized for get method in ' . get_class($this));
+		}
 	}
 	
 	// deprecate later
