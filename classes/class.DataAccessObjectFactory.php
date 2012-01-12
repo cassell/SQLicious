@@ -705,6 +705,8 @@ class ContainsBinding extends SQLString
 	function __construct($field,$query)
 	{
 		parent::__construct();
+		
+		$this->field = $field;
 		$this->query = $query;
 	}
 	
