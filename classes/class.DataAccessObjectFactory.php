@@ -101,7 +101,7 @@ abstract class DataAccessObjectFactory
 		{
 			if($arrayOfFields != null && is_array($arrayOfFields) && count($arrayOfFields) > 0)
 			{
-				$this->fields = array_intersect($this->fields, $arrayOfFields);
+				$this->fields = array_merge(array($this->getIdField()),array_intersect($this->fields, $arrayOfFields));
 			}
 		}
 		else
