@@ -702,17 +702,17 @@ class NotEqualsBinding extends Binding
 /* see if field contains query */
 class ContainsBinding extends SQLString
 {
-	function __construct($field,$query)
+	function __construct($field,$queryString)
 	{
 		parent::__construct();
 		
 		$this->field = $field;
-		$this->query = $query;
+		$this->queryString = $queryString;
 	}
 	
 	function getSQL()
 	{
-		return mysql_real_escape_string($this->field) . " LIKE '%". mysql_real_escape_string($this->query) ."%'";
+		return mysql_real_escape_string($this->field) . " LIKE '%". mysql_real_escape_string($this->queryString) ."%'";
 	}
 }
 
