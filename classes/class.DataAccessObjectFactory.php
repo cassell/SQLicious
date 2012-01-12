@@ -134,7 +134,7 @@ abstract class DataAccessObjectFactory
 		}
 		else
 		{
-			$this->setOrderByClause(", ");
+			$this->setOrderByClause($this->getOrderByClause() . ", ");
 		}
 		
 		$this->setOrderByClause($this->getOrderByClause() . mysql_real_escape_string($field) . " " .  mysql_real_escape_string($direction));
