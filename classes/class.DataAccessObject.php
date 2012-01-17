@@ -33,8 +33,6 @@ abstract class DataAccessObject
 		return reset($factory->findId($id));
 	}
 	
-	
-	
 	function save()
 	{
 		$f = static::getFactory();

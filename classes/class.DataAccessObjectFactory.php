@@ -97,17 +97,26 @@ abstract class DataAccessObjectFactory
 	
 	function setSelectFields($arrayOfFields)
 	{
-		if(is_array($this->fields))
+		if(func_num_args() == 1 && is_array($arrayOfFields))
 		{
-			if($arrayOfFields != null && is_array($arrayOfFields) && count($arrayOfFields) > 0)
+			// passed array
+			if(is_array($this->fields))
 			{
-				$this->fields = array_merge(array($this->getIdField()),array_intersect($this->fields, $arrayOfFields));
+				if($arrayOfFields != null && is_array($arrayOfFields) && count($arrayOfFields) > 0)
+				{
+					$this->fields = array_merge(array($this->getIdField()),array_intersect($this->fields, $arrayOfFields));
+				}
+			}
+			else
+			{
+				$this->fields = $arrayOfFields;
 			}
 		}
 		else
 		{
-			$this->fields = $arrayOfFields;
+			$this->setSelectFields(func_get_args());
 		}
+		
 	}
 	
 	// joins
@@ -174,15 +183,6 @@ abstract class DataAccessObjectFactory
 	function setReturnTypeToArray(){ $this->setReturnType(self::RETURN_TYPE_ARRAY); }
 	function setReturnTypeToObjects(){ $this->setReturnType(self::RETURN_TYPE_OBJECTS); }
 	
-	function setTimezoneAware($val) { $this->timezoneAware = $val; }
-	function getTimezoneAware() { return $this->timezoneAware; }
-	
-	function setServerTimezone($val) { $this->serverTimezone = $val; }
-	function getServerTimezone() { return $this->serverTimezone; }
-	
-	function setDestinationTimezone($val) { $this->destinationTimezone = $val; }
-	function getDestinationTimezone() { return $this->destinationTimezone; }
-	
 	function addSelectField($field)
 	{
 		if($this->getReturnType() != self::RETURN_TYPE_OBJECTS)
@@ -237,14 +237,7 @@ abstract class DataAccessObjectFactory
 	// delete
 	function deleteWhere($whereClause)
 	{
-		if($where != "")
-		{
-			return $this->executeGenericSQL("DELETE FROM " . $this->getTableName() . " WHERE " . $whereClause);
-		}
-		else
-		{
-			return $this->executeGenericSQL("DELETE FROM " . $this->getTableName());
-		}
+		return $this->executeGenericSQL("DELETE FROM " . $this->getTableName() . " WHERE " . $whereClause);
 	}
 	
 	function delete($object)
@@ -702,17 +695,17 @@ class NotEqualsBinding extends Binding
 /* see if field contains query */
 class ContainsBinding extends SQLString
 {
-	function __construct($field,$queryString)
+	function __construct($field,$query)
 	{
 		parent::__construct();
 		
 		$this->field = $field;
-		$this->queryString = $queryString;
+		$this->query = $query;
 	}
 	
 	function getSQL()
 	{
-		return mysql_real_escape_string($this->field) . " LIKE '%". mysql_real_escape_string($this->queryString) ."%'";
+		return mysql_real_escape_string($this->field) . " LIKE '%". mysql_real_escape_string($this->query) ."%'";
 	}
 }
 
@@ -765,11 +758,10 @@ class NotInBinding extends SQLString
 		}
 		else
 		{
-			die("InBinding array is empty");
+			die("NotInBinding array is empty");
 		}
 	}
 }
-
 
 
 ?>
