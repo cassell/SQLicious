@@ -414,7 +414,7 @@ class SQLiciousGenerator
 	{
 		if(!file_put_contents($fileName,$contents))
 		{
-			$this->setErrorMessage('Unable to write to folder.');
+			$this->setErrorMessage('Unable to write file: ' . $fileName);
 			return false;
 		}
 		else
