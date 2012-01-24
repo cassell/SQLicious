@@ -1,6 +1,5 @@
 
 
-
 Setup
 =============
 
@@ -13,6 +12,56 @@ Setup
 	* classes/class.DataAccessObjectFactory.php
 	* the generated class.DatabaseConnector.php
 6. Include any other generated factories that you need in your project
+
+Usage Examples
+==============
+
+	/* Object Queries */
+	// find user with primary key 17
+	$f = new UserFactory();
+	$user = $f->findId(17);
+	
+	// alternatively find user #17
+	$user = User::findId(17);
+
+	// finding non archived users
+	$f = new UserFactory();
+	$f->addBinding(new EqualsBinding("archived","0"));
+	$users = $f->query();
+	
+	// looking for users with example.com in their email
+	$f = new UserFactory();
+	$f->addBinding(new ContainsBinding("email","example.com"));
+	$users = $f->query();
+	
+	// select only users first name, last name, and email but still wrap up in objects
+	$f = new UserFactory();
+	$f->setSelectFields("first_name","last_name","email");
+	$users = $f->query();
+	
+	/* Data Queries */
+	// now do the same query but output as JSON ready arary
+	$f = new UserFactory();
+	$f->setReturnTypeToJSON();
+	$f->setSelectFields("first_name","last_name","email");
+	$userJSON = $f->query();
+	
+	// or go straight to JSON encoded string
+	$f = new UserFactory();
+	$f->setReturnTypeToJSONString();
+	$f->setSelectFields("last_name","email");
+	echo $f->query(); // prints [ { 'id' : 1, 'lastName' : 'Smith', 'email' : 'smith@example.com'}, { 'id' : 2, 'lastName' : 'Smith', 'email' : 'smith@example.com'} ]
+	
+	// limit to 20 rows
+	$f = new UserFactory();
+	$f->setLimit(20);
+	$users = $f->query();
+	
+	// now do the same query but output as PHP Array
+	$f = new UserFactory();
+	$f->setReturnTypeToArray();
+	$userArray = $f->query();
+	
 
 Example Mac Apache Config:
 =============
