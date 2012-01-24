@@ -762,7 +762,7 @@ class NotInBinding extends SQLString
 		}
 		else
 		{
-			die("InBinding array is empty");
+			die("NotInBinding array is empty");
 		}
 	}
 }
