@@ -244,7 +244,14 @@ abstract class DataAccessObjectFactory
 	// delete
 	function deleteWhere($whereClause)
 	{
-		return $this->executeGenericSQL("DELETE FROM " . $this->getTableName() . " WHERE " . $whereClause);
+		if($whereClause != "")
+		{
+			return $this->executeGenericSQL("DELETE FROM " . $this->getTableName() . " WHERE " . $whereClause);
+		}
+		else
+		{
+			die("Can not deleteWhere with empty where clause.");
+		}
 	}
 	
 	function delete($object)
