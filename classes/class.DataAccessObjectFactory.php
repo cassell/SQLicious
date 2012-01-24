@@ -287,6 +287,12 @@ abstract class DataAccessObjectFactory
 	}
 	
 	
+	// find the first object
+	function queryFirst()
+	{
+		$this->setLimit(1);
+		return reset($this->query());
+	}
 	
 	
 	// find the first object matching the clause
@@ -551,7 +557,7 @@ class Conditional extends SQLString
 	
 	function addBinding($binding)
 	{
-		if($binding instanceof String)
+		if(is_string($binding))
 		{
 			$this->addItem(new StringBinding($binding));
 		}
@@ -758,10 +764,11 @@ class NotInBinding extends SQLString
 		}
 		else
 		{
-			die("NotInBinding array is empty");
+			die("InBinding array is empty");
 		}
 	}
 }
+
 
 
 ?>
