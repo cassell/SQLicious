@@ -49,6 +49,14 @@ abstract class DataAccessObjectFactory
 		return $this->getOutputFromMysqlQuery(implode(" ",array($this->getSelectClause(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause())));
 	}
 	
+	// query for the first object
+	function queryFirst()
+	{
+		$this->setLimit(1);
+		return reset($this->query());
+	}
+	
+	
 	// used to do custom queries, uses the same get select clause that the query() method
 	function find($clause = "")
 	{
@@ -60,8 +68,7 @@ abstract class DataAccessObjectFactory
 	{
 		$this->clearBindings();
 		$this->addBinding(new EqualsBinding($this->getIdField(),intval($id)));
-		$this->setLimit(1);
-		return $this->query();
+		return $this->queryFirst();
 	}
 	
 	// return all rows
@@ -285,15 +292,6 @@ abstract class DataAccessObjectFactory
 	{
 		return $this->executeGenericSQL($sql);
 	}
-	
-	
-	// find the first object
-	function queryFirst()
-	{
-		$this->setLimit(1);
-		return reset($this->query());
-	}
-	
 	
 	// find the first object matching the clause
 	function findFirst($clause = "")
