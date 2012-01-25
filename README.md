@@ -21,8 +21,16 @@ Usage Examples
 	$f = new UserFactory();
 	$user = $f->findId(17);
 	
-	// alternatively find user #17
+	// shorthand find with primary key 17
 	$user = User::findId(17);
+	
+	// creating a new record
+	$user = new User();
+	$user->setFirstName('Ada');
+	$user->setLastName('Lovelace');
+	$user->setEmail('lovelace@example.com');
+	$user->save();
+	echo $user->getId() // will print the new primary key
 
 	// finding non archived users
 	$f = new UserFactory();

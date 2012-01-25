@@ -30,7 +30,7 @@ abstract class DataAccessObject
 	{
 		$factory = static::getFactory();
 		$factory = new $factory();
-		return reset($factory->findId($id));
+		return $factory->findId($id);
 	}
 	
 	function save()
