@@ -68,11 +68,6 @@ abstract class DataAccessObject
 	
 	function toJSON()
 	{
-		return $this->toJSONArray();
-	}
-	
-	function toJSONArray()
-	{
 		$j = array();
 		if($this->data != null)
 		{
@@ -94,7 +89,7 @@ abstract class DataAccessObject
 	
 	function toJSONString()
 	{
-		return DataAccessObjectFactory::JSONEncodeArray($this->toJSONArray());
+		return DataAccessObjectFactory::JSONEncodeArray($this->toJSON());
 	}
 	
 	function setFieldValue($fieldName,$val)
