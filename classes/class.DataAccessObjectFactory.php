@@ -442,8 +442,16 @@ abstract class DataAccessObjectFactory
 			$data = array();
 			while ($row = mysql_fetch_assoc($result))
 			{
-				$data[$row[$this->getIdField()]] = $row;
+				if($this->getIdField() != "") // tables or views that do not have a primary key
+				{
+					$data[$row[$this->getIdField()]] = $row;
+				}
+				else
+				{
+					$data[] = $row;
+				}
 			}
+			
 			mysql_free_result($result);
 			
 			return $data;
@@ -773,7 +781,5 @@ class NotInBinding extends SQLString
 		}
 	}
 }
-
-
 
 ?>
