@@ -244,14 +244,7 @@ abstract class DataAccessObjectFactory
 	// delete
 	function deleteWhere($whereClause)
 	{
-		if($whereClause != "")
-		{
-			return $this->executeGenericSQL("DELETE FROM " . $this->getTableName() . " WHERE " . $whereClause);
-		}
-		else
-		{
-			die("Can not deleteWhere with empty where clause.");
-		}
+		return $this->executeGenericSQL("DELETE FROM " . $this->getTableName() . " WHERE " . $whereClause);
 	}
 	
 	function delete($object)
@@ -460,7 +453,14 @@ abstract class DataAccessObjectFactory
 			$objects = array();
 			while ($row = mysql_fetch_assoc($result))
 			{
-				$objects[$row[$this->getIdField()]] = $this->loadObject($row);
+				if($this->getIdField() != "") // tables or views that do not have a primary key
+				{
+					$objects[$row[$this->getIdField()]] = $this->loadObject($row);
+				}
+				else
+				{
+					$objects[] = $this->loadObject($row);
+				}
 			}
 			mysql_free_result($result);
 			
