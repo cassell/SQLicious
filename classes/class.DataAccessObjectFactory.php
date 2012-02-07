@@ -156,6 +156,20 @@ abstract class DataAccessObjectFactory
 		$this->setOrderByClause($this->getOrderByClause() . mysql_real_escape_string($field) . " " .  mysql_real_escape_string($direction));
 	}
 	
+	function orderByFieldsAscending($arrayOfFields)
+	{
+		if(func_num_args() == 1 && is_array($arrayOfFields) && count($arrayOfFields) > 0)
+		{
+			foreach($arrayOfFields as $field)
+			{
+				$this->orderByField($field);
+			}
+		}
+		else
+		{
+			$this->orderFieldsAscending(func_get_args());
+		}
+	}
 	
 	// limits
 	function setLimit($numberOfRecords,$page = 0)
