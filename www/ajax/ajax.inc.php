@@ -24,18 +24,22 @@ function jsonEncode($array)
 	return json_encode(utf8EncodeArray($array));
 }
 
-function returnError($error)
-{
-	returnResponse(array($error));
-}
-
 function returnResponse($a)
 {
 	echo jsonEncode($a);
 	exit;
 }
 
+function returnErrors($errors)
+{
+	$resp['errors'] = $errors;
+	returnResponse($resp);
+}
 
+function returnError($error)
+{
+	returnErrors(array($error));
+}
 
 
 

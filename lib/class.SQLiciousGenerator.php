@@ -277,14 +277,26 @@ class SQLiciousGenerator
 		// generate the database connector
 		if(!$this->generateDatabaseConnector()) { return false; }
 		
+		
+		return true;
+		
+		
 		// now include the database connector
-		require_once($this->getDatabaseConnectorDestinationDirectory().'/class.DatabaseConnector.php');
+		include($this->getDatabaseConnectorDestinationDirectory().'/class.DatabaseConnector.php');
 		if(!class_exists('DatabaseConnector')) { return false; }
 		
 		foreach($this->databases as $database)
 		{
-			$this->generateDatabaseDestinationDirectory($database);
-			$this->generateTableClasses($database);
+			if(!$this->generateDatabaseDestinationDirectory($database))
+			{
+				return false;
+			}
+			
+			if(!$this->generateTableClasses($database))
+			{
+				return false;
+			}
+			
 		}
 		
 		// methods succeeded
@@ -300,10 +312,23 @@ class SQLiciousGenerator
 			foreach($tables as $tableName)
 			{
 				$className = ucfirst($this->toFieldCase($tableName));
-				$this->writeContents($database->getGeneratorDestinationDirectory().'/class.' . $className . 'DaoFactory.php',$database->getDaoFactoryClassContents($tableName));
-				$this->writeContents($database->getGeneratorDestinationDirectory().'/class.' . $className . 'DaoObject.php',$database->getDaoObjectClassContents($tableName));
+				
+				if(!$this->writeContents($database->getGeneratorDestinationDirectory().'/class.' . $className . 'DaoFactory.php',$database->getDaoFactoryClassContents($tableName)))
+				{
+					return false;
+				}
+				if(!$this->writeContents($database->getGeneratorDestinationDirectory().'/class.' . $className . 'DaoObject.php',$database->getDaoObjectClassContents($tableName)))
+				{
+					return false;
+				}
 			}
 			
+			return true;
+		}
+		else
+		{
+			$this->setErrorMessage("No tables in database.");
+			return false;
 		}
 	}
 	
@@ -412,14 +437,19 @@ class SQLiciousGenerator
 	
 	function writeContents($fileName,$contents)
 	{
-		if(!file_put_contents($fileName,$contents))
+		if(!is_writable($fileName))
 		{
-			$this->setErrorMessage('Unable to write file: ' . $fileName);
+			$this->setErrorMessage('File is unwritable: ' . $fileName);
 			return false;
+		}
+		else if(file_put_contents($fileName,$contents) !== FALSE)
+		{
+			return true;
 		}
 		else
 		{
-			return true;
+			$this->setErrorMessage('Unable to write file: ' . $fileName);
+			return false;
 		}
 	}
 	

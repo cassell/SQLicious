@@ -18,7 +18,6 @@ class SQLiciousPage
 		
 		$this->insertScript('js/onhashchange.js');
 		$this->insertScript('js/page.js');
-		$this->insertScript('js/tools.js');
 		
 		$this->insertStyleSheet('css/reset.css');
 		$this->insertStyleSheet('css/sqlicious.css');

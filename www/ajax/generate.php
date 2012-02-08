@@ -5,7 +5,7 @@ include('../../www/ajax/ajax.inc.php');
 
 if(!$generator->generate())
 {
-	returnError($generator->getErrorMessage());
+	returnError('Error: ' . $generator->getErrorMessage());
 }
 else
 {
