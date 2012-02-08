@@ -58,17 +58,34 @@ Usage Examples
 	$f = new UserFactory();
 	$f->setReturnTypeToJSONString();
 	$f->setSelectFields("last_name","email");
-	echo $f->query(); // prints [ { 'id' : 1, 'lastName' : 'Smith', 'email' : 'smith@example.com'}, { 'id' : 2, 'lastName' : 'Smith', 'email' : 'smith@example.com'} ]
+	echo $f->query(); // prints [ { 'id' : 1, 'lastName' : 'Smith', 'email' : 'smith@example.com'}, { 'id' : 2, 'lastName' : 'Jones', 'email' : 'jones@example.com'} ]
 	
 	// limit to 20 rows
 	$f = new UserFactory();
 	$f->setLimit(20);
 	$users = $f->query();
 	
-	// now do the same query but output as PHP Array
+	// output as PHP Array with primary keys as array keys
 	$f = new UserFactory();
 	$f->setReturnTypeToArray();
 	$userArray = $f->query();
+	
+	
+	// do the query and call an anonymous user function when each row is returned (useful for operating on large datasets)
+	$f = new UserFactory();
+	$f->setAnonymousReturnObjectFunction(
+	
+		function($user)
+		{
+			if(!validate_email($user->getEmail()))
+			{
+				$user->setEmail('');
+				$user->save();
+			}
+		}
+		
+	);
+	$f->query();
 	
 
 Example Mac Apache Config:
