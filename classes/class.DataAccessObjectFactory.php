@@ -13,6 +13,7 @@ abstract class DataAccessObjectFactory
 	const RETURN_TYPE_ARRAY = 'array';
 	const RETURN_TYPE_JSON_ARRAY = 'json';
 	const RETURN_TYPE_JSON_STRING = 'jsonstring';
+	const RETURN_TYPE_ANONYMOUS_FUNCTION_OBJECT = 'anon';
 	
 	private $fields = array();
 	private $conditional;
@@ -167,7 +168,7 @@ abstract class DataAccessObjectFactory
 		}
 		else
 		{
-			$this->orderFieldsAscending(func_get_args());
+			$this->orderByFieldsAscending(func_get_args());
 		}
 	}
 	
@@ -204,9 +205,12 @@ abstract class DataAccessObjectFactory
 	function setReturnTypeToArray(){ $this->setReturnType(self::RETURN_TYPE_ARRAY); }
 	function setReturnTypeToObjects(){ $this->setReturnType(self::RETURN_TYPE_OBJECTS); }
 	
+	function setReturnTypeToAnonymousObjectFunctions() { $this->setReturnType(self::RETURN_TYPE_ANONYMOUS_FUNCTION_OBJECT); if($this->returnFunction == null){ $this->returnFunction = function($obj){ print_r($obj); }; }  }
+	function setAnonymousReturnObjectFunction($function){ $this->setReturnTypeToAnonymousObjectFunctions(); $this->returnFunction = $function; }
+	
 	function addSelectField($field)
 	{
-		if($this->getReturnType() != self::RETURN_TYPE_OBJECTS)
+		if($this->getReturnType() != self::RETURN_TYPE_OBJECTS && $this->getReturnType() != self::RETURN_TYPE_ANONYMOUS_FUNCTION_OBJECT)
 		{
 			$this->additionalSelectFields[] = $field;
 		}
@@ -245,7 +249,16 @@ abstract class DataAccessObjectFactory
 			}
 			else
 			{
-				$sql = 'INSERT INTO ' . $this->getTableName() . " SET " .  implode(",",$sql);
+				if($sql != null)
+				{
+					$sql = 'INSERT INTO ' . $this->getTableName() . " SET " .  implode(",",$sql);
+				}
+				else
+				{
+					// empty object
+					$sql = 'INSERT INTO ' . $this->getTableName() . " VALUES()";
+				}
+				
 				$result = $this->getMySQLResult($sql);
 				$object->data[$this->getIdField()] = mysql_insert_id();
 			}
@@ -415,7 +428,15 @@ abstract class DataAccessObjectFactory
 	{
 		$result = $this->getMySQLResult($sql);
 		
-		if($this->getReturnType() == self::RETURN_TYPE_JSON_ARRAY || $this->getReturnType() == self::RETURN_TYPE_JSON_STRING)
+		if($this->getReturnType() == self::RETURN_TYPE_ANONYMOUS_FUNCTION_OBJECT)
+		{
+			while ($row = mysql_fetch_assoc($result))
+			{
+				call_user_func($this->returnFunction,$this->loadObject($row));
+			}
+			
+		}
+		else if($this->getReturnType() == self::RETURN_TYPE_JSON_ARRAY || $this->getReturnType() == self::RETURN_TYPE_JSON_STRING)
 		{
 			$data = array();
 			while ($row = mysql_fetch_assoc($result))
