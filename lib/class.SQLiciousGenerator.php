@@ -277,10 +277,6 @@ class SQLiciousGenerator
 		// generate the database connector
 		if(!$this->generateDatabaseConnector()) { return false; }
 		
-		
-		return true;
-		
-		
 		// now include the database connector
 		include($this->getDatabaseConnectorDestinationDirectory().'/class.DatabaseConnector.php');
 		if(!class_exists('DatabaseConnector')) { return false; }
@@ -296,7 +292,6 @@ class SQLiciousGenerator
 			{
 				return false;
 			}
-			
 		}
 		
 		// methods succeeded
@@ -437,7 +432,7 @@ class SQLiciousGenerator
 	
 	function writeContents($fileName,$contents)
 	{
-		if(!is_writable($fileName))
+		if(file_exists($fileName) && !is_writable($fileName))
 		{
 			$this->setErrorMessage('File is unwritable: ' . $fileName);
 			return false;

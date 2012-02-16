@@ -7,6 +7,32 @@ class SQLiciousTools
 		
 	}
 	
+	function getPHPRequireOnce($filePath)
+	{
+		print_r($this->includePathStringReplace);
+		
+		if(count($this->includePathStringReplace) > 0)
+		{
+			foreach($this->includePathStringReplace as $path)
+			{
+				if($path['constant'] == true)
+				{
+					
+					//$filePath = str_replace($path['search'], $path['replaceWith'] . ' . "', $filePath) . '"';
+				}
+				else
+				{
+					//$filePath = str_replace($path['search'], $path['replaceWith'], $filePath);
+				}
+			}
+		}
+		
+		
+		return "require_once(" . $filePath . ")";
+		
+		// "require_once(".$tools->stringReplaceFilePath() . ");
+	}
+	
 	function stringReplaceFilePath($filePath)
 	{
 		if(count($this->includePathStringReplace) > 0)

@@ -61,7 +61,10 @@ if($db != null)
 	
 	if($GLOBALS['extendedClass'] != "")
 	{
-		$resp['include'] = "require_once(".$tools->stringReplaceFilePath($GLOBALS['extendedClass']) . "\");\n\n";
+		//$resp['include'] = "require_once(".$tools->stringReplaceFilePath($GLOBALS['extendedClass']) . ");\n\n";
+		
+		$resp['include'] = $tools->getPHPRequireOnce($GLOBALS['extendedClass']) . "\n\n";
+		
 		$resp['className'] = $GLOBALS['className'];
 	}
 	
