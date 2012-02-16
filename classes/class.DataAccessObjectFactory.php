@@ -45,6 +45,29 @@ abstract class DataAccessObjectFactory
 		$this->conditional->addConditional($conditional);
 	}
 	
+	function getObjects()
+	{
+		$this->setReturnTypeToObjects();
+		return $this->query();
+	}
+	
+	function getArray()
+	{
+		$this->setReturnTypeToArray();
+		return $this->query();
+	}
+	
+	function getJSON()
+	{
+		$this->setReturnTypeToJSON();
+		return $this->query();
+	}
+	
+	function getSQL()
+	{
+		return implode(" ",array($this->getSelectClause(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause()));
+	}
+	
 	function query()
 	{
 		return $this->getOutputFromMysqlQuery(implode(" ",array($this->getSelectClause(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause())));
@@ -550,38 +573,6 @@ abstract class DataAccessObjectFactory
 	}
 	
 }
-
-
-class SQLField
-{
-	
-	function __construct($fieldName = null,$type = null,$defaultValue = null,$length = null)
-	{
-		$this->setFieldName($fieldName);
-		$this->setType($type);
-		$this->setDefaultValue($defaultValue);
-		$this->setLength($length);
-	}
-	
-	function setFieldName($val) { $this->fieldName = $val; }
-	function getFieldName() { return $this->fieldName; }
-	
-	function setType($val) { $this->type = $val; }
-	function getType() { return $this->type; }
-	
-	function setDefaultValue($val) { $this->defaultValue = $val; }
-	function getDefaultValue() { return $this->defaultValue; }
-	
-	function setLength($val) { $this->length = $val; }
-	function getLength() { return $this->length; }
-
-}
-
-
-
-
-
-
 
 
 /* abstract sql string class, bindings and conditionals extend this class */
