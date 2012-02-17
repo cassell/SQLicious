@@ -98,7 +98,7 @@ abstract class DataAccessObject
 		{
 			foreach($this->data as $field => $value)
 			{
-				$j[DataAccessObjectFactory::toFieldCase($field)] = $value;
+				$j[$field] = $value;
 			}
 		}
 		return $j;
