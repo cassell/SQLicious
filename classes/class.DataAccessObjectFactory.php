@@ -8,13 +8,6 @@ abstract class DataAccessObjectFactory
 	abstract function getIdField();
 	abstract function getFields();
 	
-	// these constants represent the different types of return data/objects
-	const RETURN_TYPE_OBJECTS = 'objects';
-	const RETURN_TYPE_ARRAY = 'array';
-	const RETURN_TYPE_JSON_ARRAY = 'json';
-	const RETURN_TYPE_JSON_STRING = 'jsonstring';
-	const RETURN_TYPE_ANONYMOUS_FUNCTION_OBJECT = 'anon';
-	
 	private $fields = array();
 	private $conditional;
 	private $additionalSelectFields = array();
@@ -29,11 +22,7 @@ abstract class DataAccessObjectFactory
 		
 		$this->fields = $this->getFields();
 		$this->conditional = new FactoryConditional();
-		
-		// default the return type to objects
-		$this->setReturnType(self::RETURN_TYPE_OBJECTS);
 	}
-	
 	
 	function addBinding($binding)
 	{
@@ -45,22 +34,102 @@ abstract class DataAccessObjectFactory
 		$this->conditional->addConditional($conditional);
 	}
 	
+	function getObject($id)
+	{
+		$this->clearBindings();
+		$this->addBinding(new EqualsBinding($this->getIdField(),intval($id)));
+		$this->setLimit(1);
+		return reset($this->getObjects());
+	}
+	
 	function getObjects()
 	{
-		$this->setReturnTypeToObjects();
-		return $this->query();
+		$objects = array();
+		
+		$result = $this->getMySQLResult($this->getSQL());
+		
+		if($result !== null)
+		{
+			while ($row = mysql_fetch_assoc($result))
+			{
+				if($this->getIdField() != "") // tables or views that do not have a primary key
+				{
+					$objects[$row[$this->getIdField()]] = $this->loadObject($row);
+				}
+				else
+				{
+					$objects[] = $this->loadObject($row);
+				}
+			}
+			
+		}
+		
+		mysql_free_result($result);
+		
+		return $objects;
 	}
 	
 	function getArray()
 	{
-		$this->setReturnTypeToArray();
-		return $this->query();
+		$data = array();
+		
+		$result = $this->getMySQLResult($this->getSQL());
+		
+		if($result)
+		{
+			while ($row = mysql_fetch_assoc($result))
+			{
+				if($this->getIdField() != "") // tables or views that do not have a primary key
+				{
+					$data[$row[$this->getIdField()]] = $row;
+				}
+				else
+				{
+					$data[] = $row;
+				}
+			}
+			
+		}
+		
+		mysql_free_result($result);
+		
+		return $data;
 	}
 	
 	function getJSON()
 	{
-		$this->setReturnTypeToJSON();
-		return $this->query();
+		$data = array();
+		
+		$result = $this->getMySQLResult($this->getSQL());
+		
+		if($result)
+		{
+			while ($row = mysql_fetch_assoc($result))
+			{
+				$j = array();
+				if($row != null)
+				{
+					foreach($row as $field => $value)
+					{
+						if($field == $this->getIdField())
+						{
+							// push primary key as as id
+							$j['id'] = $value;
+						}
+						else if($field != $this->getIdField()) // skip the primary key
+						{
+							$j[self::toFieldCase($field)] = $value;
+						}
+					}
+				}
+				
+				$data[] = $j;
+			}
+		}
+		
+		mysql_free_result($result);
+		
+		return $data;
 	}
 	
 	function getSQL()
@@ -68,38 +137,72 @@ abstract class DataAccessObjectFactory
 		return implode(" ",array($this->getSelectClause(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause()));
 	}
 	
-	function query()
+	function returnClosure($function)
 	{
-		return $this->getOutputFromMysqlQuery(implode(" ",array($this->getSelectClause(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause())));
+		$data = array();
+		
+		$result = $this->getMySQLResult($this->getSQL());
+		
+		if($result)
+		{
+			while ($row = mysql_fetch_assoc($result))
+			{
+				$data[] = call_user_func($this->returnFunction,$this->loadObject($row));
+			}
+		}
+		
+		return $data;
 	}
 	
-	// query for the first object
-	function queryFirst()
+	function queryClosure($function)
 	{
-		$this->setLimit(1);
-		return reset($this->query());
+		$result = $this->getMySQLResult($this->getSQL());
+		
+		if($result)
+		{
+			while ($row = mysql_fetch_assoc($result))
+			{
+				call_user_func($this->returnFunction,$this->loadObject($row));
+			}
+		}
 	}
-	
 	
 	// used to do custom queries, uses the same get select clause that the query() method
 	function find($clause = "")
 	{
-		return $this->getOutputFromMysqlQuery($this->getSelectClause() . " " . $clause);
+		$result = $this->getMySQLResult($this->getSelectClause() . " " . $clause);
+		
+		if($result !== null)
+		{
+			$objects = array();
+			while ($row = mysql_fetch_assoc($result))
+			{
+				if($this->getIdField() != "") // tables or views that do not have a primary key
+				{
+					$objects[$row[$this->getIdField()]] = $this->loadObject($row);
+				}
+				else
+				{
+					$objects[] = $this->loadObject($row);
+				}
+			}
+			mysql_free_result($result);
+		}
+		
+		return $objects;
 	}
 	
 	// find an object or data by primary key
 	function findId($id)
 	{
-		$this->clearBindings();
-		$this->addBinding(new EqualsBinding($this->getIdField(),intval($id)));
-		return $this->queryFirst();
+		return $this->getObject($id);
 	}
 	
-	// return all rows
+	// return all objects
 	function findAll()
 	{
 		$this->clearBindings();
-		return $this->query();
+		return $this->getObjects();
 	}
 	
 	function getSelectClause()
@@ -114,10 +217,9 @@ abstract class DataAccessObjectFactory
 			}
 		}
 		
-		// additional select fields can only be added to no object queries
-		if($this->getReturnType() != self::RETURN_TYPE_OBJECTS && $this->additionalSelectFields != null && is_array($this->additionalSelectFields) && count($this->additionalSelectFields) > 0)
+		if($this->additionalSelectFields != null && is_array($this->additionalSelectFields) && count($this->additionalSelectFields) > 0)
 		{
-			foreach($this->fields as $field)
+			foreach($this->additionalSelectFields as $field)
 			{
 				$sql[] = $field;
 			}
@@ -210,7 +312,6 @@ abstract class DataAccessObjectFactory
 	function setLimitClause($val) { $this->limitClause = $val; }
 	function getLimitClause() { return $this->limitClause; }
 	
-	
 	// clear	
 	function clearBindings()
 	{
@@ -222,25 +323,15 @@ abstract class DataAccessObjectFactory
 		return DatabaseConnector::openMasterConnection($this->getDatabaseName());
 	}
 	
-	function setReturnType($val) { $this->returnType = $val; }
-	function getReturnType() { return $this->returnType; }
-	function setReturnTypeToJSON(){ $this->setReturnType(self::RETURN_TYPE_JSON_ARRAY); }
-	function setReturnTypeToArray(){ $this->setReturnType(self::RETURN_TYPE_ARRAY); }
-	function setReturnTypeToObjects(){ $this->setReturnType(self::RETURN_TYPE_OBJECTS); }
+// 	function setReturnTypeToArray(){ $this->setReturnType(self::RETURN_TYPE_ARRAY); }
+// 	function setReturnTypeToObjects(){ $this->setReturnType(self::RETURN_TYPE_OBJECTS); }
 	
-	function setReturnTypeToAnonymousObjectFunctions() { $this->setReturnType(self::RETURN_TYPE_ANONYMOUS_FUNCTION_OBJECT); if($this->returnFunction == null){ $this->returnFunction = function($obj){ print_r($obj); }; }  }
-	function setAnonymousReturnObjectFunction($function){ $this->setReturnTypeToAnonymousObjectFunctions(); $this->returnFunction = $function; }
+// 	function setReturnTypeToAnonymousObjectFunctions() { $this->setReturnType(self::RETURN_TYPE_ANONYMOUS_FUNCTION_OBJECT); if($this->returnFunction == null){ $this->returnFunction = function($obj){ print_r($obj); }; }  }
+// 	function setAnonymousReturnObjectFunction($function){ $this->setReturnTypeToAnonymousObjectFunctions(); $this->returnFunction = $function; }
 	
 	function addSelectField($field)
 	{
-		if($this->getReturnType() != self::RETURN_TYPE_OBJECTS && $this->getReturnType() != self::RETURN_TYPE_ANONYMOUS_FUNCTION_OBJECT)
-		{
-			$this->additionalSelectFields[] = $field;
-		}
-		else
-		{
-			die("Additional select fields are only used with data return types.");
-		}
+		$this->additionalSelectFields[] = $field;
 	}
 	
 	// save an object
@@ -417,7 +508,7 @@ abstract class DataAccessObjectFactory
 		$this->executeGenericSQL("TRUNCATE TABLE ". $this->getTableName());
 	}
 	
-	private function getMySQLResult($sql)
+	function getMySQLResult($sql)
 	{
 		$result = mysql_query($sql, $this->openMasterConnection()) or trigger_error("DAOFactory Error: ". htmlentities($sql), E_USER_ERROR);
 		
@@ -447,93 +538,7 @@ abstract class DataAccessObjectFactory
 		return $conditionalSQL;
 	}
 	
-	private function getOutputFromMysqlQuery($sql)
-	{
-		$result = $this->getMySQLResult($sql);
-		
-		if($this->getReturnType() == self::RETURN_TYPE_ANONYMOUS_FUNCTION_OBJECT)
-		{
-			while ($row = mysql_fetch_assoc($result))
-			{
-				call_user_func($this->returnFunction,$this->loadObject($row));
-			}
-			
-		}
-		else if($this->getReturnType() == self::RETURN_TYPE_JSON_ARRAY || $this->getReturnType() == self::RETURN_TYPE_JSON_STRING)
-		{
-			$data = array();
-			while ($row = mysql_fetch_assoc($result))
-			{
-				$j = array();
-				if($row != null)
-				{
-					foreach($row as $field => $value)
-					{
-						if($field == $this->getIdField())
-						{
-							// push primary key as as id
-							$j['id'] = $value;
-						}
-						else if($field != $this->getIdField()) // skip the primary key
-						{
-							$j[self::toFieldCase($field)] = $value;
-						}
-					}
-				}
-				
-				$data[] = $j;
-			}
-			mysql_free_result($result);
-			
-			if($this->getReturnType() == self::RETURN_TYPE_JSON_STRING)
-			{
-				return self::JSONEncodeArray($data);
-			}
-			else
-			{
-				return $data;
-			}
-			
-		}
-		else if($this->getReturnType() == self::RETURN_TYPE_ARRAY)
-		{
-			$data = array();
-			while ($row = mysql_fetch_assoc($result))
-			{
-				if($this->getIdField() != "") // tables or views that do not have a primary key
-				{
-					$data[$row[$this->getIdField()]] = $row;
-				}
-				else
-				{
-					$data[] = $row;
-				}
-			}
-			
-			mysql_free_result($result);
-			
-			return $data;
-		}
-		else
-		{
-			$objects = array();
-			while ($row = mysql_fetch_assoc($result))
-			{
-				if($this->getIdField() != "") // tables or views that do not have a primary key
-				{
-					$objects[$row[$this->getIdField()]] = $this->loadObject($row);
-				}
-				else
-				{
-					$objects[] = $this->loadObject($row);
-				}
-			}
-			mysql_free_result($result);
-			
-			return $objects;
-		}
-		
-	}
+	
 	
 	
 	static function toFieldCase($val)
