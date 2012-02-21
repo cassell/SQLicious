@@ -137,15 +137,7 @@ abstract class DataAccessObject
 	
 	function toArray()
 	{
-		$j = array();
-		if($this->data != null)
-		{
-			foreach($this->data as $field => $value)
-			{
-				$j[DataAccessObjectFactory::toFieldCase($field)] = $value;
-			}
-		}
-		return $j;
+		return $this->data;
 	}
 	
 	function toCSV()

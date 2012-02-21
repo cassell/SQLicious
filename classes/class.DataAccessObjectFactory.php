@@ -77,9 +77,13 @@ abstract class DataAccessObjectFactory
 	function query()
 	{
 		$this->result = $this->getMySQLResult($this->getSQL());
-		if($this->result != null)
+		if($this->result && is_resource($this->result))
 		{
 			$this->numberOfRows = mysql_num_rows($this->result);
+		}
+		else
+		{
+			$this->numberOfRows = null;
 		}
 	}
 	
