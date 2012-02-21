@@ -84,6 +84,7 @@ Getting a JSON ready array
 Closures
 ============
 Process each row queried with an anonymous function. You can iterate over very large datasets without hitting memory constraints
+	
 	$f = new UserFactory();
 	$f->process(function($user)
 	{
@@ -97,6 +98,7 @@ Process each row queried with an anonymous function. You can iterate over very l
 Memory Safe Outputs
 ============	
 Output directly to CSV
+	
 	$f = new UserFactory();
 	$f->outputCSV();
 	
