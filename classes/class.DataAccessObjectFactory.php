@@ -15,6 +15,8 @@ abstract class DataAccessObjectFactory
 	private $groupByClause = '';
 	private $orderByClause = '';
 	
+	private $result = null;
+	private $numberOfRows = null;
 	
 	function __construct()
 	{	
@@ -26,6 +28,8 @@ abstract class DataAccessObjectFactory
 	
 	function getObjects()
 	{
+		$this->query();
+		
 		$data = array();
 		
 		$this->process(function($obj) use (&$data)
@@ -33,11 +37,15 @@ abstract class DataAccessObjectFactory
 			$data[$obj->getId()] = $obj;
 		});
 		
+		$this->freeResult();
+		
 		return $data;
 	}
 	
 	function getArray()
 	{
+		$this->query();
+		
 		$data = array();
 		
 		$this->process(function($obj) use (&$data)
@@ -45,11 +53,15 @@ abstract class DataAccessObjectFactory
 			$data[] = $obj->toArray();
 		});
 		
+		$this->freeResult();
+		
 		return $data;
 	}
 	
 	function getJSON()
 	{
+		$this->query();
+		
 		$data = array();
 		
 		$this->process(function($obj) use (&$data)
@@ -57,7 +69,28 @@ abstract class DataAccessObjectFactory
 			$data[] = $obj->toJSON();
 		});
 		
+		$this->freeResult();
+		
 		return $data;
+	}
+	
+	function query()
+	{
+		$this->result = $this->getMySQLResult($this->getSQL());
+		if($this->result != null)
+		{
+			$this->numberOfRows = mysql_num_rows($this->result);
+		}
+	}
+	
+	function getNumberOfRows()
+	{
+		return $this->numberOfRows;
+	}
+	
+	function freeResult()
+	{
+		mysql_free_result($this->result);
 	}
 	
 // 	function outputJSONString()
@@ -100,20 +133,19 @@ abstract class DataAccessObjectFactory
 		$this->conditional->addConditional($conditional);
 	}
 	
+	
 	// memory safe
 	function process($function)
 	{
-		$result = $this->getMySQLResult($this->getSQL());
-		
-		if($result)
+		if($this->result && $this->numberOfRows > 0)
 		{
-			while ($row = mysql_fetch_assoc($result))
+			mysql_data_seek($this->result,0); // reset result back to first row
+			
+			while ($row = mysql_fetch_assoc($this->result))
 			{
 				call_user_func($function,$this->loadObject($row));
 			}
 		}
-		
-		mysql_free_result($result);
 	}
 	
 	function getSQL()
@@ -282,99 +314,15 @@ abstract class DataAccessObjectFactory
 		$this->additionalSelectFields[] = $field;
 	}
 	
-	// save an object
-	function save($object)
-	{
-		$conn = $this->openMasterConnection();
-		
-		if(!empty($object->modifiedColumns))
-		{
-			foreach(array_keys($object->modifiedColumns) as $field)
-			{
-				if($field != $this->getIdField())
-				{
-					if($object->data[$field] !== null)
-					{
-						$sql[] = $this->getTableName()  . "." . $field . ' = "' . mysql_real_escape_string($object->data[$field]) . '"';
-					}
-					else
-					{
-						$sql[] = ' ' . $this->getTableName() . "." . $field . ' = NULL';
-					}
-				}
-			}
-			
-			if($object->getId() != DataAccessObject::NEW_OBJECT_ID)
-			{
-				$sql = 'UPDATE ' . $this->getTableName() . " SET " .  implode(",",$sql) . " WHERE " . $this->getTableName() . "." . $this->getIdField() . ' = ' . $object->getId();
-				$result = $this->getMySQLResult($sql);
-			}
-			else
-			{
-				if($sql != null)
-				{
-					$sql = 'INSERT INTO ' . $this->getTableName() . " SET " .  implode(",",$sql);
-				}
-				else
-				{
-					// empty object
-					$sql = 'INSERT INTO ' . $this->getTableName() . " VALUES()";
-				}
-				
-				$result = $this->getMySQLResult($sql);
-				$object->data[$this->getIdField()] = mysql_insert_id();
-			}
-			
-			@mysql_free_result($result);
-			unset($object->modifiedColumns);
-		}
-	}
-	
-	// delete
 	function deleteWhere($whereClause)
 	{
-		return $this->executeGenericSQL("DELETE FROM " . $this->getTableName() . " WHERE " . $whereClause);
+		return $this->update("DELETE FROM " . $this->getTableName() . " WHERE " . $whereClause);
 	}
 	
-	function delete($object)
-	{
-		if ($object != null && intval($object->getId()) > 0)
-		{
-			$this->deleteWhere($this->getIdField()." = ".$object->getId());
-		}
-	}
-	
-	private function executeGenericSQL($sql)
+	function update($sql)
 	{
 		$result = $this->getMySQLResult($sql);
-		
-		if($result != null && is_resource($result) && mysql_num_rows($result) > 0)
-		{
-			$data = array();
-			while ($row = mysql_fetch_assoc($result))
-			{
-				$data[] = $row;
-			}
-			
-			@mysql_free_result($result);
-			
-			return $data;
-			
-		}
-		else
-		{
-			return $result;
-		}
-	}
-	
-	function executeQuery($sql)
-	{
-		return $this->executeGenericSQL($sql);
-	}
-
-	function executeUpdate($sql)
-	{
-		return $this->executeGenericSQL($sql);
+		@mysql_free_result($result);
 	}
 	
 	// find the first object matching the clause
@@ -387,13 +335,13 @@ abstract class DataAccessObjectFactory
 	{
 		$array = array();
 		
-		$rows = $this->executeGenericSQL('SELECT DISTINCT(' . mysql_real_escape_string($field) . ") as dataAccessObjectFactoryfindDistinctField FROM ". $this->getTableName() . " " . $clause);
+		$result = $this->getMySQLResult('SELECT DISTINCT(' . mysql_real_escape_string($field) . ") as fdf FROM ". $this->getTableName() . " " . $clause);
 		
-		if($rows != null && is_array($rows) && count($rows) > 0)
+		if($result != null && is_resource($result) && mysql_numrows($result) > 0)
 		{
-			foreach($rows as $row)
+			while ($row = mysql_fetch_assoc($result))
 			{
-				$array[] = $row["dataAccessObjectFactoryfindDistinctField"];
+				$array[] = $row["fdf"];
 			}
 		}
 		
@@ -404,13 +352,13 @@ abstract class DataAccessObjectFactory
 	{
 		$array = array();
 		
-		$rows = $this->executeGenericSQL('SELECT ' . mysql_real_escape_string($field) . " as dataAccessObjectFactoryfindField FROM ". $this->getTableName() . " " . $clause);
+		$result = $this->getMySQLResult('SELECT ' . mysql_real_escape_string($field) . " as ff FROM ". $this->getTableName() . " " . $clause);
 		
-		if($rows != null && is_array($rows) && count($rows) > 0)
+		if($result != null && is_resource($result) && mysql_numrows($result) > 0)
 		{
-			foreach($rows as $row)
+			while ($row = mysql_fetch_assoc($result))
 			{
-				$array[] = $row["dataAccessObjectFactoryfindField"];
+				$array[] = $row["ff"];
 			}
 		}
 		
@@ -419,7 +367,7 @@ abstract class DataAccessObjectFactory
 	
 	function findFirstField($field, $clause = "")
 	{
-		return reset($this->findField($field, $clause));
+		return reset($this->findField($field, $clause . " LIMIT 1"));
 	}
 	
 	function getCount($clause = "")
@@ -432,7 +380,6 @@ abstract class DataAccessObjectFactory
 		{
 			return intval($this->sqlFunctionFieldQuery('COUNT', '*', $clause));
 		}
-		
 	}
 	
 	function getMaxField($field, $clause = "")
@@ -447,7 +394,7 @@ abstract class DataAccessObjectFactory
 	
 	function truncateTable()
 	{
-		$this->executeGenericSQL("TRUNCATE TABLE ". $this->getTableName());
+		$this->update("TRUNCATE TABLE ". $this->getTableName());
 	}
 	
 	function getMySQLResult($sql)
@@ -458,13 +405,7 @@ abstract class DataAccessObjectFactory
 	
 	private function sqlFunctionFieldQuery($sqlFunction,$field,$clause)
 	{
-		$rows = $this->executeGenericSQL('select ' . $sqlFunction . '(' . mysql_real_escape_string($field) . ") as sqlFunctionFieldQuery from ". $this->getTableName() . " " . $clause);
-		
-		if($rows != null)
-		{
-			$row = current($rows);
-			return $row["sqlFunctionFieldQuery"];
-		}
+		return reset($this->findField($sqlFunction . '(' . mysql_real_escape_string($field) . ')',$clause));
 	}
 	
 	private function getConditionalSql()
@@ -514,6 +455,31 @@ abstract class DataAccessObjectFactory
 	       
 	    return $array;
 	}
+	
+	
+	// depecate
+	function executeQuery($sql)
+	{
+		$result = $this->getMySQLResult($sql);
+		
+		if($result != null && is_resource($result) && mysql_num_rows($result) > 0)
+		{
+			$data = array();
+			while ($row = mysql_fetch_assoc($result))
+			{
+				$data[] = $row;
+			}
+			
+			@mysql_free_result($result);
+			
+			return $data;
+			
+		}
+		else
+		{
+			return $result;
+		}
+	}	
 	
 }
 
