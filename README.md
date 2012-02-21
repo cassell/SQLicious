@@ -19,7 +19,7 @@ Usage Examples
 	/* Object Queries */
 	// find user with primary key 17
 	$f = new UserFactory();
-	$user = $f->findId(17);
+	$user = $f->getObject(17);
 	
 	// shorthand find with primary key 17
 	$user = User::findId(17);
@@ -35,57 +35,44 @@ Usage Examples
 	// finding non archived users
 	$f = new UserFactory();
 	$f->addBinding(new EqualsBinding("archived","0"));
-	$users = $f->query();
+	$users = $f->getObjects();
 	
 	// looking for users with example.com in their email
 	$f = new UserFactory();
 	$f->addBinding(new ContainsBinding("email","example.com"));
-	$users = $f->query();
+	$users = $f->getObjects();
 	
 	// select only users first name, last name, and email but still wrap up in objects
 	$f = new UserFactory();
 	$f->setSelectFields("first_name","last_name","email");
-	$users = $f->query();
+	$users = $f->getObjects();
 	
-	/* Data Queries */
-	// now do the same query but output as JSON ready arary
+	// JSON ready array
 	$f = new UserFactory();
-	$f->setReturnTypeToJSON();
 	$f->setSelectFields("first_name","last_name","email");
-	$userJSON = $f->query();
+	$userJSON = $f->getJSON(); // returns an an array of PHP objects  [ { 'id' : 1, 'firstName' : 'John', 'lastName' : 'Doe', 'email' : 'doe@example.com'}, ... ]
 	
-	// or go straight to JSON encoded string
-	$f = new UserFactory();
-	$f->setReturnTypeToJSONString();
-	$f->setSelectFields("last_name","email");
-	echo $f->query(); // prints [ { 'id' : 1, 'lastName' : 'Smith', 'email' : 'smith@example.com'}, { 'id' : 2, 'lastName' : 'Jones', 'email' : 'jones@example.com'} ]
-	
-	// limit to 20 rows
+	// limit to the first 20 rows
 	$f = new UserFactory();
 	$f->setLimit(20);
-	$users = $f->query();
+	$users = $f->getObjects();
 	
-	// output as PHP Array with primary keys as array keys
+	
+	// process each row queried with an anonymous function
 	$f = new UserFactory();
-	$f->setReturnTypeToArray();
-	$userArray = $f->query();
-	
-	
-	// do the query and call an anonymous user function when each row is returned (useful for operating on large datasets)
-	$f = new UserFactory();
-	$f->setAnonymousReturnObjectFunction(
-	
-		function($user)
+	$f->process(function($user)
+	{
+		if(!validate_email($user->getEmail()))
 		{
-			if(!validate_email($user->getEmail()))
-			{
-				$user->setEmail('');
-				$user->save();
-			}
+			$user->setEmail('');
+			$user->save();
 		}
-		
-	);
-	$f->query();
+	});
+	
+	// Echo CSV
+	$f = new UserFactory();
+	$f->outputCSV();
+	
 	
 
 Example Mac Apache Config:
