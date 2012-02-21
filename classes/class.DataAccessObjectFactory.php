@@ -24,6 +24,72 @@ abstract class DataAccessObjectFactory
 		$this->conditional = new FactoryConditional();
 	}
 	
+	function getObjects()
+	{
+		$data = array();
+		
+		$this->process(function($obj) use (&$data)
+		{
+			$data[$obj->getId()] = $obj;
+		});
+		
+		return $data;
+	}
+	
+	function getArray()
+	{
+		$data = array();
+		
+		$this->process(function($obj) use (&$data)
+		{
+			$data[] = $obj->toArray();
+		});
+		
+		return $data;
+	}
+	
+	function getJSON()
+	{
+		$data = array();
+		
+		$this->process(function($obj) use (&$data)
+		{
+			$data[] = $obj->toJSON();
+		});
+		
+		return $data;
+	}
+	
+// 	function outputJSONString()
+// 	{
+// 		echo "[";
+// 		$this->process(function($obj,$result)
+// 		{
+// 			echo $obj->toJSONString();
+// 			if(mysql_num_rows($result) < mysql
+// 		});
+// 		echo "]";
+// 	}
+	
+	function outputCSV()
+	{
+		$this->process(function($obj)
+		{
+			echo $obj->toCSV();
+			echo "\n";
+		});
+	}
+	
+	static function getObject($id)
+	{
+		$f = new static();
+		$f->clearBindings();
+		$f->addBinding(new EqualsBinding($f->getIdField(),intval($id)));
+		$f->setLimit(1);
+		return reset($f->getObjects());
+	}
+	
+	
 	function addBinding($binding)
 	{
 		$this->conditional->addBinding($binding);
@@ -34,102 +100,20 @@ abstract class DataAccessObjectFactory
 		$this->conditional->addConditional($conditional);
 	}
 	
-	function getObject($id)
+	// memory safe
+	function process($function)
 	{
-		$this->clearBindings();
-		$this->addBinding(new EqualsBinding($this->getIdField(),intval($id)));
-		$this->setLimit(1);
-		return reset($this->getObjects());
-	}
-	
-	function getObjects()
-	{
-		$objects = array();
-		
-		$result = $this->getMySQLResult($this->getSQL());
-		
-		if($result !== null)
-		{
-			while ($row = mysql_fetch_assoc($result))
-			{
-				if($this->getIdField() != "") // tables or views that do not have a primary key
-				{
-					$objects[$row[$this->getIdField()]] = $this->loadObject($row);
-				}
-				else
-				{
-					$objects[] = $this->loadObject($row);
-				}
-			}
-			
-		}
-		
-		mysql_free_result($result);
-		
-		return $objects;
-	}
-	
-	function getArray()
-	{
-		$data = array();
-		
 		$result = $this->getMySQLResult($this->getSQL());
 		
 		if($result)
 		{
 			while ($row = mysql_fetch_assoc($result))
 			{
-				if($this->getIdField() != "") // tables or views that do not have a primary key
-				{
-					$data[$row[$this->getIdField()]] = $row;
-				}
-				else
-				{
-					$data[] = $row;
-				}
-			}
-			
-		}
-		
-		mysql_free_result($result);
-		
-		return $data;
-	}
-	
-	function getJSON()
-	{
-		$data = array();
-		
-		$result = $this->getMySQLResult($this->getSQL());
-		
-		if($result)
-		{
-			while ($row = mysql_fetch_assoc($result))
-			{
-				$j = array();
-				if($row != null)
-				{
-					foreach($row as $field => $value)
-					{
-						if($field == $this->getIdField())
-						{
-							// push primary key as as id
-							$j['id'] = $value;
-						}
-						else if($field != $this->getIdField()) // skip the primary key
-						{
-							$j[self::toFieldCase($field)] = $value;
-						}
-					}
-				}
-				
-				$data[] = $j;
+				call_user_func($function,$this->loadObject($row));
 			}
 		}
 		
 		mysql_free_result($result);
-		
-		return $data;
 	}
 	
 	function getSQL()
@@ -137,37 +121,7 @@ abstract class DataAccessObjectFactory
 		return implode(" ",array($this->getSelectClause(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause()));
 	}
 	
-	function returnClosure($function)
-	{
-		$data = array();
-		
-		$result = $this->getMySQLResult($this->getSQL());
-		
-		if($result)
-		{
-			while ($row = mysql_fetch_assoc($result))
-			{
-				$data[] = call_user_func($this->returnFunction,$this->loadObject($row));
-			}
-		}
-		
-		return $data;
-	}
-	
-	function queryClosure($function)
-	{
-		$result = $this->getMySQLResult($this->getSQL());
-		
-		if($result)
-		{
-			while ($row = mysql_fetch_assoc($result))
-			{
-				call_user_func($this->returnFunction,$this->loadObject($row));
-			}
-		}
-	}
-	
-	// used to do custom queries, uses the same get select clause that the query() method
+	// used to do custom queries, uses the same get select clause that the query() method 
 	function find($clause = "")
 	{
 		$result = $this->getMySQLResult($this->getSelectClause() . " " . $clause);
@@ -323,12 +277,6 @@ abstract class DataAccessObjectFactory
 		return DatabaseConnector::openMasterConnection($this->getDatabaseName());
 	}
 	
-// 	function setReturnTypeToArray(){ $this->setReturnType(self::RETURN_TYPE_ARRAY); }
-// 	function setReturnTypeToObjects(){ $this->setReturnType(self::RETURN_TYPE_OBJECTS); }
-	
-// 	function setReturnTypeToAnonymousObjectFunctions() { $this->setReturnType(self::RETURN_TYPE_ANONYMOUS_FUNCTION_OBJECT); if($this->returnFunction == null){ $this->returnFunction = function($obj){ print_r($obj); }; }  }
-// 	function setAnonymousReturnObjectFunction($function){ $this->setReturnTypeToAnonymousObjectFunctions(); $this->returnFunction = $function; }
-	
 	function addSelectField($field)
 	{
 		$this->additionalSelectFields[] = $field;
@@ -396,7 +344,7 @@ abstract class DataAccessObjectFactory
 		}
 	}
 	
-	function executeGenericSQL($sql)
+	private function executeGenericSQL($sql)
 	{
 		$result = $this->getMySQLResult($sql);
 		
@@ -408,7 +356,10 @@ abstract class DataAccessObjectFactory
 				$data[] = $row;
 			}
 			
+			@mysql_free_result($result);
+			
 			return $data;
+			
 		}
 		else
 		{
@@ -418,15 +369,7 @@ abstract class DataAccessObjectFactory
 	
 	function executeQuery($sql)
 	{
-		$result = $this->getMySQLResult($sql);
-		
-		$data = array();
-		while ($row = mysql_fetch_assoc($result))
-		{
-			$data[] = $row;
-		}
-		
-		return $data;
+		return $this->executeGenericSQL($sql);
 	}
 
 	function executeUpdate($sql)
@@ -439,7 +382,6 @@ abstract class DataAccessObjectFactory
 	{
 		return reset($this->find($clause . " LIMIT 1"));
 	}
-	
 	
 	function findDistinctField($field,$clause = "")
 	{
@@ -511,7 +453,6 @@ abstract class DataAccessObjectFactory
 	function getMySQLResult($sql)
 	{
 		$result = mysql_query($sql, $this->openMasterConnection()) or trigger_error("DAOFactory Error: ". htmlentities($sql), E_USER_ERROR);
-		
 		return $result;
 	}
 	
@@ -537,9 +478,6 @@ abstract class DataAccessObjectFactory
 		
 		return $conditionalSQL;
 	}
-	
-	
-	
 	
 	static function toFieldCase($val)
 	{
