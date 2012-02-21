@@ -19,6 +19,7 @@ CRUD: Creating, Reading, Updating, and Deleting
 ==============
 
 Creating a new record
+	
 	$user = new User();
 	$user->setFirstName('Ada');
 	$user->setLastName('Lovelace');
@@ -27,6 +28,7 @@ Creating a new record
 	echo $user->getId() // will print the new primary key
 	
 Finding an object with id 17.
+	
 	$f = new UserFactory();
 	$user = $f->getObject(17);
 	
@@ -34,26 +36,31 @@ Finding an object with id 17.
 	$user = User::findId(17);
 
 Querying for objects
+	
 	$f = new UserFactory();
 	$f->addBinding(new EqualsBinding("archived","0"));
 	$users = $f->getObjects();
 	
 Contains searches for objects
+	
 	// looking for users with example.com in their email
 	$f = new UserFactory();
 	$f->addBinding(new ContainsBinding("email","example.com"));
 	$users = $f->getObjects();
 	
 Updating a record.
+	
 	$user = User::findId(17);
 	$user->setArchived(1);
 	$user->save();
 	
 Deleting a record.
+	
 	$user = User::findId(18);
 	$user->delete();
 	
 Limit the query to the first 20 rows
+	
 	$f = new UserFactory();
 	$f->setLimit(20);
 	$users = $f->getObjects();
@@ -62,11 +69,13 @@ Limit the query to the first 20 rows
 Performance
 =============
 Limiting select
+	
 	$f = new UserFactory();
 	$f->setSelectFields("first_name","last_name","email");
 	$users = $f->getObjects();
 	
 Getting a JSON ready array
+	
 	$f = new UserFactory();
 	$f->setSelectFields("first_name","last_name","email");
 	$userJSON = $f->getJSON(); // returns an an array of PHP objects that can be encoded to  [ { 'id' : 1, 'firstName' : 'John', 'lastName' : 'Doe', 'email' : 'doe@example.com'}, ... ]
