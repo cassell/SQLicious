@@ -256,6 +256,7 @@ class SQLiciousGeneratorDatabase
 	
 	function getColumns($tableName)
 	{
+		$this->openConnection();
 		return $this->sqliciousQuery("SHOW COLUMNS FROM " . mysql_real_escape_string($tableName) . "");
 	}
 	

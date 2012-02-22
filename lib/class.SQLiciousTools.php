@@ -7,10 +7,138 @@ class SQLiciousTools
 		
 	}
 	
+	function doesExtendedDaoObjectExist()
+	{
+		return true;
+	}
+	
+	function getExtendedDaoClassRequireOnce($db,$className)
+	{
+		$filePath = '';
+		
+		
+		return $filePath;
+	}
+	
+	function getDaoClassRequireOnce($db,$daoClassName)
+	{
+		$filePath = '';
+		
+		$this->find_files($db->getGeneratorDestinationDirectory(),"/class.".$daoClassName.".php/i",function($filename)  use (&$filePath)
+		{
+			$filePath = $filename;
+		});
+		
+		
+		
+		return $this->getClassRequireOnce($filePath);
+	}
+	
+	function getClassRequireOnce($filePath)
+	{
+		if(count($this->includePathStringReplace) > 0)
+		{
+			foreach($this->includePathStringReplace as $path)
+			{
+				if($path['constant'] == true && strpos($filePath, $path['search']) !== false)
+				{
+					return "require_once(".str_replace($path['search'], $path['replaceWith'] . ' . "', $filePath) . '");';
+				}
+				else if(strpos($filePath, $path['search']) !== false)
+				{
+					return 'require_once("'.str_replace($path['search'], $path['replaceWith'], $filePath) . '");';
+				}
+			}
+			
+			return 'require_once("'.$filePath. '");';
+			
+		}
+		else
+		{
+			return 'require_once("'.$filePath. '");';
+		}
+		
+	}
+	
+	
+	/*
+	function getExtendedClassRequireOnce($daoClassName)
+	{
+		$filePath = $this->getFilePathFromClassName($daoClassName);
+		
+		if(count($this->includePathStringReplace) > 0)
+		{
+			foreach($this->includePathStringReplace as $path)
+			{
+				if($path['constant'] == true && strpos($filePath, $path['search']) !== false)
+				{
+					$filePath = "require_once(".str_replace($path['search'], $path['replaceWith'] . ' . "', $filePath) . '");';
+				}
+				else if(strpos($filePath, $path['search']) !== false)
+				{
+					$filePath = 'require_once("'.str_replace($path['search'], $path['replaceWith'], $filePath) . '");';
+				}
+				
+			}
+			
+		}
+		
+		return $filePath;
+	}
+	
+	function getFilePathFromClassName($daoClassName)
+	{
+		$filePath = '';
+		
+		// look for dao factories
+		if(count($this->getIncludePaths()) > 0)
+		{
+			foreach($this->getIncludePaths() as $path)
+			{
+				$this->find_files($path,"/class.".$daoClassName.".php/i",function($filename)  use (&$filePath)
+				{
+					
+					$filePath = $filename;
+				});
+			}
+		}
+		
+		return $filePath;
+	}
+	*/
+	
+	/*
+	function getClassRequireOnce($daoClassName,$useExtended = false)
+	{
+		
+		
+		if(count($this->includePathStringReplace) > 0)
+		{
+			foreach($this->includePathStringReplace as $path)
+			{
+				if($path['constant'] == true)
+				{
+					$filePath = "require_once(".str_replace($path['search'], $path['replaceWith'] . ' . "', $filePath) . '");';
+				}
+				else
+				{
+					$filePath = "require_once(".str_replace($path['search'], $path['replaceWith'], $filePath) . '");';
+				}
+				
+			}
+			
+		}
+		
+		
+		return $filePath;
+		
+		
+	}
+	*/
+	
+	/*
 	function getPHPRequireOnce($filePath)
 	{
-		print_r($this->includePathStringReplace);
-		
 		if(count($this->includePathStringReplace) > 0)
 		{
 			foreach($this->includePathStringReplace as $path)
@@ -53,6 +181,8 @@ class SQLiciousTools
 		return $filePath;
 		
 	}
+	*/
+	
 	
 	function find_files($path, $pattern, $callback) {
 	  $path = rtrim(str_replace("\\", "/", $path), '/') . '/';

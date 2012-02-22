@@ -359,7 +359,7 @@ var Page = new Class
 			
 			methods =  "<pre>\n\n";
 			
-			methods += resp.include + "\n";
+			methods += resp.include + "\n\n";
 			
 			methods += '$' + variableName + " = new " + resp.className + "();\n";
 			
