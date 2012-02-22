@@ -285,6 +285,11 @@ class SQLiciousGenerator
 				return false;
 			}
 			
+			if(!$this->cleanDatabaseDestinationDirectory($database))
+			{
+				return false;
+			}
+			
 			if(!$this->generateDatabaseClassFactory($database))
 			{
 				return false;
@@ -304,6 +309,20 @@ class SQLiciousGenerator
 		}
 		
 		// methods succeeded
+		return true;
+	}
+	
+	function cleanDatabaseDestinationDirectory($database)
+	{
+		$files = glob($database->getGeneratorDestinationDirectory().'/*.php'); 
+		if($files != null)
+		{
+			foreach($files as $file)
+			{
+				unlink($file); 
+			}
+		}
+		
 		return true;
 	}
 	
