@@ -114,7 +114,6 @@ Setup
 5. Make sure to include the following files in your project:
 	* classes/class.DataAccessObject.php
 	* classes/class.DataAccessObjectFactory.php
-	* the generated class.DatabaseConnector.php
 6. Include any other generated factories that you need in your project
 
 
