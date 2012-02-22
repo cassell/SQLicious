@@ -4,7 +4,6 @@ include('lib/class.SQLiciousGenerator.php');
 include('lib/class.SQLiciousTools.php');
 
 $generator = new SQLiciousGenerator();
-$generator->setDatabaseConnectorDestinationDirectory('/Library/WebServer/Documents/dao');
 
 $exampleDatabase = new SQLiciousGeneratorDatabase();
 $exampleDatabase->setDatabaseName('example');
