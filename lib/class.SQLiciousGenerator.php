@@ -126,11 +126,11 @@ class SQLiciousGeneratorDatabase
 		$contents .= "\n";
 		
 		// getDatabaseName
-		$contents .= "\tfunction getDatabaseName()\n";
-		$contents .= "\t{\n";
-		$contents .= "\t\treturn '" . $this->getDatabaseName() . "';\n";
-		$contents .= "\t}\n";
-		$contents .= "\n";
+// 		$contents .= "\tfunction getDatabaseName()\n";
+// 		$contents .= "\t{\n";
+// 		$contents .= "\t\treturn '" . $this->getDatabaseName() . "';\n";
+// 		$contents .= "\t}\n";
+// 		$contents .= "\n";
 		
 		// getTableName
 		$contents .= "\tfunction getTableName()\n";
@@ -216,11 +216,11 @@ class SQLiciousGeneratorDatabase
 		$contents .= "\n";
 		
 		// getDatabaseName
-		$contents .= "\tfunction getDatabaseName()\n";
-		$contents .= "\t{\n";
-		$contents .= "\t\treturn '" . $this->getDatabaseName() . "';\n";
-		$contents .= "\t}\n";
-		$contents .= "\n";
+// 		$contents .= "\tfunction getDatabaseName()\n";
+// 		$contents .= "\t{\n";
+// 		$contents .= "\t\treturn '" . $this->getDatabaseName() . "';\n";
+// 		$contents .= "\t}\n";
+// 		$contents .= "\n";
 		
 		// getTableName
 		$contents .= "\tfunction getTableName()\n";

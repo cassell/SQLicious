@@ -7,6 +7,7 @@ abstract class DataAccessObjectFactory
 	abstract function getTableName();
 	abstract function getIdField();
 	abstract function getFields();
+	abstract function openMasterConnection();
 	
 	private $fields = array();
 	private $conditional;
@@ -308,10 +309,10 @@ abstract class DataAccessObjectFactory
 		$this->conditional = new FactoryConditional();
 	}
 	
-	function openMasterConnection()
-	{
-		return DatabaseConnector::openMasterConnection($this->getDatabaseName());
-	}
+// 	function openMasterConnection()
+// 	{
+// 		return DatabaseConnector::openMasterConnection($this->getDatabaseName());
+// 	}
 	
 	function addSelectField($field)
 	{
