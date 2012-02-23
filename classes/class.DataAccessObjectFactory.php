@@ -20,6 +20,7 @@ abstract class DataAccessObjectFactory
 	
 	private $result = null;
 	private $numberOfRows = null;
+	private $unbuffered = false;
 	
 	function __construct()
 	{	
@@ -27,6 +28,7 @@ abstract class DataAccessObjectFactory
 		
 		$this->fields = $this->getFields();
 		$this->conditional = new FactoryConditional();
+		
 	}
 	
 	function getObjects()
@@ -148,6 +150,13 @@ abstract class DataAccessObjectFactory
 		{
 			mysql_data_seek($this->result,0); // reset result back to first row
 			
+			while ($row = mysql_fetch_assoc($this->result))
+			{
+				call_user_func($function,$this->loadObject($row));
+			}
+		}
+		if($this->result && $this->unbuffered == true)
+		{
 			while ($row = mysql_fetch_assoc($this->result))
 			{
 				call_user_func($function,$this->loadObject($row));
@@ -679,6 +688,22 @@ class NotEqualsBinding extends Binding
 	function __construct($field,$value)
 	{
 		parent::__construct($field,'!=',$value);
+	}
+}
+
+class TrueBooleanBinding extends Binding
+{
+	function __construct($field)
+	{
+		parent::__construct($field,'=','1');
+	}
+}
+
+class FalseBooleanBinding extends Binding
+{
+	function __construct($field)
+	{
+		parent::__construct($field,'=','0');
 	}
 }
 
