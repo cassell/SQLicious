@@ -101,8 +101,12 @@ Output directly to CSV
 	
 	$f = new UserFactory();
 	$f->outputCSV();
+
+Memory Safe Closures
+============
 	
 Unbuffered Processing of large datasets	
+	
 	$f = new UserFactory();
 	$f->unbufferedProcess(function($user)
 	{
