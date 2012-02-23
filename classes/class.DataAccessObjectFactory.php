@@ -20,7 +20,6 @@ abstract class DataAccessObjectFactory
 	
 	private $result = null;
 	private $numberOfRows = null;
-	private $unbuffered = false;
 	
 	function __construct()
 	{	
@@ -146,6 +145,14 @@ abstract class DataAccessObjectFactory
 	// memory safe
 	function process($function)
 	{
+		
+		// run query if it hasn't been already
+		if($this->result == null && $this->numberOfRows == null)
+		{
+			$this->query();
+			$free = true;
+		}
+		
 		if($this->result && $this->numberOfRows > 0)
 		{
 			mysql_data_seek($this->result,0); // reset result back to first row
@@ -155,13 +162,12 @@ abstract class DataAccessObjectFactory
 				call_user_func($function,$this->loadObject($row));
 			}
 		}
-		if($this->result && $this->unbuffered == true)
+		
+		if($free == true)
 		{
-			while ($row = mysql_fetch_assoc($this->result))
-			{
-				call_user_func($function,$this->loadObject($row));
-			}
+			$this->freeResult();
 		}
+		
 	}
 	
 	function getSQL()
@@ -433,7 +439,7 @@ abstract class DataAccessObjectFactory
 		return $conditionalSQL;
 	}
 	
-	private function openMasterConnection($openNew = false)
+	function openMasterConnection($openNew = false)
 	{
 		$conn = mysql_connect($this->getDatabaseHost(), $this->getDatabaseUsername(), $this->getDatabasePassword(),$openNew) or trigger_error("DAOFactory: Database Connection Error", E_USER_ERROR);
 		mysql_select_db($this->getDatabaseName(),$conn) or trigger_error("DAOFactory: Database Connection Error", E_USER_ERROR);
