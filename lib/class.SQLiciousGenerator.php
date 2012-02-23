@@ -125,12 +125,22 @@ class SQLiciousGeneratorDatabase
 		$contents .= "\t}\n";
 		$contents .= "\n";
 		
-		// getDatabaseName
-// 		$contents .= "\tfunction getDatabaseName()\n";
-// 		$contents .= "\t{\n";
-// 		$contents .= "\t\treturn '" . $this->getDatabaseName() . "';\n";
-// 		$contents .= "\t}\n";
-// 		$contents .= "\n";
+		if($idFieldName == "")
+		{
+			$contents .= "\tfunction save()\n";
+			$contents .= "\t{\n";
+			$contents .= "\t\tdie('View Objects can not be saved.');\n";
+			$contents .= "\t}\n";
+			$contents .= "\n";
+			
+			
+			$contents .= "\tfunction delete()\n";
+			$contents .= "\t{\n";
+			$contents .= "\t\tdie('View Objects can not be deleted.');\n";
+			$contents .= "\t}\n";
+			$contents .= "\n";
+			
+		}
 		
 		// getTableName
 		$contents .= "\tfunction getTableName()\n";
