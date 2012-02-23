@@ -7,7 +7,9 @@ abstract class DataAccessObjectFactory
 	abstract function getTableName();
 	abstract function getIdField();
 	abstract function getFields();
-	abstract function openMasterConnection();
+	abstract function getDatabaseHost();
+	abstract function getDatabaseUsername();
+	abstract function getDatabasePassword();
 	
 	private $fields = array();
 	private $conditional;
@@ -111,7 +113,7 @@ abstract class DataAccessObjectFactory
 	
 	function outputCSV()
 	{
-		$this->process(function($obj)
+		$this->unbufferedProcess(function($obj)
 		{
 			echo $obj->toCSV();
 			echo "\n";
@@ -309,11 +311,6 @@ abstract class DataAccessObjectFactory
 		$this->conditional = new FactoryConditional();
 	}
 	
-// 	function openMasterConnection()
-// 	{
-// 		return DatabaseConnector::openMasterConnection($this->getDatabaseName());
-// 	}
-	
 	function addSelectField($field)
 	{
 		$this->additionalSelectFields[] = $field;
@@ -404,7 +401,9 @@ abstract class DataAccessObjectFactory
 	
 	function getMySQLResult($sql)
 	{
-		$result = mysql_query($sql, $this->openMasterConnection()) or trigger_error("DAOFactory Error: ". htmlentities($sql), E_USER_ERROR);
+		$conn = $this->openMasterConnection();
+		mysql_select_db($this->getDatabaseName(),$conn);
+		$result = mysql_query($sql, $conn) or trigger_error("DAOFactory Error: ". htmlentities($sql), E_USER_ERROR);
 		return $result;
 	}
 	
@@ -425,6 +424,39 @@ abstract class DataAccessObjectFactory
 		return $conditionalSQL;
 	}
 	
+	private function openMasterConnection($openNew = false)
+	{
+		$conn = mysql_connect($this->getDatabaseHost(), $this->getDatabaseUsername(), $this->getDatabasePassword(),$openNew) or trigger_error("DAOFactory: Database Connection Error", E_USER_ERROR);
+		mysql_select_db($this->getDatabaseName(),$conn) or trigger_error("DAOFactory: Database Connection Error", E_USER_ERROR);
+		return $conn;
+	}
+	
+	// using unbuffered mysql queries
+	function unbufferedProcess($function)
+	{
+		$conn = $this->openMasterConnection(true);
+		$this->openMasterConnection(true);  // this so future queries do not steal this connnection, this is a total HACK! Thanks PHP!
+		
+		mysql_select_db($this->getDatabaseName(),$conn);
+		
+		$result = mysql_unbuffered_query($this->getSQL(), $conn) or trigger_error("DAOFactory Unbuffered Error: ". htmlentities($this->getSQL()), E_USER_ERROR);
+		
+		if($result)
+		{
+			while ($row = mysql_fetch_assoc($result))
+			{
+				call_user_func($function,$this->loadObject($row));
+			}
+		}
+		
+		mysql_free_result($result);
+		mysql_close($conn); // close the connnection we created in this method
+		
+		return true;
+	}
+	
+	
+	// utils
 	static function toFieldCase($val)
 	{
 		$segments = explode("_", $val);

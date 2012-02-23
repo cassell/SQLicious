@@ -215,13 +215,6 @@ class SQLiciousGeneratorDatabase
 		$contents .= "\t}\n";
 		$contents .= "\n";
 		
-		// getDatabaseName
-// 		$contents .= "\tfunction getDatabaseName()\n";
-// 		$contents .= "\t{\n";
-// 		$contents .= "\t\treturn '" . $this->getDatabaseName() . "';\n";
-// 		$contents .= "\t}\n";
-// 		$contents .= "\n";
-		
 		// getTableName
 		$contents .= "\tfunction getTableName()\n";
 		$contents .= "\t{\n";
@@ -320,7 +313,7 @@ class SQLiciousGenerator
 		{
 			foreach($files as $file)
 			{
-				unlink($file); 
+				@unlink($file); 
 			}
 		}
 		
@@ -343,58 +336,29 @@ class SQLiciousGenerator
 		$contents .= "\t}\n";
 		$contents .= "\n";
 		
-		// getDatabaseName
+		$contents .= "\tfunction getDatabaseHost()\n";
+		$contents .= "\t{\n";
+		$contents .= "\t\treturn '" . $database->getDatabaseHost() . "';\n";
+		$contents .= "\t}\n";
+		$contents .= "\n";
+		
+		$contents .= "\tfunction getDatabaseUsername()\n";
+		$contents .= "\t{\n";
+		$contents .= "\t\treturn '" . $database->getDatabaseUsername() . "';\n";
+		$contents .= "\t}\n";
+		$contents .= "\n";
+		
+		$contents .= "\tfunction getDatabasePassword()\n";
+		$contents .= "\t{\n";
+		$contents .= "\t\treturn '" . $database->getDatabasePassword() . "';\n";
+		$contents .= "\t}\n";
+		$contents .= "\n";
+		
 		$contents .= "\tfunction getDatabaseName()\n";
 		$contents .= "\t{\n";
 		$contents .= "\t\treturn '" . $database->getDatabaseName() . "';\n";
 		$contents .= "\t}\n";
 		$contents .= "\n";
-		
-		$contents .= "\tfunction openMasterConnection()\n";
-		$contents .= "\t{\n";
-		$contents .= "\t\t\$conn = mysql_connect('".$database->getDatabaseHost()."', '".$database->getDatabaseUsername()."', '".$database->getDatabasePassword()."') or trigger_error(\"error.dao.connect!!!EXP!!!\". \$sql, E_USER_ERROR);\n";
-		$contents .= "\t\tmysql_select_db(\$this->getDatabaseName(),\$conn) or trigger_error(\"error.dao.sql!!!EXP!!!\". \$sql, E_USER_ERROR);\n";
-		$contents .= "\t\treturn \$conn;\n";
-		$contents .= "\t}\n";
-		$contents .= "\n";
-		
-		/*
-		// deprecate later
-		$contents .= "\tfunction " . $className . "DaoFactory()\n";
-		$contents .= "\t{\n";
-		$contents .= "\t\tself::__construct();\n";
-		$contents .= "\t}\n";
-		$contents .= "\n";
-		
-		// getTableName
-		$contents .= "\tfunction getTableName()\n";
-		$contents .= "\t{\n";
-		$contents .= "\t\treturn '" . $tableName . "';\n";
-		$contents .= "\t}\n";
-		$contents .= "\n";
-		
-		// getIdField
-		$contents .= "\tfunction getIdField()\n";
-		$contents .= "\t{\n";
-		$contents .= "\t\treturn '" . $idFieldName . "';\n";
-		$contents .= "\t}\n";
-		$contents .= "\n";
-		
-		// loadObject
-		$contents .= "\tfunction loadObject(\$row)\n";
-		$contents .= "\t{\n";
-		$contents .= "\t\treturn new " . $className . "DaoObject(\$row);\n";
-		$contents .= "\t}\n";
-		$contents .= "\n";
-		
-		// getFields
-		$contents .= "\tfunction getFields()\n";
-		$contents .= "\t{\n";
-		$contents .= "\t\treturn array(" . implode(", ",$fieldsPack). ");\n";
-		$contents .= "\t}\n";
-		
-		
-		*/
 		
 		$contents .= "}\n";
 		
@@ -431,48 +395,6 @@ class SQLiciousGenerator
 		$contents .= "\t\treturn '" . $database->getDatabaseName() . "';\n";
 		$contents .= "\t}\n";
 		$contents .= "\n";
-		
-		// getTableName
-// 		$contents .= "\tfunction getTableName()\n";
-// 		$contents .= "\t{\n";
-// 		$contents .= "\t\treturn '';\n";
-// 		$contents .= "\t}\n";
-// 		$contents .= "\n";
-		
-		/*
-		// deprecate later
-		$contents .= "\tfunction " . $className . "DaoFactory()\n";
-		$contents .= "\t{\n";
-		$contents .= "\t\tself::__construct();\n";
-		$contents .= "\t}\n";
-		$contents .= "\n";
-		
-		
-		
-		
-		
-		// getIdField
-		$contents .= "\tfunction getIdField()\n";
-		$contents .= "\t{\n";
-		$contents .= "\t\treturn '" . $idFieldName . "';\n";
-		$contents .= "\t}\n";
-		$contents .= "\n";
-		
-		// loadObject
-		$contents .= "\tfunction loadObject(\$row)\n";
-		$contents .= "\t{\n";
-		$contents .= "\t\treturn new " . $className . "DaoObject(\$row);\n";
-		$contents .= "\t}\n";
-		$contents .= "\n";
-		
-		// getFields
-		$contents .= "\tfunction getFields()\n";
-		$contents .= "\t{\n";
-		$contents .= "\t\treturn array(" . implode(", ",$fieldsPack). ");\n";
-		$contents .= "\t}\n";
-		
-		
-		*/
 		
 		$contents .= "}\n";
 		
