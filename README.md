@@ -83,7 +83,7 @@ Getting a JSON ready array
 
 Closures
 ============
-Process each row queried with an anonymous function. You can iterate over very large datasets without hitting memory constraints
+Process each row queried with an anonymous function. To iterate over very large datasets without hitting memory constraints use unbufferedProcess()
 	
 	$f = new UserFactory();
 	$f->process(function($user)
@@ -102,6 +102,16 @@ Output directly to CSV
 	$f = new UserFactory();
 	$f->outputCSV();
 	
+Unbuffered Processing of large datasets	
+	$f = new UserFactory();
+	$f->unbufferedProcess(function($user)
+	{
+		if(!validate_email($user->getEmail()))
+		{
+			$user->setEmail('');
+			$user->save();
+		}
+	});
 	
 
 Setup
