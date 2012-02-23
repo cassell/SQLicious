@@ -470,6 +470,34 @@ abstract class DataAccessObjectFactory
 		return true;
 	}
 	
+	// convert timezones
+	function convertTimezone($dateTime,$sourceTimezone,$destTimezone)
+	{
+		if(!is_integer($dateTime))
+		{
+			if(strtotime($dateTime) !== false)
+			{
+				return $this->convertTimezone(strtotime($dateTime),$sourceTimezone,$destTimezone);
+			}
+		}
+		else
+		{
+			$result = $this->getMySQLResult("SELECT CONVERT_TZ('2004-01-01 12:00:00','" . mysql_real_escape_string($sourceTimezone) . "','" . mysql_real_escape_string($destTimezone) . "');");
+			
+			if($result != null)
+			{
+				$row = mysql_fetch_row($result);
+				
+				mysql_free_result($result);
+				
+				return strtotime(reset($row));
+			}
+			
+		}
+
+		// failed
+		return false;
+	}
 	
 	// utils
 	static function toFieldCase($val)
