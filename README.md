@@ -3,14 +3,15 @@ SQLicious
 =============
 
 SQLicious is a PHP Database ORM and abstraction layer that handles generating
-an object model from your database schema. The six features that make
+an object model from your database schema. The seven features that make
 SQLicious easy, powerful, and a joy to use:
 
 1. Handles the CRUD
 1. Web UI for common programming tasks (object creation, class stubs, queries).
 1. Queries can easily be limited to a subset of fields in a table ("select first_name, last_name ..." vs. "select *")
 1. Updates are minimal and only changed columns are updated
-1. Closure based query processing that lets you handle data efficently, within memory constraints, and gracefully
+1. Closure based query processing that lets you handle data efficently and fully customizable
+1. Unbuffered and buffered querying for large data sets and performance (respectively).
 1. Factories and Objects are Automatically Generated
 
 
