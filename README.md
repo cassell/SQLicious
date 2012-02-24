@@ -106,9 +106,9 @@ Output directly to CSV
 Memory Safe Closures
 ============
 	
-Unbuffered Processing of large datasets	
+Unbuffered Processing of large datasets	(will potentially lock the table while processing)
 	
-	$f = new UserFactory();
+	$f = new UserFactory(); // imagine a table with millions of rows
 	$f->unbufferedProcess(function($user)
 	{
 		if(!validate_email($user->getEmail()))
