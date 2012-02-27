@@ -108,7 +108,7 @@ var Page = new Class
 			}
 			else if(this.action == "extensions")
 			{
-				this.showExtendedObjectStubBuilder();
+				new Request.WithErrorHandling({'url': this.getAjaxUrl('stub_builder.php'), onSuccess: this.showExtendedObjectStubBuilder.bind(this) }).send(Object.toQueryString({'database' : this.database, 'table' : this.table}));
 			}
 			else
 			{
@@ -311,10 +311,10 @@ var Page = new Class
 //		new Element('div',{'text' : 'Query Builder'}).inject(div);
 //		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/query'; }.bind(this));
 //		
-//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
-//		new Element('div',{'text' : 'Extended Object Stubs'}).inject(div);
-//		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/extensions'; }.bind(this));
+		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+		new Element('div',{'text' : 'Extended Object Stubs'}).inject(div);
+		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/extensions'; }.bind(this));
 //		
 //		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
 //		new Element('img',{'src' : 'img/cogs_48.png'}).inject(div);
@@ -379,8 +379,78 @@ var Page = new Class
 		
 		input.fireEvent('keyup');
 		
-		//echo "require_once(Properties::LIB.\"dao/" .  $class->getDatabase() . "/class." . substr($className,0,-6) ."Factory.php\");\n\n";
-		//echo $variable . ' = new ' . $className . "();\n";
+	},
+	
+	showExtendedObjectStubBuilder: function(resp)
+	{
+		var h1 = new Element('h1').inject(this.content);
+		var databaseLink = new Element('a',{'text' : this.database}).inject(h1);
+		databaseLink.addEvent('click',function(){ window.location = '#/database/' + this.database; }.bind(this));
+		
+		new Element('span',{'text' : " > "}).inject(h1);
+		var tableLink = new Element('a',{'text' : this.table}).inject(h1);
+		tableLink.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table; }.bind(this));
+		
+		var content = new Element('div',{'class' : 'content'}).inject(this.content);
+		
+		new Element('h2',{'text' : 'Extended DAO Object Stub Builder'}).inject(content);
+		new Element('br').inject(content);
+		
+		
+		new Element('h3',{'text' : 'Extended DAO Factory'}).inject(content);
+		new Element('br').inject(content);
+		
+		var daoFactoryPre = new Element('pre',{'text':resp.factory.html + "\n\n\n"}).inject(content);
+		
+		new Element('h3',{'text' : 'Extended DAO Object'}).inject(content);
+		new Element('br').inject(content);
+		
+		var daoObjectPre = new Element('pre',{'text':resp.object.html}).inject(content);
+		
+		/*
+	
+		
+		var h3 = new Element('h3',{'text' : 'Object Variable Name: '}).inject(content);
+		var input = new Element('input',{'type' : 'text','value' : 'obj'}).inject(h3);
+		var pre = new Element('pre',{'type' : 'text','html':'<br/><br/><br/>'}).inject(content);
+		
+		input.addEvent('keyup',function(resp,input,pre){
+			
+			variableName = input.value;
+			
+			variableNameArray = variableName.split("");
+			
+			if(variableNameArray[0] == '$')
+			{
+				variableNameArray.shift();
+			}
+			
+			variableName  = variableNameArray.join("");
+			variableNameArray[0] = variableNameArray[0].toUpperCase();
+			capVariableName = variableNameArray.join("");
+			
+			methods =  "<pre>\n\n";
+			
+			methods += resp.include + "\n\n";
+			
+			methods += '$' + variableName + " = new " + resp.className + "();\n";
+			
+			resp.columns.each(function(col)
+			{
+				methods += '$' + variableName + "->" + col.setter + "();\n";
+				
+				
+			});
+			methods += '$' + variableName + "->save();\n";
+			
+			methods += "\n\n\n</pre>";
+
+			pre.innerHTML = methods;
+			
+		}.bind(this,resp,input,pre));
+		
+		input.fireEvent('keyup');
+		*/
 		
 	}
 	
