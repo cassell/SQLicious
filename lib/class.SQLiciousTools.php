@@ -14,10 +14,7 @@ class SQLiciousTools
 	
 	function getExtendedDaoClassRequireOnce($db,$className)
 	{
-		$filePath = '';
-		
-		
-		return $filePath;
+		return $this->getDaoClassRequireOnce($db,$className."DaoObject");
 	}
 	
 	function getDaoClassRequireOnce($db,$daoClassName)
@@ -28,8 +25,6 @@ class SQLiciousTools
 		{
 			$filePath = $filename;
 		});
-		
-		
 		
 		return $this->getClassRequireOnce($filePath);
 	}

@@ -11,7 +11,7 @@ if($db != null)
 {
 	if($table != null)
 	{
-		$resp['className'] = ucfirst(SQLiciousGenerator::toFieldCase($table));
+		$resp['className'] = ucfirst(SQLiciousGenerator::toFieldCase($table)) . 'DaoObject';
 		$resp['include'] = $tools->getDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table).'DaoObject'));
 			
 		if($tools->getLookForExtendedObjects())
@@ -21,10 +21,6 @@ if($db != null)
 				$resp['className']  = ucfirst(SQLiciousGenerator::toFieldCase($table));
 				$resp['include'] = $tools->getExtendedDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table)));
 			}
-		}
-		else
-		{
-			
 		}
 		
 		$columns = $db->getColumns($table);

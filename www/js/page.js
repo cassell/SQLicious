@@ -407,51 +407,6 @@ var Page = new Class
 		
 		var daoObjectPre = new Element('pre',{'text':resp.object.html}).inject(content);
 		
-		/*
-	
-		
-		var h3 = new Element('h3',{'text' : 'Object Variable Name: '}).inject(content);
-		var input = new Element('input',{'type' : 'text','value' : 'obj'}).inject(h3);
-		var pre = new Element('pre',{'type' : 'text','html':'<br/><br/><br/>'}).inject(content);
-		
-		input.addEvent('keyup',function(resp,input,pre){
-			
-			variableName = input.value;
-			
-			variableNameArray = variableName.split("");
-			
-			if(variableNameArray[0] == '$')
-			{
-				variableNameArray.shift();
-			}
-			
-			variableName  = variableNameArray.join("");
-			variableNameArray[0] = variableNameArray[0].toUpperCase();
-			capVariableName = variableNameArray.join("");
-			
-			methods =  "<pre>\n\n";
-			
-			methods += resp.include + "\n\n";
-			
-			methods += '$' + variableName + " = new " + resp.className + "();\n";
-			
-			resp.columns.each(function(col)
-			{
-				methods += '$' + variableName + "->" + col.setter + "();\n";
-				
-				
-			});
-			methods += '$' + variableName + "->save();\n";
-			
-			methods += "\n\n\n</pre>";
-
-			pre.innerHTML = methods;
-			
-		}.bind(this,resp,input,pre));
-		
-		input.fireEvent('keyup');
-		*/
-		
 	}
 	
 });
