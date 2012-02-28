@@ -1,3 +1,4 @@
+![SQLicious Logo](http://static.andrewcassell.com/github/sqlicious/SQLicious.png)
 
 SQLicious
 =============
