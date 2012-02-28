@@ -4,16 +4,21 @@ SQLicious
 =============
 
 SQLicious is a PHP Database ORM and abstraction layer that handles generating
-an object model from your database schema. The seven features that make
-SQLicious easy, powerful, and a joy to use:
+an object model from your database schema. It's included web interface and ease of 
+development make it a joy to use. It's powerful closure based query processing and 
+ability to handle large datasets make it powerful and flexible.
 
-1. Handles the CRUD
-1. Web UI for common programming tasks (object creation, class stubs, queries).
-1. Queries can easily be limited to a subset of fields in a table ("select first_name, last_name ..." vs. "select *")
-1. Updates are minimal and only changed columns are updated
-1. Closure based query processing that lets you handle data efficently and fully customizable
-1. Unbuffered and buffered querying for large data sets and performance (respectively).
+The eight features that make SQLicious easy and powerful are:
+
+1. Web UI for code generation and fast paced development. It helps with common programming tasks (object creation, class stubs, queries).
+1. Queries can easily be limited to a subset of fields in a table ("select first_name, last_name from" vs. "select *"). You can still use objects when using a subset of the fields.
+1. Closure based query processing that lets you handle data efficently and fully customizable manner
+1. UPDATEs are minimal and only changed columns are updated
+1. Buffered queries for performance and Unbuffered queries for processing huge datasets while staying memory safe.
 1. Factories and Objects are Automatically Generated
+1. You can extend the Factories and Objects to encapsulate some of the logic of a model
+1. Process any query you imagine (multiple tables and joins) using the same closure based process model.
+1. Handles the CRUD
 
 
 
@@ -119,6 +124,24 @@ Unbuffered Processing of large datasets	(will potentially lock the table while p
 		}
 	});
 	
+
+Web UI
+===========
+
+Selecting a database:
+![Select a database](http://static.andrewcassell.com/github/sqlicious/select_a_db.png)
+
+
+Selecting a table from database:
+![Select a database](http://static.andrewcassell.com/github/sqlicious/select_a_table.png)
+
+Helper page for creating new objects:
+![Creating a new object](http://static.andrewcassell.com/github/sqlicious/new_object_creation.png)
+
+Helper page for extending dao factories and objects:
+![Extended object stubs](http://static.andrewcassell.com/github/sqlicious/extended_dao_object_stub.png)
+
+
 
 Setup
 =============
