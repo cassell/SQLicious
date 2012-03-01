@@ -3,7 +3,7 @@
 SQLicious
 =============
 
-SQLicious is a PHP Database ORM and abstraction layer that handles generating
+SQLicious is a PHP Database ORM and abstraction layer for MySQL that handles generating
 an object model from your database schema. It's included web interface and ease of 
 development make it a joy to use. It's powerful closure based query processing and 
 ability to handle large datasets make it powerful and flexible.
