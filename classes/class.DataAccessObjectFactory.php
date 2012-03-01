@@ -130,7 +130,6 @@ abstract class DataAccessObjectFactory
 		return reset($f->getObjects());
 	}
 	
-	
 	function addBinding($binding)
 	{
 		$this->conditional->addBinding($binding);
@@ -141,8 +140,6 @@ abstract class DataAccessObjectFactory
 		$this->conditional->addConditional($conditional);
 	}
 	
-	
-	// memory safe
 	function process($function)
 	{
 		
