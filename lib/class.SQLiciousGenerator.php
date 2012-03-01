@@ -383,6 +383,98 @@ class SQLiciousGenerator
 		
 	}
 	
+	function generateDatabaseProcessorFactory($database)
+	{
+		/*
+		 * 
+		 * 
+		 * 
+		 <?php
+
+class {{DB}}DataProcessor extends {{DB}}DataAccessObjectFactory
+{
+	private $sql = '';
+	
+	function __construct()
+	{
+		parent::__construct();
+	}
+	
+	function setSql($val) { $this->sql = $val; }
+	function getSql() { return $this->sql; }
+	
+	function getArray()
+	{
+		$this->query();
+		
+		$data = array();
+		
+		$this->process(function($row) use (&$data)
+		{
+			$data[] = $row;
+		});
+		
+		$this->freeResult();
+		
+		return $data;
+	}
+	
+	function getJSON()
+	{
+		$this->query();
+		
+		$data = array();
+		
+		$this->process(function($row) use (&$data)
+		{
+			$j = array();
+			if($row != null)
+			{
+				foreach($row as $field => $value)
+				{
+					$j[DataAccessObjectFactory::toFieldCase($field)] = $value;
+				}
+			}
+			$data[] = $j;
+		});
+		
+		$this->freeResult();
+		
+		return $data;
+	}
+	
+	function loadObject($row)
+	{
+		return $row;
+	}
+	
+	function getFields()
+	{
+		return null;
+	}
+	
+	function getObjects()
+	{
+		die("getObjects is not available in data processors");
+	}
+	function getTableName()
+	{
+		die("getTableName is not available in data processors");
+	}
+	function getIdField()
+	{
+		die("getIdField is not available in data processors");
+	}
+	
+	
+}
+
+?>
+
+*/
+		
+	}
+	
 	function generateDatabaseClassObject($database)
 	{
 		$contents  = "<?php\n";
