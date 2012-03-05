@@ -55,6 +55,14 @@ Contains searches for objects
 	$f->addBinding(new ContainsBinding("email","example.com"));
 	$users = $f->getObjects();
 	
+	
+String based binding clauses
+	
+	// looking for users with example.com in their email
+	$f = new UserFactory();
+	$f->addBinding("user.archived != 1");
+	$users = $f->getObjects();
+	
 Updating a record.
 	
 	$user = User::findId(17);
@@ -71,6 +79,11 @@ Limit the query to the first 20 rows
 	$f = new UserFactory();
 	$f->setLimit(20);
 	$users = $f->getObjects();
+	
+Running a count query
+	
+	$f = new UserFactory();
+	$count = $f->count(); // count of all the rows
 	
 
 Performance
@@ -102,6 +115,22 @@ Process each row queried with an anonymous function. To iterate over very large 
 		}
 	});
 
+Getting count of Rows beofre process
+	
+	$f = new UserFactory();
+	$f->query();
+	$countOfUsers = $f->getNumberOfRows();
+	$f->process(function($user)
+	{
+		if(!validate_email($user->getEmail()))
+		{
+			$user->setEmail('');
+			$user->save();
+		}
+	});
+	$f->freeResult();
+
+
 Memory Safe Outputs
 ============	
 Output directly to CSV
@@ -123,6 +152,24 @@ Unbuffered Processing of large datasets	(will potentially lock the table while p
 			$user->save();
 		}
 	});
+	
+	
+
+
+	
+Other flexibile queries
+============
+	
+Find method for writing a custom where clause
+	
+	$f = new UserFactory(); // imagine a table with millions of rows
+	$users = $f->find("where archived != 1 and email like '%@example.com'");
+
+Count query with custom where clause
+
+	$f = new UserFactory(); // imagine a table with millions of rows
+	$countOfUsers = $f->getCount("where archived != 1 and email like '%@example.com'");
+	
 	
 
 Web UI
