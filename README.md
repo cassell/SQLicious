@@ -88,7 +88,7 @@ Running a count query
 
 Performance
 =============
-Limiting select
+Limiting the fields that are pulled back from the database. You can still use objects
 	
 	$f = new UserFactory();
 	$f->setSelectFields("first_name","last_name","email");
@@ -189,12 +189,12 @@ Unbuffered for Large Datasets
 Other flexibile queries
 ============
 	
-Find method for writing a custom where clause
+Find method for writing a custom where clause (returns objects)
 	
 	$f = new UserFactory(); // imagine a table with millions of rows
 	$users = $f->find("where archived != 1 and email like '%@example.com'");
 
-Count query with custom where clause
+Count query with custom where clause (returns an integer)
 
 	$f = new UserFactory(); // imagine a table with millions of rows
 	$countOfUsers = $f->getCount("where archived != 1 and email like '%@example.com'");
