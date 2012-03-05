@@ -118,16 +118,27 @@ abstract class DataAccessObjectFactory
 		mysql_free_result($this->result);
 	}
 	
-// 	function outputJSONString()
-// 	{
-// 		echo "[";
-// 		$this->process(function($obj,$result)
-// 		{
-// 			echo $obj->toJSONString();
-// 			if(mysql_num_rows($result) < mysql
-// 		});
-// 		echo "]";
-// 	}
+	function outputJSONString()
+	{
+		echo "[";
+		
+		$firstRecord = true;
+		
+		$this->unbufferedProcess(function($obj) use (&$firstRecord)
+		{
+			if(!$firstRecord)
+			{
+				echo ",";
+			}
+			
+			echo $obj->toJSONString();
+			
+			$firstRecord = false;
+			
+		});
+		
+		echo "]";
+	}
 	
 	function outputCSV()
 	{

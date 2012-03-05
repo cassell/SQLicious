@@ -19,7 +19,7 @@ The eight features that make SQLicious easy and powerful are:
 1. You can extend the Factories and Objects to encapsulate some of the logic of a model
 1. Process any query you imagine (multiple tables and joins) using the same closure based process model.
 1. Handles the CRUD
-
+1. Convert Timezones Using MySQL Timezone Tables
 
 
 CRUD: Creating, Reading, Updating, and Deleting
@@ -131,12 +131,19 @@ Getting count of Rows beofre process
 	$f->freeResult();
 
 
-Memory Safe Outputs
+Memory Safe Outputs (works with billions of rows)
 ============	
+
 Output directly to CSV
 	
 	$f = new UserFactory();
 	$f->outputCSV();
+	
+Output directly to JSON
+	
+	$f = new UserFactory();
+	$f->outputJSONString();
+
 
 Memory Safe Closures
 ============
@@ -153,9 +160,6 @@ Unbuffered Processing of large datasets	(will potentially lock the table while p
 		}
 	});
 	
-	
-
-
 	
 Other flexibile queries
 ============
@@ -188,6 +192,12 @@ Helper page for creating new objects:
 Helper page for extending dao factories and objects:
 ![Extended object stubs](http://static.andrewcassell.com/github/sqlicious/extended_dao_object_stub.png)
 
+
+Converting Timezones
+=============
+
+$f = new UserLoginFactory();
+$centralTime = $f->convertTimezone('2012-02-23 04:10PM', 'US/Eastern',  'US/Central'); // usage: ($dateTime,$sourceTimezone,$destTimezone). $dateTime may be string or time(), returns a timestamp
 
 
 Setup
