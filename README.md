@@ -115,7 +115,7 @@ Process each row queried with an anonymous function. To iterate over very large 
 		}
 	});
 
-Getting count of Rows beofre process
+Getting count of Rows before process
 	
 	$f = new UserFactory();
 	$f->query();
@@ -160,6 +160,31 @@ Unbuffered Processing of large datasets	(will potentially lock the table while p
 		}
 	});
 	
+Data Processors
+=============
+
+Data processors are great for processing the results from an entirely custom SELECT query with closures.
+
+Buffered Queries for Speed	
+	
+	$p = new ExampleDataProcessor();
+	$p->setSQL('select first_name, last_name from user');
+	$p->process(function($row)
+	{
+		print_r($row);
+		
+	});
+
+Unbuffered for Large Datasets
+
+	$p = new ExampleDataProcessor();
+	$p->setSQL('select first_name, last_name from user');
+	$p->unbufferedProcess(function($row)
+	{
+		print_r($row);
+		
+	});
+
 	
 Other flexibile queries
 ============
@@ -196,8 +221,8 @@ Helper page for extending dao factories and objects:
 Converting Timezones
 =============
 
-$f = new UserLoginFactory();
-$centralTime = $f->convertTimezone('2012-02-23 04:10PM', 'US/Eastern',  'US/Central'); // usage: ($dateTime,$sourceTimezone,$destTimezone). $dateTime may be string or time(), returns a timestamp
+	$f = new UserLoginFactory();
+	$centralTime = $f->convertTimezone('2012-02-23 04:10PM', 'US/Eastern',  'US/Central'); // usage: ($dateTime,$sourceTimezone,$destTimezone). $dateTime may be string or time(), returns a timestamp
 
 
 Setup
