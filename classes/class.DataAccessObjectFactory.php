@@ -91,6 +91,23 @@ abstract class DataAccessObjectFactory
 		}
 	}
 	
+	function count()
+	{
+		$this->result = $this->getMySQLResult($this->getCountSQL());
+		
+		if($this->result && is_resource($this->result))
+		{
+			$row = mysql_fetch_row($this->result);
+			$this->freeResult();
+			return intval($row[0]);
+			
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
 	function getNumberOfRows()
 	{
 		return $this->numberOfRows;
@@ -130,6 +147,7 @@ abstract class DataAccessObjectFactory
 		return reset($f->getObjects());
 	}
 	
+	
 	function addBinding($binding)
 	{
 		$this->conditional->addBinding($binding);
@@ -165,6 +183,11 @@ abstract class DataAccessObjectFactory
 			$this->freeResult();
 		}
 		
+	}
+	
+	function getCountSQL()
+	{
+		return implode(" ",array("SELECT count(" . $this->getIdField() . ") FROM " . $this->getTableName(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause()));
 	}
 	
 	function getSQL()
