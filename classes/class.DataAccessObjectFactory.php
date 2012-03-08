@@ -801,7 +801,11 @@ class InBinding extends SQLString
 	
 	function getSQL()
 	{
-		if(count($this->array > 0))
+		if(count($this->array) == 1)
+		{
+			return mysql_real_escape_string($this->field) . " = " . reset($this->array);
+		}
+		else if(count($this->array) > 0)
 		{
 			foreach($this->array as $key => $item)
 			{
