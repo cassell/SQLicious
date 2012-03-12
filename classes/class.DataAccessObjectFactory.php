@@ -1,15 +1,14 @@
 <?php
 
-abstract class DataAccessObjectFactory
+require_once('class.DatabaseProcessor.php');
+
+
+abstract class DataAccessObjectFactory extends DatabaseProcessor
 {
 	// generated classes create these
-	abstract function getDatabaseName();
 	abstract function getTableName();
 	abstract function getIdField();
 	abstract function getFields();
-	abstract function getDatabaseHost();
-	abstract function getDatabaseUsername();
-	abstract function getDatabasePassword();
 	
 	private $fields = array();
 	private $conditional;
@@ -23,11 +22,25 @@ abstract class DataAccessObjectFactory
 	
 	function __construct()
 	{	
-		$this->openMasterConnection(); // needed for mysql_real_escape_string
+		// setup connection properties
+		parent::__construct($this->getDatabaseName());
 		
+		// open a connection for mysql_real_escape_string
+		$this->openConnection();
+		
+		// fields used in the SELECT clause
 		$this->fields = $this->getFields();
+		
+		// conditional used in building the WHERE clause
 		$this->conditional = new FactoryConditional();
 		
+	}
+	
+	// saves and deletes must open a master connection
+	function openMasterConnection($openNew = false)
+	{
+		$this->useMasterConnectionFromGlobalConfig($databaseName);
+		return $this->openConnection($openNew);
 	}
 	
 	function getObjects()
@@ -46,109 +59,6 @@ abstract class DataAccessObjectFactory
 		return $data;
 	}
 	
-	function getArray()
-	{
-		$this->query();
-		
-		$data = array();
-		
-		$this->process(function($obj) use (&$data)
-		{
-			$data[] = $obj->toArray();
-		});
-		
-		$this->freeResult();
-		
-		return $data;
-	}
-	
-	function getJSON()
-	{
-		$this->query();
-		
-		$data = array();
-		
-		$this->process(function($obj) use (&$data)
-		{
-			$data[] = $obj->toJSON();
-		});
-		
-		$this->freeResult();
-		
-		return $data;
-	}
-	
-	function query()
-	{
-		$this->result = $this->getMySQLResult($this->getSQL());
-		if($this->result && is_resource($this->result))
-		{
-			$this->numberOfRows = mysql_num_rows($this->result);
-		}
-		else
-		{
-			$this->numberOfRows = null;
-		}
-	}
-	
-	function count()
-	{
-		$this->result = $this->getMySQLResult($this->getCountSQL());
-		
-		if($this->result && is_resource($this->result))
-		{
-			$row = mysql_fetch_row($this->result);
-			$this->freeResult();
-			return intval($row[0]);
-			
-		}
-		else
-		{
-			return null;
-		}
-	}
-	
-	function getNumberOfRows()
-	{
-		return $this->numberOfRows;
-	}
-	
-	function freeResult()
-	{
-		mysql_free_result($this->result);
-	}
-	
-	function outputJSONString()
-	{
-		echo "[";
-		
-		$firstRecord = true;
-		
-		$this->unbufferedProcess(function($obj) use (&$firstRecord)
-		{
-			if(!$firstRecord)
-			{
-				echo ",";
-			}
-			
-			echo $obj->toJSONString();
-			
-			$firstRecord = false;
-			
-		});
-		
-		echo "]";
-	}
-	
-	function outputCSV()
-	{
-		$this->unbufferedProcess(function($obj)
-		{
-			echo $obj->toCSV();
-			echo "\n";
-		});
-	}
-	
 	static function getObject($id)
 	{
 		$f = new static();
@@ -158,7 +68,6 @@ abstract class DataAccessObjectFactory
 		return reset($f->getObjects());
 	}
 	
-	
 	function addBinding($binding)
 	{
 		$this->conditional->addBinding($binding);
@@ -167,33 +76,6 @@ abstract class DataAccessObjectFactory
 	function addConditional($conditional)
 	{
 		$this->conditional->addConditional($conditional);
-	}
-	
-	function process($function)
-	{
-		
-		// run query if it hasn't been already
-		if($this->result == null && $this->numberOfRows == null)
-		{
-			$this->query();
-			$free = true;
-		}
-		
-		if($this->result && $this->numberOfRows > 0)
-		{
-			mysql_data_seek($this->result,0); // reset result back to first row
-			
-			while ($row = mysql_fetch_assoc($this->result))
-			{
-				call_user_func($function,$this->loadObject($row));
-			}
-		}
-		
-		if($free == true)
-		{
-			$this->freeResult();
-		}
-		
 	}
 	
 	function getCountSQL()
@@ -218,11 +100,11 @@ abstract class DataAccessObjectFactory
 			{
 				if($this->getIdField() != "") // tables or views that do not have a primary key
 				{
-					$objects[$row[$this->getIdField()]] = $this->loadObject($row);
+					$objects[$row[$this->getIdField()]] = $this->loadDataObject($row);
 				}
 				else
 				{
-					$objects[] = $this->loadObject($row);
+					$objects[] = $this->loadDataObject($row);
 				}
 			}
 			mysql_free_result($result);
@@ -244,6 +126,7 @@ abstract class DataAccessObjectFactory
 		return $this->getObjects();
 	}
 	
+	// generate the select clause from $this->fields and $this->additionalSelectFields
 	function getSelectClause()
 	{
 		$sql = array();
@@ -367,12 +250,6 @@ abstract class DataAccessObjectFactory
 		return $this->update("DELETE FROM " . $this->getTableName() . " WHERE " . $whereClause);
 	}
 	
-	function update($sql)
-	{
-		$result = $this->getMySQLResult($sql);
-		@mysql_free_result($result);
-	}
-	
 	// find the first object matching the clause
 	function findFirst($clause = "")
 	{
@@ -445,14 +322,6 @@ abstract class DataAccessObjectFactory
 		$this->update("TRUNCATE TABLE ". $this->getTableName());
 	}
 	
-	function getMySQLResult($sql)
-	{
-		$conn = $this->openMasterConnection();
-		mysql_select_db($this->getDatabaseName(),$conn);
-		$result = mysql_query($sql, $conn) or trigger_error("DAOFactory Error: ". htmlentities($sql), E_USER_ERROR);
-		return $result;
-	}
-	
 	private function sqlFunctionFieldQuery($sqlFunction,$field,$clause)
 	{
 		return reset($this->findField($sqlFunction . '(' . mysql_real_escape_string($field) . ')',$clause));
@@ -469,104 +338,6 @@ abstract class DataAccessObjectFactory
 		
 		return $conditionalSQL;
 	}
-	
-	function openMasterConnection($openNew = false)
-	{
-		$conn = mysql_connect($this->getDatabaseHost(), $this->getDatabaseUsername(), $this->getDatabasePassword(),$openNew) or trigger_error("DAOFactory: Database Connection Error", E_USER_ERROR);
-		mysql_select_db($this->getDatabaseName(),$conn) or trigger_error("DAOFactory: Database Connection Error", E_USER_ERROR);
-		return $conn;
-	}
-	
-	// using unbuffered mysql queries
-	function unbufferedProcess($function)
-	{
-		$conn = $this->openMasterConnection(true);
-		$this->openMasterConnection(true);  // this so future queries do not steal this connnection, this is a total HACK! Thanks PHP!
-		
-		mysql_select_db($this->getDatabaseName(),$conn);
-		
-		$result = mysql_unbuffered_query($this->getSQL(), $conn) or trigger_error("DAOFactory Unbuffered Error: ". htmlentities($this->getSQL()), E_USER_ERROR);
-		
-		if($result)
-		{
-			while ($row = mysql_fetch_assoc($result))
-			{
-				call_user_func($function,$this->loadObject($row));
-			}
-		}
-		
-		mysql_free_result($result);
-		mysql_close($conn); // close the connnection we created in this method
-		
-		return true;
-	}
-	
-	// convert timezones
-	function convertTimezone($dateTime,$sourceTimezone,$destTimezone)
-	{
-		if(!is_integer($dateTime))
-		{
-			if(strtotime($dateTime) !== false)
-			{
-				return $this->convertTimezone(strtotime($dateTime),$sourceTimezone,$destTimezone);
-			}
-		}
-		else
-		{
-			$result = $this->getMySQLResult("SELECT CONVERT_TZ('2004-01-01 12:00:00','" . mysql_real_escape_string($sourceTimezone) . "','" . mysql_real_escape_string($destTimezone) . "');");
-			
-			if($result != null)
-			{
-				$row = mysql_fetch_row($result);
-				
-				mysql_free_result($result);
-				
-				return strtotime(reset($row));
-			}
-			
-		}
-
-		// failed
-		return false;
-	}
-	
-	// utils
-	static function toFieldCase($val)
-	{
-		$segments = explode("_", $val);
-		for ($i = 0; $i < count($segments); $i++)
-		{
-			$segment = $segments[$i];
-			if ($i == 0)
-				$result .= $segment;
-			else
-				$result .= strtoupper(substr($segment, 0, 1)).substr($segment, 1);
-		}
-		return $result;
-	}
-	
-	static function JSONEncodeArray($array)
-	{
-		return json_encode(self::utf8EncodeArray($array));
-	}
-	
-	static function utf8EncodeArray($array)
-	{
-	    foreach($array as $key => $value)
-	    {
-	    	if(is_array($value))
-	    	{
-	    		$array[$key] = self::utf8EncodeArray($value);
-	    	}
-	    	else
-	    	{
-	    		$array[$key] = utf8_encode($value);
-	    	}
-	    }
-	       
-	    return $array;
-	}
-	
 	
 	// depecate
 	function executeQuery($sql)

@@ -1,29 +1,34 @@
 <?php
 
-abstract class DataAccessObject
+require_once('class.DataAccessArray.php');
+
+abstract class DataAccessObject extends DataAccessArray
 {
 	var $data;
 	var $modifiedColumns;
 	
 	const NEW_OBJECT_ID = -1;
 	
+	//overridden
 	abstract function getDatabaseName();
 	abstract function getTableName();
 	abstract function getIdField();
 	abstract function getFactory();
+	abstract function getDefaultRow();
 	
 	function __construct($row)
 	{
-		if($row != null)
-		{
-			$this->data = $row;
-		}
-		else
+		// setup $this->data
+		parent::__construct($row);
+		
+		// if data is null setup with defaults from table
+		if($this->data == null)
 		{
 			$this->data = static::getDefaultRow();
 			$this->data[static::getIdField()] = self::NEW_OBJECT_ID;
 			$this->modifiedColumns[static::getIdField()] = 1;
 		}
+		
 	}
 	
 	static function findId($id)
@@ -101,14 +106,14 @@ abstract class DataAccessObject
 		if(intval($this->getId()) > 0)
 		{
 			$f = static::getFactory();
-			$this->update("DELETE FROM " . $this->getTableName() . " WHERE " . $this->getIdField()." = ".$object->getId());
+			$f->update("DELETE FROM " . $this->getTableName() . " WHERE " . $this->getIdField()." = ".$this->getId());
 		}
 	}
-	
 	
 	function getId() { return $this->getFieldValue($this->getIdField()); }
 	function getObjectId() { return $this->getId(); }
 	
+	// overridden to make id always the name of the primary key
 	function toJSON()
 	{
 		$j = array();
@@ -122,27 +127,12 @@ abstract class DataAccessObject
 				}
 				else
 				{
-					$j[DataAccessObjectFactory::toFieldCase($field)] = $value;
+					$j[DatabaseProcessor::toFieldCase($field)] = $value;
 				}
 			}
 		}
 		
 		return $j;
-	}
-	
-	function toJSONString()
-	{
-		return DataAccessObjectFactory::JSONEncodeArray($this->toJSON());
-	}
-	
-	function toArray()
-	{
-		return $this->data;
-	}
-	
-	function toCSV()
-	{
-		return implode(",",array_values($this->toArray()));
 	}
 	
 	function setFieldValue($fieldName,$val)

@@ -42,7 +42,7 @@ if($db != null)
 		$resp['factory']['html'] .= "\t\tparent::__construct();" . "\n";
 		$resp['factory']['html'] .= "\t}" . "\n";
 		$resp['factory']['html'] .= "" . "\n";
-		$resp['factory']['html'] .= "\tfunction loadObject(\$row = null)" . "\n";
+		$resp['factory']['html'] .= "\tfunction loadDataObject(\$row = null)" . "\n";
 		$resp['factory']['html'] .= "\t{" . "\n";
 		$resp['factory']['html'] .= "\t\treturn new " .  $resp['className'] . "(\$row);" . "\n";
 		$resp['factory']['html'] .= "\t}" . "\n";
