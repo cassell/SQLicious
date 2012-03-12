@@ -76,7 +76,7 @@ abstract class DataAccessObject extends DataAccessArray
 				}
 			}
 			
-			if($this->getId() != DataAccessObject::NEW_OBJECT_ID)
+			if($this->getId() != static::NEW_OBJECT_ID)
 			{
 				$f->update('UPDATE ' . $this->getTableName() . " SET " .  implode(",",$sql) . " WHERE " . $this->getTableName() . "." . $this->getIdField() . ' = ' . $this->getId());
 			}
@@ -127,7 +127,7 @@ abstract class DataAccessObject extends DataAccessArray
 				}
 				else
 				{
-					$j[DatabaseProcessor::toFieldCase($field)] = $value;
+					$j[static::toFieldCase($field)] = $value;
 				}
 			}
 		}

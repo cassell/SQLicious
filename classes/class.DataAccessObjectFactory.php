@@ -85,32 +85,21 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	
 	function getSQL()
 	{
-		return implode(" ",array($this->getSelectClause(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause()));
+		if($this->sql == null)
+		{
+			return implode(" ",array($this->getSelectClause(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause()));
+		}
+		else
+		{
+			return $this->sql;
+		}
 	}
 	
 	// used to do custom queries, uses the same get select clause that the query() method 
 	function find($clause = "")
 	{
-		$result = $this->getMySQLResult($this->getSelectClause() . " " . $clause);
-		
-		if($result !== null)
-		{
-			$objects = array();
-			while ($row = mysql_fetch_assoc($result))
-			{
-				if($this->getIdField() != "") // tables or views that do not have a primary key
-				{
-					$objects[$row[$this->getIdField()]] = $this->loadDataObject($row);
-				}
-				else
-				{
-					$objects[] = $this->loadDataObject($row);
-				}
-			}
-			mysql_free_result($result);
-		}
-		
-		return $objects;
+		$this->setSQL($this->getSelectClause() . " " . $clause);
+		return $this->getObjects();
 	}
 	
 	// find an object or data by primary key

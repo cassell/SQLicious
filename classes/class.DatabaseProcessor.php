@@ -9,7 +9,8 @@ class DatabaseProcessor
 	private $databaseHost;
 	private $databasePassword;
 	private $connection;
-	private $sql;
+	
+	public $sql = null;
 	
 	// if a database name is provided the DatabaseProcess will open a master connection to the database based on config
 	function __construct($databaseName = null)
@@ -46,6 +47,17 @@ class DatabaseProcessor
 		return $data;
 	}
 	
+	function getFirstField($columnName)
+	{
+		$a = $this->getArray();
+		
+		if(is_array($a))
+		{
+			$a = reset($a);
+			return $a[$columnName];
+		}
+	}
+	
 	function setSQL($sql)
 	{
 		$this->sql = $sql;
@@ -63,21 +75,31 @@ class DatabaseProcessor
 	
 	function process($function)
 	{
+		// should we free the result later
+		$free = false;
+		
 		// run query if it hasn't been already
 		if($this->result == null && $this->numberOfRows == null)
 		{
 			$this->query();
 			$free = true;
 		}
-	
-		if($this->result && $this->numberOfRows > 0)
+		
+		if($this->result != null)
 		{
-			mysql_data_seek($this->result,0); // reset result back to first row
-				
-			while ($row = mysql_fetch_assoc($this->result))
+			if($this->numberOfRows > 0)
 			{
-				call_user_func($function,$this->loadDataObject($row));
+				mysql_data_seek($this->result,0); // reset result back to first row
+				
+				while ($row = mysql_fetch_assoc($this->result))
+				{
+					call_user_func($function,$this->loadDataObject($row));
+				}
 			}
+		}
+		else
+		{
+			throw new ErrorException("SQLicious DatabaseProcessor SQL Error. No MySQL Result: " . htmlentities($this->getSQL()),$e->code,E_USER_ERROR,$e->filename,$e->lineno,$e->previous);
 		}
 	
 		if($free == true)
@@ -120,7 +142,7 @@ class DatabaseProcessor
 		}
 		catch(ErrorException $e)
 		{
-			throw new ErrorException("DatabaseProcessor SQL Error. Unable get MySQL Result: " . htmlentities($sql),$e->code,E_USER_ERROR,$e->filename,$e->lineno,$e->previous);
+			throw new ErrorException("SQLicious DatabaseProcessor SQL Error. Unable to MySQL Query: " . htmlentities($sql),$e->code,E_USER_ERROR,$e->filename,$e->lineno,$e->previous);
 		}
 		
 		
