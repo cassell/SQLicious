@@ -64,8 +64,17 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		$f = new static();
 		$f->clearBindings();
 		$f->addBinding(new EqualsBinding($f->getIdField(),intval($id)));
-		$f->setLimit(1);
-		return reset($f->getObjects());
+		return $f->getFirstObject();
+	}
+	
+	function getFirstObject()
+	{
+		$this->setLimit(1);
+		$array = $this->getObjects();
+		if($array != null && is_array($array))
+		{
+			return reset($array);
+		}
 	}
 	
 	function addBinding($binding)
@@ -331,25 +340,21 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	// depecate
 	function executeQuery($sql)
 	{
+		$data = array();
+		
 		$result = $this->getMySQLResult($sql);
 		
 		if($result != null && is_resource($result) && mysql_num_rows($result) > 0)
 		{
-			$data = array();
 			while ($row = mysql_fetch_assoc($result))
 			{
 				$data[] = $row;
 			}
 			
 			@mysql_free_result($result);
-			
-			return $data;
-			
 		}
-		else
-		{
-			return $result;
-		}
+		
+		return $data;
 	}	
 	
 }
