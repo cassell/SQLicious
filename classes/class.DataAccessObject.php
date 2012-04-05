@@ -16,7 +16,7 @@ abstract class DataAccessObject extends DataAccessArray
 	abstract function getFactory();
 	abstract function getDefaultRow();
 	
-	function __construct($row)
+	function __construct($row = null)
 	{
 		// setup $this->data
 		parent::__construct($row);
@@ -25,8 +25,11 @@ abstract class DataAccessObject extends DataAccessArray
 		if($this->data == null)
 		{
 			$this->data = static::getDefaultRow();
-			$this->data[static::getIdField()] = self::NEW_OBJECT_ID;
-			$this->modifiedColumns[static::getIdField()] = 1;
+			if(static::getIdField() != null)
+			{
+				$this->data[static::getIdField()] = self::NEW_OBJECT_ID;
+				$this->modifiedColumns[static::getIdField()] = 1;
+			}
 		}
 		
 	}

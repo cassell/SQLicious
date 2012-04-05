@@ -51,7 +51,15 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		
 		$this->process(function($obj) use (&$data)
 		{
-			$data[$obj->getId()] = $obj;
+			if($obj->getIdField() != null)
+			{
+				$data[$obj->getId()] = $obj;
+			}
+			else
+			{
+				$data[] = $obj;
+			}
+			
 		});
 		
 		$this->freeResult();
@@ -218,11 +226,11 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	}
 	
 	// limits
-	function setLimit($numberOfRecords,$page = 0)
+	function setLimit($numberOfRecords,$afterRow = 0)
 	{
-		if($page > 0)
+		if($afterRow > 0)
 		{
-			$this->setLimitClause("LIMIT " . intval($numberOfRecords) . "," . intval($page));
+			$this->setLimitClause("LIMIT " . intval($numberOfRecords) . "," . intval($afterRow));
 		}
 		else
 		{
