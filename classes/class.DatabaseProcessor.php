@@ -226,6 +226,7 @@ class DatabaseProcessor
 		if($this->result != null)
 		{
 			mysql_free_result($this->result);
+			unset($this->result);
 		}
 	}
 	
