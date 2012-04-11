@@ -181,7 +181,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	}
 	
 	// joins
-	function addJoin($clause)
+	function join($clause)
 	{
 		$this->setJoinClause($this->getJoinClause() . " " . $clause);
 	}
@@ -191,18 +191,46 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	// eventually deprecate old naming convention
 	function addJoinClause($clause)
 	{
-		$this->addJoin($clause);
+		$this->join($clause);
 	}
 	
 	// group by
+	function groupBy($fieldOrArray)
+	{
+		if(func_num_args() > 1)
+		{
+			// passed multiple fields $f->addGroupBy("first_name","last_name")
+			$this->groupBy(func_get_args());
+		}
+		else if(func_num_args() == 1 && is_array($fieldOrArray) && count($fieldOrArray) > 0)
+		{
+			// passed an array of fields $f->addGroupBy(["first_name","last_name"])
+			foreach($fieldOrArray as $field)
+			{
+				$this->groupBy($field);
+			}
+			
+		}
+		else if(func_num_args() == 1 && is_string($fieldOrArray))
+		{
+			// passed a single field $f->addGroupBy("last_name")
+			if($this->getGroupByClause() == "")
+			{
+				$this->setGroupByClause("GROUP BY " . mysql_real_escape_string($fieldOrArray));
+			}
+			else
+			{
+				$this->setGroupByClause($this->getGroupByClause() . ", " . mysql_real_escape_string($fieldOrArray));
+			}
+		}
+		
+	}
 	function setGroupByClause($val) { $this->groupByClause = $val; }
 	function getGroupByClause() { return $this->groupByClause; }
 	
 	
 	// order by
-	function setOrderByClause($val) { $this->orderByClause = $val; }
-	function getOrderByClause() { return $this->orderByClause; }
-	function orderByField($field,$direction = 'asc')
+	function orderBy($field,$direction = 'asc')
 	{
 		if($this->getOrderByClause() == "")
 		{
@@ -215,8 +243,16 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		
 		$this->setOrderByClause($this->getOrderByClause() . mysql_real_escape_string($field) . " " .  mysql_real_escape_string($direction));
 	}
+	function setOrderByClause($val) { $this->orderByClause = $val; }
+	function getOrderByClause() { return $this->orderByClause; }
 	
-	function orderByFieldsAscending($arrayOfFields)
+	// deprecate old naming convetion
+	function orderByField($field,$direction = 'asc')
+	{
+		$this->orderBy($field,$direction);
+	}
+	
+	function orderByAsc($arrayOfFields)
 	{
 		if(func_num_args() == 1 && is_array($arrayOfFields) && count($arrayOfFields) > 0)
 		{
@@ -232,11 +268,11 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	}
 	
 	// limits
-	function setLimit($numberOfRecords,$afterRow = 0)
+	function limit($number,$startAtRow = 0)
 	{
-		if($afterRow > 0)
+		if($startAtRow > 0)
 		{
-			$this->setLimitClause("LIMIT " . intval($numberOfRecords) . "," . intval($afterRow));
+			$this->setLimitClause("LIMIT " . intval($numberOfRecords) . "," . intval($startAtRow));
 		}
 		else
 		{
@@ -245,6 +281,12 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	}
 	function setLimitClause($val) { $this->limitClause = $val; }
 	function getLimitClause() { return $this->limitClause; }
+	
+	// deprecate old naming convention
+	function setLimit($numberOfRecords,$afterRow = 0)
+	{
+		$this->limit($numberOfRecords,$afterRow);
+	}
 	
 	// clear	
 	function clearBindings()
