@@ -181,12 +181,18 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	}
 	
 	// joins
-	function addJoinClause($clause)
+	function addJoin($clause)
 	{
 		$this->setJoinClause($this->getJoinClause() . " " . $clause);
 	}
 	function setJoinClause($val) { $this->joinClause = $val; }
 	function getJoinClause() { return $this->joinClause; }
+	
+	// eventually deprecate old naming convention
+	function addJoinClause($clause)
+	{
+		$this->addJoin($clause);
+	}
 	
 	// group by
 	function setGroupByClause($val) { $this->groupByClause = $val; }
