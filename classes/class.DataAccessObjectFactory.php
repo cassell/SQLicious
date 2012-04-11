@@ -2,7 +2,6 @@
 
 require_once('class.DatabaseProcessor.php');
 
-
 abstract class DataAccessObjectFactory extends DatabaseProcessor
 {
 	// generated classes create these
@@ -272,11 +271,11 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
 		if($startAtRow > 0)
 		{
-			$this->setLimitClause("LIMIT " . intval($numberOfRecords) . "," . intval($startAtRow));
+			$this->setLimitClause("LIMIT " . intval($number) . "," . intval($startAtRow));
 		}
 		else
 		{
-			$this->setLimitClause("LIMIT " . intval($numberOfRecords));
+			$this->setLimitClause("LIMIT " . intval($number));
 		}
 	}
 	function setLimitClause($val) { $this->limitClause = $val; }
