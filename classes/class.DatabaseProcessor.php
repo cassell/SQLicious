@@ -124,7 +124,6 @@ class DatabaseProcessor
 		return $this->result;
 	}
 	
-	
 	function update($sql)
 	{
 		$result = $this->getMySQLResult($sql);
@@ -261,6 +260,43 @@ class DatabaseProcessor
 			echo $obj->toCSV();
 			echo "\n";
 		});
+	}
+	
+	function explain()
+	{
+		$explain = $this->getMySQLResult('EXPLAIN ' . $this->getSQL());
+	
+		$params = mysql_fetch_assoc($explain);
+	
+		@mysql_free_result($explain);
+	
+		return $params;
+	}
+	
+	function queryTest()
+	{
+		echo '<pre>';
+	
+		echo 'SQL: ' . htmlentities($this->getSQL());
+	
+		echo "\n\n";
+	
+		echo 'EXPLAIN: ' . htmlentities(print_r($this->explain(),true));
+	
+		echo "\n\n";
+	
+		$result = $this->query();
+	
+		echo 'ROW COUNT: '  . htmlentities($this->getNumberOfRows(),true);
+	
+		echo "\n\n";
+	
+		echo 'FIRST ROW: ' . htmlentities(print_r(reset($this->getArray()),true));
+	
+		$this->freeResult();
+	
+		echo '</pre>';
+	
 	}
 	
 	function useMasterConnectionFromGlobalConfig($databaseName)

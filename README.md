@@ -242,11 +242,15 @@ Setup
 6. Include any other generated factories that you need in your project
 
 
+Requirements
+=============
+* PHP 5.3 or greater
+* MySQL
+
 
 Example Mac Apache Config:
 =============
 	<VirtualHost *:80>
 	        DocumentRoot /Library/WebServer/Documents/sqlicious/www
 	        ServerName sqlicious.local
-	        RewriteEngine on
 	</VirtualHost>
