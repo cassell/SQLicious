@@ -39,7 +39,7 @@ class DataAccessArray
 	// return the row values seperated by commas
 	function toCSV()
 	{
-		return implode(",",array_values($this->toArray()));
+		die("toCSV");
 	}
 	
 	// utils
@@ -59,7 +59,7 @@ class DataAccessArray
 	
 	static function JSONEncodeArray($array)
 	{
-	return json_encode(self::utf8EncodeArray($array));
+		return json_encode(self::utf8EncodeArray($array));
 	}
 	
 	static function utf8EncodeArray($array)

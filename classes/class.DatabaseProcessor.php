@@ -143,8 +143,6 @@ class DatabaseProcessor
 		{
 			throw new ErrorException("SQLicious DatabaseProcessor SQL Error. Unable to MySQL Query: " . htmlentities($sql),$e->code,E_USER_ERROR,$e->filename,$e->lineno,$e->previous);
 		}
-		
-		
 	}
 	
 	// using unbuffered mysql queries
@@ -212,7 +210,6 @@ class DatabaseProcessor
 			$row = mysql_fetch_row($this->result);
 			$this->freeResult();
 			return intval($row[0]);
-				
 		}
 		else
 		{
@@ -247,7 +244,6 @@ class DatabaseProcessor
 			}
 				
 			echo $obj->toJSONString();
-				
 		});
 	
 		echo "]";
@@ -336,6 +332,27 @@ class DatabaseProcessor
 	
 	function setDatabasePassword($val) { $this->databasePassword = $val; }
 	function getDatabasePassword() { return $this->databasePassword; }
+	
+	// util
+	static function formatTextCSV($text)
+	{
+		$text = preg_replace("/<(.|\n)*?>/","",$text);
+	
+		$text = str_replace("<br/>","\n",$text);
+	
+		$text = str_replace("&nbsp;"," ",$text);
+	
+		if(strpos($text,'"') === true)
+		{
+			$text = '"' . str_replace('"','""',$text) . '"';
+		}
+		else if(strpos($text,',') || strpos($text,"\n") || strpos($text,"\r"))
+		{
+			$text = '"' . str_replace('"','""',$text) . '"';
+		}
+	
+		return html_entity_decode($text);
+	}
 	
 }
 
