@@ -282,10 +282,10 @@ class SQLiciousGeneratorDatabase
 				
 				if($column['Type'] == "tinyint(1)" || $column['Type'] == "int(1)")
 				{
-					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "TrueBinding(){ \$this->addBinding(new TrueBooleanBinding('" . $column['Field'] . "')); }";
-					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "FalseBinding(){ \$this->addBinding(new FalseBooleanBinding('" . $column['Field'] . "')); }";
-					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "NotTrueBinding(){ \$this->addBinding(new NotEqualsBinding('" . $column['Field'] . "',1)); }";
-					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "NotFalseBinding(){ \$this->addBinding(new NotEqualsBinding('" . $column['Field'] . "',0));  }";
+					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "TrueBinding(){ \$this->addBinding(new TrueBooleanBinding('" . $tableName . "." . $column['Field'] . "')); }";
+					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "FalseBinding(){ \$this->addBinding(new FalseBooleanBinding('" . $tableName . "." . $column['Field'] . "')); }";
+					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "NotTrueBinding(){ \$this->addBinding(new NotEqualsBinding('" . $tableName . "." . $column['Field'] . "',1)); }";
+					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "NotFalseBinding(){ \$this->addBinding(new NotEqualsBinding('" . $tableName . "." . $column['Field'] . "',0));  }";
 					$bindingsPack[] = "\n";
 				}
 				if($column['Type'] == "datetime")
