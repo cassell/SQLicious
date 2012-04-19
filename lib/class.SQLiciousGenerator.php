@@ -265,6 +265,66 @@ class SQLiciousGeneratorDatabase
 		$contents .= "\t{\n";
 		$contents .= "\t\treturn array(" . implode(", ",$fieldsPack). ");\n";
 		$contents .= "\t}\n";
+		
+		// get columns
+		$bindingsPack = array();
+		$columns = $this->getColumns($tableName);
+		if($columns != null && count($columns) > 0)
+		{
+			foreach($columns as $column)
+			{
+				//datetime
+				//varchar(100)
+				//int(11)
+				//tinyint(1)
+				//mediumtext
+				//char
+				
+				if($column['Type'] == "tinyint(1)" || $column['Type'] == "int(1)")
+				{
+					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "TrueBinding(){ \$this->addBinding(new TrueBooleanBinding('" . $column['Field'] . "')); }";
+					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "FalseBinding(){ \$this->addBinding(new FalseBooleanBinding('" . $column['Field'] . "')); }";
+					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "NotTrueBinding(){ \$this->addBinding(new NotEqualsBinding('" . $column['Field'] . "',1)); }";
+					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "NotFalseBinding(){ \$this->addBinding(new NotEqualsBinding('" . $column['Field'] . "',0));  }";
+					$bindingsPack[] = "\n";
+				}
+				if($column['Type'] == "datetime")
+				{
+					
+				}
+				else
+				{
+					//print_r($column);
+				}
+				
+				/*
+				if($column['Type'] == "datetime")
+				{
+					//$setsAndGetsPack[] = "\tfinal function set" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '($val) { $this->setDatetimeFieldValue(\'' . $column['Field'] .'\',$val); }' . "\n" . "\tfinal function get" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '() { return $this->getFieldValue(\'' . $column['Field'] .'\'); }' . "\n";
+				}
+				
+				else
+				{
+					//$setsAndGetsPack[] = "\tfinal function set" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '($val) { $this->setFieldValue(\'' . $column['Field'] .'\',$val); }' . "\n" . "\tfinal function get" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '() { return $this->getFieldValue(\'' . $column['Field'] .'\'); }' . "\n";
+				}
+		
+				if($column['Default'] == null)
+				{
+					//$defaultRowPack[] = "'" . $column['Field'] . "' => null";
+				}
+				else
+				{
+					//$defaultRowPack[] = "'" . $column['Field'] . "' => '" . str_replace("'","\'",$column['Default']) . "'";
+				}
+				*/
+			}
+		}
+		
+		// sets and gets
+		$contents .= "\n";
+		$contents .= implode("\n",$bindingsPack);
+		$contents .= "\n";
+		
 		$contents .= "}\n";
 		
 		return $contents;
