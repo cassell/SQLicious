@@ -11,7 +11,6 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	
 	private $fields = array();
 	private $conditional;
-	private $additionalSelectFields = array();
 	private $joinClause = '';
 	private $groupByClause = '';
 	private $orderByClause = '';
@@ -28,7 +27,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		$this->openConnection();
 		
 		// fields used in the SELECT clause
-		$this->fields = $this->getFields();
+		$this->setSelectFields($this->getFields());
 		
 		// conditional used in building the WHERE clause
 		$this->conditional = new FactoryConditional();
@@ -64,6 +63,14 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		$this->freeResult();
 		
 		return $data;
+	}
+	
+	final function addPrimaryKeyBinding($id)
+	{
+		if($this->getIdField())
+		{
+			$this->addBinding(new EqualsBinding($this->getIdField(),intval($id)));
+		}
 	}
 	
 	static function getObject($id)
@@ -131,52 +138,44 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		return $this->getObjects();
 	}
 	
-	// generate the select clause from $this->fields and $this->additionalSelectFields
+	// generate the select clause from $this->fields
 	function getSelectClause()
 	{
-		$sql = array();
-		
-		if($this->fields != null && is_array($this->fields) && count($this->fields) > 0)
-		{
-			foreach($this->fields as $field)
-			{
-				$sql[] = $this->getTableName()  . "." . $field;
-			}
-		}
-		
-		if($this->additionalSelectFields != null && is_array($this->additionalSelectFields) && count($this->additionalSelectFields) > 0)
-		{
-			foreach($this->additionalSelectFields as $field)
-			{
-				$sql[] = $field;
-			}
-		}
-		
-		return 'SELECT ' . implode(",",$sql) . " FROM " . $this->getTableName();
+		return 'SELECT ' . implode(",",$this->fields) . " FROM " . $this->getTableName();
 	}
 	
 	function setSelectFields($arrayOfFields)
 	{
 		if(func_num_args() == 1 && is_array($arrayOfFields))
 		{
-			// passed array
-			if(is_array($this->fields))
+			// empty the fields array
+			$this->fields = array();
+			
+			if($this->getIdField() != null)
 			{
-				if($arrayOfFields != null && is_array($arrayOfFields) && count($arrayOfFields) > 0)
-				{
-					$this->fields = array_merge(array($this->getIdField()),array_intersect($this->fields, $arrayOfFields));
-				}
+				$this->addSelectField($this->getIdField());
 			}
-			else
+			
+			foreach($arrayOfFields as $field)
 			{
-				$this->fields = $arrayOfFields;
+				$this->addSelectField($field);
 			}
 		}
 		else
 		{
 			$this->setSelectFields(func_get_args());
 		}
-		
+	}
+	function addSelectField($field)
+	{
+		if(strpos($field, ".") !== false)
+		{
+			$this->fields[] = $field;
+		}
+		else
+		{
+			$this->fields[] = $this->getTableName() . "." . $field;
+		}
 	}
 	
 	// joins
@@ -291,11 +290,6 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	function clearBindings()
 	{
 		$this->conditional = new FactoryConditional();
-	}
-	
-	function addSelectField($field)
-	{
-		$this->additionalSelectFields[] = $field;
 	}
 	
 	function deleteWhere($whereClause)
