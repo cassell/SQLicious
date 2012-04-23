@@ -10,7 +10,9 @@ class DatabaseProcessor
 	private $databasePassword;
 	private $connection;
 	
-	public $sql = null;
+	protected $result = null;
+	protected $numberOfRows = null;
+	protected $sql = null;
 	
 	// if a database name is provided the DatabaseProcess will open a master connection to the database based on config
 	function __construct($databaseName = null)

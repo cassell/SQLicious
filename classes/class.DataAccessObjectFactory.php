@@ -15,9 +15,6 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	private $groupByClause = '';
 	private $orderByClause = '';
 	
-	private $result = null;
-	private $numberOfRows = null;
-	
 	function __construct()
 	{	
 		// setup connection properties
