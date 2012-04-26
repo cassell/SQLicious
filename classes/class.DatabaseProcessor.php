@@ -203,22 +203,6 @@ class DatabaseProcessor
 		return $this->numberOfRows;
 	}
 	
-	function count()
-	{
-		$this->result = $this->getMySQLResult($this->getCountSQL());
-	
-		if($this->result && is_resource($this->result))
-		{
-			$row = mysql_fetch_row($this->result);
-			$this->freeResult();
-			return intval($row[0]);
-		}
-		else
-		{
-			return null;
-		}
-	}
-	
 	function freeResult()
 	{
 		if($this->result != null)

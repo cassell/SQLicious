@@ -15,6 +15,11 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	private $groupByClause = '';
 	private $orderByClause = '';
 	
+	private $paging = false;
+	private $pageNumber = 1;
+	private $rowsPerPage = 20;
+	private $numberOfPages = 1;
+	
 	function __construct()
 	{	
 		// setup connection properties
@@ -72,10 +77,17 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	
 	static function getObject($id)
 	{
-		$f = new static();
-		$f->clearBindings();
-		$f->addBinding(new EqualsBinding($f->getIdField(),intval($id)));
-		return $f->getFirstObject();
+        $f = new static();
+          
+        if($f->getIdField())
+        {
+            $f->addPrimaryKeyBinding($id);
+            return $f->getFirstObject();
+        }
+        else
+        {
+            //throw
+        }
 	}
 	
 	function getFirstObject()
@@ -97,29 +109,17 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
 		$this->conditional->addConditional($conditional);
 	}
-	
-	function getCountSQL()
-	{
-		return implode(" ",array("SELECT count(" . $this->getIdField() . ") FROM " . $this->getTableName(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause()));
-	}
-	
-	function getSQL()
+    
+    function getSQL()
 	{
 		if($this->sql == null)
 		{
-			return implode(" ",array($this->getSelectClause(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause()));
+			return implode(" ",array($this->getSelectClause(),$this->getFromClause(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause()));
 		}
 		else
 		{
 			return $this->sql;
 		}
-	}
-	
-	// used to do custom queries, uses the same get select clause that the query() method 
-	function find($clause = "")
-	{
-		$this->setSQL($this->getSelectClause() . " " . $clause);
-		return $this->getObjects();
 	}
 	
 	// find an object or data by primary key
@@ -138,8 +138,13 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	// generate the select clause from $this->fields
 	function getSelectClause()
 	{
-		return 'SELECT ' . implode(",",$this->fields) . " FROM " . $this->getTableName();
+		return 'SELECT ' . implode(",",$this->fields);
 	}
+    
+    function getFromClause()
+    {
+        return 'FROM ' . $this->getTableName();
+    }
 	
 	function setSelectFields($arrayOfFields)
 	{
@@ -241,12 +246,6 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	function setOrderByClause($val) { $this->orderByClause = $val; }
 	function getOrderByClause() { return $this->orderByClause; }
 	
-	// deprecate old naming convetion
-	function orderByField($field,$direction = 'asc')
-	{
-		$this->orderBy($field,$direction);
-	}
-	
 	function orderByAsc($arrayOfFields)
 	{
 		if(func_num_args() == 1 && is_array($arrayOfFields) && count($arrayOfFields) > 0)
@@ -283,13 +282,159 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		$this->limit($numberOfRecords,$afterRow);
 	}
 	
+	function count()
+	{
+        if($this->getIdField())
+        {
+            return $this->getSingleFieldFunctionValue('COUNT', $this->getIdField());
+        }
+        else
+        {
+            return $this->getSingleFieldFunctionValue('COUNT', '*');
+        }
+	}
+    
+    
+    function sum($field)
+    {
+         return $this->getSingleFieldFunctionValue('SUM', $field);
+    }
+    
+    private function getSingleFieldFunctionValue($function,$field)
+    {
+        $result = $this->getMySQLResult(implode(" ",array("SELECT " . $function . "(" . $field . ") as val",$this->getFromClause(),$this->getJoinClause(),$this->getConditionalSql())));
+	
+		if($result && is_resource($result))
+		{
+			$row = mysql_fetch_row($result);
+			mysql_free_result($result);
+			return intval($row[0]);
+		}
+		else
+		{
+			return null;
+		}
+    }
+    
+    /*
+    function groupedCount()
+    {
+        
+    }
+    
+    
+    private function getGroupedFieldFunctionValue($function,$field)
+    {
+        
+    }
+    
+    private function getGroupedFieldFunctionSQL($function,$field)
+    {
+        return implode(" ",array("SELECT " . $function . "(" . $field . ") FROM " . $this->getTableName(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause()));
+    }
+    */
+    
+	function getCountNoLimit()
+	{
+		// no order by or limit clauses
+		$sql = implode(" ",array("SELECT count(" . $this->getIdField() . ") FROM " . $this->getTableName(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause()));
+	
+		$result = $this->getMySQLResult($sql);
+		
+		if($result && is_resource($result))
+		{
+			$row = mysql_fetch_row($result);
+			mysql_free_result($result);
+			return intval($row[0]);
+		}
+		else
+		{
+			return null;
+		}
+	
+	}
+	
+	function query()
+	{
+		$this->result = $this->getMySQLResult($this->getSQL());
+		if($this->result && is_resource($this->result))
+		{
+			$this->numberOfRows = mysql_num_rows($this->result);
+		}
+		else
+		{
+			$this->numberOfRows = null;
+		}
+		
+		if($this->paging)
+		{
+			$this->setNumberOfPages(ceil($this->getCountNoLimit() / $this->getRowsPerPage()));
+		}
+		
+		return $this->result;
+	}
+	
+	// paging
+	function setPageNumber($pageNumber, $rowsPerPage = null)
+	{
+		$this->paging = true;
+	
+		if(intval($pageNumber) > 0)
+		{
+			$this->pageNumber = $pageNumber;
+		}
+	
+		if(intval($rowsPerPage) > 0)
+		{
+			$this->rowsPerPage = $rowsPerPage;
+		}
+	
+		// limit() has bug
+		$this->setLimitClause("LIMIT " . ($this->getPageNumber() - 1) * $this->getRowsPerPage() . ', ' . $this->getRowsPerPage()); // offset, number of rows to return
+	}
+    
+	function getPaging() { return $this->paging; }
+	function getPageNumber() { return $this->pageNumber; }
+	function getRowsPerPage() {	return $this->rowsPerPage; }
+	function setNumberOfPages($val) { $this->numberOfPages = $val; }
+	function getNumberOfPages() { return $this->numberOfPages; }
+    
+    
+    
+	
 	// clear	
-	function clearBindings()
+	protected function clearBindings()
 	{
 		$this->conditional = new FactoryConditional();
 	}
+    
+    protected function truncateTable()
+	{
+		$this->update("TRUNCATE TABLE ". $this->getTableName());
+	}
 	
-	function deleteWhere($whereClause)
+    protected function getConditionalSql()
+	{
+		$conditionalSQL =  $this->conditional->getSql();
+		
+		if($conditionalSQL != "")
+		{
+			$conditionalSQL = " WHERE " . $conditionalSQL;
+		}
+		
+		return $conditionalSQL;
+	}
+    
+    /* below are functions that are slowly being phased out */
+    
+    // used to do custom queries, uses the same get select clause that the query() method 
+	function find($clause = "")
+	{
+		$this->setSQL($this->getSelectClause() . " " . $this->getFromClause() . " ". $clause);
+		return $this->getObjects();
+	}
+    
+    function deleteWhere($whereClause)
 	{
 		return $this->update("DELETE FROM " . $this->getTableName() . " WHERE " . $whereClause);
 	}
@@ -361,26 +506,15 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		return $this->sqlFunctionFieldQuery('SUM', $field, $clause);
 	}
 	
-	function truncateTable()
-	{
-		$this->update("TRUNCATE TABLE ". $this->getTableName());
-	}
-	
 	private function sqlFunctionFieldQuery($sqlFunction,$field,$clause)
 	{
 		return reset($this->findField($sqlFunction . '(' . mysql_real_escape_string($field) . ')',$clause));
 	}
-	
-	private function getConditionalSql()
+    
+    // deprecate old naming convetion
+	function orderByField($field,$direction = 'asc')
 	{
-		$conditionalSQL =  $this->conditional->getSql();
-		
-		if($conditionalSQL != "")
-		{
-			$conditionalSQL = " WHERE " . $conditionalSQL;
-		}
-		
-		return $conditionalSQL;
+		$this->orderBy($field,$direction);
 	}
 	
 	// depecate

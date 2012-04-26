@@ -195,12 +195,12 @@ Other flexibile queries
 	
 Find method for writing a custom where clause (returns objects)
 	
-	$f = new UserFactory(); // imagine a table with millions of rows
+	$f = new UserFactory();
 	$users = $f->find("where archived != 1 and email like '%@example.com'");
 
 Count query with custom where clause (returns an integer)
 
-	$f = new UserFactory(); // imagine a table with millions of rows
+	$f = new UserFactory();
 	$countOfUsers = $f->getCount("where archived != 1 and email like '%@example.com'");
 	
 	
