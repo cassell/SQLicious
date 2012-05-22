@@ -91,7 +91,7 @@ var Page = new Class
 		{
 			var database = relativeURL.match(/\/regenerate\/(\w+)/)[1];
 			
-				var content = new Element('div',{'class' : 'content generating'}).inject(this.content);
+			var content = new Element('div',{'class' : 'content generating'}).inject(this.content);
 			
 			new Element('div',{'class' : 'title', 'text' : 'Regenerating ' + database + ' DAO'}).inject(content);
 			new Element('br').inject(content);
@@ -100,7 +100,7 @@ var Page = new Class
 			new Element('img',{'src' : 'img/pacman.gif'}).inject(pacman);
 			new Element('span',{'html' : '.&nbsp;&nbsp;.&nbsp;&nbsp;.'}).inject(pacman);
 			
-			new Request.WithErrorHandling({'url': this.getAjaxUrl('generate.php?database='+database), onSuccess: function(resp) { window.location = '#/'; } }).send();
+			new Request.WithErrorHandling({'url': this.getAjaxUrl('generate.php?database='+database), onSuccess: function(resp) { window.location = '/#/database/'+resp.databaseName; } }).send();
 			
 		}
 		else if(relativeURL.match(/\/database\/(\w+)\/table\/(\w+)\/action\/(\w+)/))

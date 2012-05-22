@@ -11,6 +11,11 @@ if($_GET['database'] != null)
 		{
 			unset($generator->databases[$db->databaseName]);
 		}
+		else
+		{
+			$resp['databaseName'] = $db->databaseName;
+		}
+		
 	}
 }
 
