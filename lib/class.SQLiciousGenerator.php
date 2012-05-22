@@ -82,13 +82,14 @@ class SQLiciousGeneratorDatabase
 					$idFieldName = $column['Field'];
 				}
 				
-				if($column['Type'] == "datetime")
+				if($column['Type'] == "datetime" || $column['Type'] == "date")
 				{
-					$setsAndGetsPack[] = "\tfinal function set" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '($val) { $this->setDatetimeFieldValue(\'' . $column['Field'] .'\',$val); }' . "\n" . "\tfinal function get" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '() { return $this->getFieldValue(\'' . $column['Field'] .'\'); }' . "\n";
+					$setsAndGetsPack[] = "\tfinal function set" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '($val) { $this->setDatetimeFieldValue(\'' . $column['Field'] .'\',$val); }';
+					$setsAndGetsPack[] = "\tfinal function get" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "(\$format = null)\n\t{\n\t\tif(\$format == null)\n\t\t{\n\t\t\treturn \$this->getFieldValue('" . $column['Field'] ."');\n\t\t}" . "\n\t\telse\n\t\t{\n\t\t\treturn (\$this->getFieldValue('" . $column['Field'] ."') ? date(\$format,strtotime(\$this->getFieldValue('" . $column['Field'] ."'))) : null);\n\t\t}\n\t}\n";
 				}
 				else
 				{
-					$setsAndGetsPack[] = "\tfinal function set" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '($val) { $this->setFieldValue(\'' . $column['Field'] .'\',$val); }' . "\n" . "\tfinal function get" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '() { return $this->getFieldValue(\'' . $column['Field'] .'\'); }' . "\n";
+					$setsAndGetsPack[] = "\tfinal function set" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '($val) { $this->setFieldValue(\'' . $column['Field'] .'\',$val); }' . "\n" . "\tfinal function get" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "(){ return \$this->getFieldValue('" . $column['Field'] ."'); }" . "\n";
 				}
 				
 				if($column['Default'] == null)
