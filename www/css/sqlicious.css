@@ -204,6 +204,16 @@ h1 a
 	background: #CFC;
 }
 
+.regenerateDatabase
+{
+	color: purple;
+	float: right;
+	font-size: 14px;
+	text-decoration: none;
+	cursor: pointer;
+	margin-top: 6px;
+}
+
 
 	
 	

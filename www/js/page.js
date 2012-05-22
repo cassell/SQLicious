@@ -23,7 +23,7 @@ var Page = new Class
 		
 		var regenerateLink = new Element('a',{'href' : '#/regenerate'}).inject(actions); //new Element('a').inject(actions);
 			new Element('img',{'src' : 'img/refresh_icon_16.png'}).inject(regenerateLink);
-			new Element('span',{'text' : 'Regenerate'}).inject(regenerateLink);
+			new Element('span',{'text' : 'Regenerate All'}).inject(regenerateLink);
 			
 //		var settingsLink = new Element('a',{'href' : '#/settings'}).inject(actions);
 //			new Element('img',{'src' : 'img/cog_icon_16.png'}).inject(settingsLink);
@@ -87,6 +87,22 @@ var Page = new Class
 			
 			new Request.WithErrorHandling({'url': this.getAjaxUrl('generate.php'), onSuccess: function(resp) { window.location = '#/'; } }).send();
 		}
+		else if(relativeURL.match(/\/regenerate\/(\w+)/))
+		{
+			var database = relativeURL.match(/\/regenerate\/(\w+)/)[1];
+			
+				var content = new Element('div',{'class' : 'content generating'}).inject(this.content);
+			
+			new Element('div',{'class' : 'title', 'text' : 'Regenerating ' + database + ' DAO'}).inject(content);
+			new Element('br').inject(content);
+			
+			var pacman = new Element('div',{ 'class' : 'pacman' }).inject(content);
+			new Element('img',{'src' : 'img/pacman.gif'}).inject(pacman);
+			new Element('span',{'html' : '.&nbsp;&nbsp;.&nbsp;&nbsp;.'}).inject(pacman);
+			
+			new Request.WithErrorHandling({'url': this.getAjaxUrl('generate.php?database='+database), onSuccess: function(resp) { window.location = '#/'; } }).send();
+			
+		}
 		else if(relativeURL.match(/\/database\/(\w+)\/table\/(\w+)\/action\/(\w+)/))
 		{
 			this.database = relativeURL.match(/\/database\/(\w+)\/table\/(\w+)\/action\/(\w+)/)[1];
@@ -95,7 +111,6 @@ var Page = new Class
 			
 			if(this.action == "structure")
 			{
-				//new Request.WithErrorHandling({'url': this.getAjaxUrl('list_tables.php'), onSuccess: this.listTables.bind(this) }).send(Object.toQueryString({'database' : this.database}));
 				this.showTableStructure();
 			}
 			else if(this.action == "new")
@@ -239,6 +254,9 @@ var Page = new Class
 		var search = new Element('div', {'class' : 'search'}).inject(content);
 		new Element('span',{'text' : 'Search: '}).inject(search);
 		this.searchBox = new Element('input',{'type' : 'text'}).inject(search);
+		
+		var a = new Element('a',{'class': 'regenerateDatabase', 'text':'Regenerate Tables'}).inject(search);
+		a.addEvent('click',function(){ window.location = '#/regenerate/' + this.database }.bind(this));
 		
 		var tableList = new Element('ul',{'class' : 'listOfThings listOfTables'}).inject(content);
 		

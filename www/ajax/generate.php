@@ -3,6 +3,17 @@
 include('../../config.inc.php');
 include('../../www/ajax/ajax.inc.php');
 
+if($_GET['database'] != null)
+{
+	foreach($generator->databases as $db)
+	{
+		if($db->databaseName != $_GET['database'])
+		{
+			unset($generator->databases[$db->databaseName]);
+		}
+	}
+}
+
 if(!$generator->generate())
 {
 	returnError('Error: ' . $generator->getErrorMessage());
