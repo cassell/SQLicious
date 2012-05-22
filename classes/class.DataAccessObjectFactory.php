@@ -257,7 +257,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		}
 		else
 		{
-			$this->orderByFieldsAscending(func_get_args());
+			$this->orderByAsc(func_get_args());
 		}
 	}
 	
@@ -488,11 +488,11 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
 		if($this->getIdField() != '')
 		{
-			return intval($this->sqlFunctionFieldQuery('COUNT', $this->getTableName() . "." . $this->getIdField(), $clause));
+			return (int)($this->sqlFunctionFieldQuery('COUNT', $this->getTableName() . "." . $this->getIdField(), $clause));
 		}
 		else
 		{
-			return intval($this->sqlFunctionFieldQuery('COUNT', '*', $clause));
+			return (int)($this->sqlFunctionFieldQuery('COUNT', '*', $clause));
 		}
 	}
 	
@@ -556,7 +556,8 @@ class Conditional extends SQLString
 	function __construct()
 	{
 		parent::__construct();
-		$this->items = $argv;
+		
+		$this->items = array();
 	}
 	
 	function addBinding($binding)
@@ -605,7 +606,7 @@ class OrConditional extends Conditional
 {
 	function __construct()
 	{
-		parent::__construct($argv);
+		parent::__construct();
 	}
 	
 	function getSQL()
