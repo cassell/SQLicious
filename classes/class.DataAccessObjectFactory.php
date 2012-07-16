@@ -286,7 +286,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
         if($this->getIdField())
         {
-            return $this->getSingleFieldFunctionValue('COUNT', $this->getIdField());
+            return $this->getSingleFieldFunctionValue('COUNT', $this->getTableName() . '.' . $this->getIdField());
         }
         else
         {
@@ -408,7 +408,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		$this->conditional = new FactoryConditional();
 	}
     
-    protected function truncateTable()
+    public function truncateTable()
 	{
 		$this->update("TRUNCATE TABLE ". $this->getTableName());
 	}
@@ -755,7 +755,7 @@ class InBinding extends SQLString
 		{
 			foreach($this->array as $key => $item)
 			{
-				$this->array[$key] = mysql_real_escape_string($item);
+				$this->array[$key] = "'".mysql_real_escape_string($item)."'";
 			}
 			
 			return mysql_real_escape_string($this->field) . " IN (" . implode(",",$this->array) . ")";
