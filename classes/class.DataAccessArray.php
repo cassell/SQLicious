@@ -9,6 +9,19 @@ class DataAccessArray
 		$this->data = $row;
 	}
 	
+	// return something
+	function getFieldValue($fieldName)
+	{
+		if(array_key_exists($fieldName,$this->data))
+		{
+			return $this->data[$fieldName];
+		}
+		else
+		{
+			trigger_error($fieldName . ' not initilized for get method in ' . get_class($this));
+		}
+	}
+	
 	// returns an associative array of the row retrieved from the database
 	function toArray()
 	{
