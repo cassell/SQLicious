@@ -8,7 +8,7 @@ an object model from your database schema. It's powerful closure based query pro
 ability to handle large datasets make it powerful and flexible. Its included web interface and ease of 
 development make it a joy to use.
 
-The eight features that make SQLicious easy and powerful are:
+The ten features that make SQLicious easy and powerful are:
 
 1. Closure based query processing that lets you handle data efficently and fully customizable manner
 1. Web UI for code generation and fast paced development. It helps with common programming tasks (object creation, class stubs, queries).
