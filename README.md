@@ -83,7 +83,8 @@ Limit the query to the first 20 rows
 Running a count query
 	
 	$f = new UserFactory();
-	$count = $f->count(); // count of all the rows
+	$f->addArchivedFalseBinding()
+	$count = $f->count(); // count of all not archived users
 	
 
 Performance
@@ -171,22 +172,18 @@ Buffered Queries for Speed
 	$p->setSQL('select first_name, last_name from user');
 	$p->process(function($row)
 	{
+		echo $row['first_name'];
 		print_r($row);
 		
 	});
 
 Unbuffered for Large Datasets
 
-	$p = new DatabaseProcessor();
-	$p->setDatabaseName('example');
-	$p->setDatabaseHost('127.0.0.1');
-	$p->setDatabaseUsername('user');
-	$p->setDatabasePassword('password');
+	$p = new DatabaseProcessor('example');
 	$p->setSQL('select first_name, last_name from user');
 	$p->unbufferedProcess(function($row)
 	{
-		print_r($row);
-		
+		echo $row['first_name'];
 	});
 
 	
