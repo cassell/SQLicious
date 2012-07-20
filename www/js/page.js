@@ -1,5 +1,5 @@
 
-var LastGitHubVersion = '7cb02422f1e2ab292a3cd9b67cb12151b2a8e252';
+var LastGitHubVersion = 'ee458539fb9683a9e0754ee39f0885f90a8ca170';
 
 var Page = new Class
 ({
@@ -47,7 +47,6 @@ var Page = new Class
 			}
 			else
 			{
-				console.log(resp.data[0].commit);
 				githubLink.set('title','You have the latest version of SQLicious.\nSQLicious was last updated on ' + Date.parse(resp.data[0].commit.author.date));
 			}
 				
