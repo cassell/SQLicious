@@ -13,10 +13,33 @@ class DatabaseProcessor
 	
 	function __construct($databaseNodeOrConfigurationName = null)
 	{
-		if(is_string($databaseNodeOrConfigurationName) && $GLOBALS[self::DATATBASE_CONFIG_GLOBAL_VARIABLE][$databaseNodeOrConfigurationName] instanceof DatabaseConfiguration)
+		// setup node
+		if($databaseNodeOrConfigurationName instanceof DatabaseNode)
+		{
+			$this->databaseNode = $databaseNodeOrConfigurationName;
+		}
+		else if(is_string($databaseNodeOrConfigurationName) && $GLOBALS[self::DATATBASE_CONFIG_GLOBAL_VARIABLE][$databaseNodeOrConfigurationName] instanceof DatabaseConfiguration)
 		{
 			$this->databaseNode = $GLOBALS[self::DATATBASE_CONFIG_GLOBAL_VARIABLE][$databaseNodeOrConfigurationName]->getMaster();
 			$this->connectToMySQLDatabase();
+		}
+		else if($GLOBALS[self::DATATBASE_CONFIG_GLOBAL_VARIABLE] != null)
+		{
+			$this->databaseNode = reset($GLOBALS[self::DATATBASE_CONFIG_GLOBAL_VARIABLE])->getMaster();
+		}
+		else
+		{
+			throw new ErrorException("SQLicious Configuration Error",null,E_USER_ERROR);
+		}
+		
+		// open connection
+		if($this->databaseNode != null)
+		{
+			$this->connectToMySQLDatabase();
+		}
+		else
+		{
+			throw new ErrorException("SQLicious Configuration Missing",null,E_USER_ERROR);
 		}
 	}
 	
@@ -104,7 +127,7 @@ class DatabaseProcessor
 		}
 		else
 		{
-			throw new ErrorException("SQLicious DatabaseProcessor SQL Error. No MySQL Result: " . htmlentities($this->getSQL()),$e->code,E_USER_ERROR,$e->filename,$e->lineno,$e->previous);
+			throw new ErrorException("SQLicious DatabaseProcessor SQL Error. No MySQL Result: " . htmlentities($this->getSQL()),null,E_USER_ERROR);
 		}
 	
 		if($free == true)
@@ -144,7 +167,7 @@ class DatabaseProcessor
 		}
 		catch(ErrorException $e)
 		{
-			throw new ErrorException("SQLicious DatabaseProcessor SQL Error. Unable to MySQL Query: " . htmlentities($sql),$e->code,E_USER_ERROR,$e->filename,$e->lineno,$e->previous);
+			throw new ErrorException("SQLicious DatabaseProcessor SQL Error. Unable to MySQL Query: " . htmlentities($sql),null,E_USER_ERROR);
 		}
 	}
 	
