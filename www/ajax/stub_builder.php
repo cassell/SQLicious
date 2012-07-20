@@ -17,59 +17,40 @@ if($db != null)
 		$resp['className'] = ucfirst(SQLiciousGenerator::toFieldCase($table));
 		$resp['include'] = $tools->getDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table).'DaoObject'));
 		
-// 		if($tools->getLookForExtendedObjects())
-// 		{
-// 			if($tools->doesExtendedDaoObjectExist(ucfirst(SQLiciousGenerator::toFieldCase($table))))
-// 			{
-// 				$resp['className']  = ucfirst(SQLiciousGenerator::toFieldCase($table));
-// 				$resp['include'] = $tools->getExtendedDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table)));
-// 			}
-// 		}
-// 		else
-// 		{
-			
-// 		}
-		
-		$resp['factory']['html'] .= "<?php" . "\n";
-		$resp['factory']['html'] .= $tools->getDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table).'DaoFactory')) . "\n";
-		$resp['factory']['html'] .= "require_once(/* place extended object require_once here */);";
-		$resp['factory']['html'] .= "\n";
-		$resp['factory']['html'] .= "\n";
-		$resp['factory']['html'] .= "class " . $resp['className'] . "Factory extends " . $resp['className'] . "DaoFactory" . "\n";
-		$resp['factory']['html'] .= "{" . "\n";
-		$resp['factory']['html'] .= "\tfunction __construct()" . "\n";
-		$resp['factory']['html'] .= "\t{" . "\n";
-		$resp['factory']['html'] .= "\t\tparent::__construct();" . "\n";
-		$resp['factory']['html'] .= "\t}" . "\n";
-		$resp['factory']['html'] .= "" . "\n";
-		$resp['factory']['html'] .= "\tfunction loadDataObject(\$row = null)" . "\n";
-		$resp['factory']['html'] .= "\t{" . "\n";
-		$resp['factory']['html'] .= "\t\treturn new " .  $resp['className'] . "(\$row);" . "\n";
-		$resp['factory']['html'] .= "\t}" . "\n";
-		$resp['factory']['html'] .= "}" . "\n";
-		$resp['factory']['html'] .= "\n";
-		$resp['factory']['html'] .= "?>";
-		
-		
-		$resp['object']['html'] .= "<?php" . "\n";
-		$resp['object']['html'] .= $tools->getDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table).'DaoObject')) . "\n";
-		$resp['object']['html'] .= "require_once(/* place extended factory require_once here */);";
-		$resp['object']['html'] .= "\n";
-		$resp['object']['html'] .= "\n";
-		$resp['object']['html'] .= "class " . $resp['className'] . " extends " . $resp['className'] . "DaoObject" . "\n";
-		$resp['object']['html'] .= "{" . "\n";
-		$resp['object']['html'] .= "\tfunction __construct(\$row = null)" . "\n";
-		$resp['object']['html'] .= "\t{" . "\n";
-		$resp['object']['html'] .= "\t\tparent::__construct(\$row);" . "\n";
-		$resp['object']['html'] .= "\t}" . "\n";
-		$resp['object']['html'] .= "" . "\n";
-		$resp['object']['html'] .= "\tfunction getFactory()" . "\n";
-		$resp['object']['html'] .= "\t{" . "\n";
-		$resp['object']['html'] .= "\t\treturn new " .  $resp['className'] . "Factory();" . "\n";
-		$resp['object']['html'] .= "\t}" . "\n";
-		$resp['object']['html'] .= "}" . "\n";
-		$resp['object']['html'] .= "\n";
-		$resp['object']['html'] .= "?>";
+		$resp['stub']['html'] .= "<?php" . "\n";
+		$resp['stub']['html'] .= $tools->getDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table).'DaoFactory')) . "\n";
+		$resp['stub']['html'] .= $tools->getDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table).'DaoObject')) . "\n";
+		$resp['stub']['html'] .= "\n";
+		$resp['stub']['html'] .= "\n";
+		$resp['stub']['html'] .= "class " . $resp['className'] . "Factory extends " . $resp['className'] . "DaoFactory" . "\n";
+		$resp['stub']['html'] .= "{" . "\n";
+		$resp['stub']['html'] .= "\tfunction __construct()" . "\n";
+		$resp['stub']['html'] .= "\t{" . "\n";
+		$resp['stub']['html'] .= "\t\tparent::__construct();" . "\n";
+		$resp['stub']['html'] .= "\t}" . "\n";
+		$resp['stub']['html'] .= "" . "\n";
+		$resp['stub']['html'] .= "\tfunction loadDataObject(\$row = null)" . "\n";
+		$resp['stub']['html'] .= "\t{" . "\n";
+		$resp['stub']['html'] .= "\t\treturn new " .  $resp['className'] . "(\$row);" . "\n";
+		$resp['stub']['html'] .= "\t}" . "\n";
+		$resp['stub']['html'] .= "}" . "\n";
+		$resp['stub']['html'] .= "\n";
+		$resp['stub']['html'] .= "\n";
+		$resp['stub']['html'] .= "\n";
+		$resp['stub']['html'] .= "class " . $resp['className'] . " extends " . $resp['className'] . "DaoObject" . "\n";
+		$resp['stub']['html'] .= "{" . "\n";
+		$resp['stub']['html'] .= "\tfunction __construct(\$row = null)" . "\n";
+		$resp['stub']['html'] .= "\t{" . "\n";
+		$resp['stub']['html'] .= "\t\tparent::__construct(\$row);" . "\n";
+		$resp['stub']['html'] .= "\t}" . "\n";
+		$resp['stub']['html'] .= "" . "\n";
+		$resp['stub']['html'] .= "\tfunction getFactory()" . "\n";
+		$resp['stub']['html'] .= "\t{" . "\n";
+		$resp['stub']['html'] .= "\t\treturn new " .  $resp['className'] . "Factory();" . "\n";
+		$resp['stub']['html'] .= "\t}" . "\n";
+		$resp['stub']['html'] .= "}" . "\n";
+		$resp['stub']['html'] .= "\n";
+		$resp['stub']['html'] .= "?>";
 		
 		$columns = $db->getColumns($table);
 		

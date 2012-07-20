@@ -1,5 +1,5 @@
 
-var LastGitHubVersion = '06812b2a5c919da92d7954bda7b92cbf8fc1419d';
+var LastGitHubVersion = 'fca2dcf1900cb26cb1085b25a008a4c70dbf9167';
 
 var Page = new Class
 ({
@@ -358,6 +358,9 @@ var Page = new Class
 		var tableLink = new Element('a',{'text' : this.table}).inject(h1);
 		tableLink.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table;}.bind(this));
 		
+		new Element('span',{'text' : " > "}).inject(h1);
+		var tableLink = new Element('span',{'text' : 'Object Creation'}).inject(h1);
+		
 		var content = new Element('div',{'class' : 'content'}).inject(this.content);
 		
 		new Element('h2',{'text' : 'New Object Creation'}).inject(content);
@@ -416,21 +419,15 @@ var Page = new Class
 		var tableLink = new Element('a',{'text' : this.table}).inject(h1);
 		tableLink.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table;}.bind(this));
 		
+		new Element('span',{'text' : " > "}).inject(h1);
+		var tableLink = new Element('span',{'text' : 'Stubs'}).inject(h1);
+		
 		var content = new Element('div',{'class' : 'content'}).inject(this.content);
 		
-		new Element('h2',{'text' : 'Extended DAO Object Stub Builder'}).inject(content);
+		new Element('h2',{'text' : 'Extended DAO Stub Builder'}).inject(content);
 		new Element('br').inject(content);
 		
-		
-		new Element('h3',{'text' : 'Extended DAO Factory'}).inject(content);
-		new Element('br').inject(content);
-		
-		var daoFactoryPre = new Element('pre',{'text':resp.factory.html + "\n\n\n"}).inject(content);
-		
-		new Element('h3',{'text' : 'Extended DAO Object'}).inject(content);
-		new Element('br').inject(content);
-		
-		var daoObjectPre = new Element('pre',{'text':resp.object.html}).inject(content);
+		new Element('pre',{'text':resp.stub.html + "\n\n\n"}).inject(content);
 		
 	}
 	
