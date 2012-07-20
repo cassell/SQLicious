@@ -1,5 +1,5 @@
 
-var GitHubVersion = '85fa447db72e13a7b36fd45443b5d3473281e619';
+var LastGitHubVersion = '7cb02422f1e2ab292a3cd9b67cb12151b2a8e252';
 
 var Page = new Class
 ({
@@ -35,15 +35,20 @@ var Page = new Class
 		
 		new Request.JSONP({'url': 'https://api.github.com/repos/cassell/SQLicious/commits', onSuccess: function(resp){
 			
-			if(resp != null && resp.data != null && resp.data[1] != null && resp.data[1].sha != GitHubVersion)
+			if(resp != null && resp.data != null && resp.data[1] != null && resp.data[1].sha != LastGitHubVersion)
 			{
 				githubLinkText.set('text','Get the Latest Update on GitHub');
 				githubLink.setStyle('background','#E5FFE5');
 				
 				if(resp.data[0] != null && resp.data[0].commit && resp.data[0].commit.author != null)
 				{
-					githubLink.set('title',resp.data[0].commit.author.name + ' last updated SQLicious on ' + Date.parse(resp.data[0].commit.author.date) )
+					githubLink.set('title','SQLicious was last updated on ' + Date.parse(resp.data[0].commit.author.date));
 				}
+			}
+			else
+			{
+				console.log(resp.data[0].commit);
+				githubLink.set('title','You have the latest version of SQLicious.\nSQLicious was last updated on ' + Date.parse(resp.data[0].commit.author.date));
 			}
 				
 				
