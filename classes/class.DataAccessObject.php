@@ -4,7 +4,6 @@ require_once('class.DataAccessArray.php');
 
 abstract class DataAccessObject extends DataAccessArray
 {
-	var $data;
 	var $modifiedColumns;
 	
 	const NEW_OBJECT_ID = -1;
@@ -60,7 +59,6 @@ abstract class DataAccessObject extends DataAccessArray
 	function save()
 	{
 		$f = static::getFactory();
-		$conn = $f->openMasterConnection();
 		
 		if(!empty($this->modifiedColumns))
 		{

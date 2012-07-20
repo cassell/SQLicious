@@ -2,26 +2,29 @@
 
 class DatabaseProcessor
 {
-	const GLOBAL_DATABASE_PROCESSOR_CONNECTIONS = 'GLOBAL_DATABASE_PROCESSOR_CONNECTIONS';
+	const DATATBASE_CONFIG_GLOBAL_VARIABLE = 'DATABASE_CONFIG';
 	
-	private $databaseName;
-	private $databaseUsername;
-	private $databaseHost;
-	private $databasePassword;
 	private $connection;
+	private $databaseNode;
 	
 	protected $result = null;
 	protected $numberOfRows = null;
 	protected $sql = null;
 	
-	// if a database name is provided the DatabaseProcess will open a master connection to the database based on config
-	function __construct($databaseName = null)
+	function __construct($databaseNodeOrConfigurationName = null)
 	{
-		if($databaseName != null)
+		if(is_string($databaseNodeOrConfigurationName) && $GLOBALS[self::DATATBASE_CONFIG_GLOBAL_VARIABLE][$databaseNodeOrConfigurationName] instanceof DatabaseConfiguration)
 		{
-			$this->useMasterConnectionFromGlobalConfig($databaseName);
+			$this->databaseNode = $GLOBALS[self::DATATBASE_CONFIG_GLOBAL_VARIABLE][$databaseNodeOrConfigurationName]->getMaster();
+			$this->connectToMySQLDatabase();
 		}
 	}
+	
+	function openNewConnection()
+	{
+		$this->connectToMySQLDatabase(true);
+	}
+	
 	
 	// returns an array of rows from the database
 	function getArray()
@@ -134,8 +137,6 @@ class DatabaseProcessor
 	
 	function getMySQLResult($sql)
 	{
-		$this->openConnection();
-		
 		try 
 		{
 			$result = mysql_query($sql, $this->connection);
@@ -150,8 +151,8 @@ class DatabaseProcessor
 	// using unbuffered mysql queries
 	function unbufferedProcess($function)
 	{
-		$conn = $this->openConnection(true);
-		$this->openConnection(true);  // this so future queries do not steal this connnection, this is a total HACK! Thanks PHP!
+		$conn = $this->connectToMySQLDatabase(true);
+		$this->connectToMySQLDatabase(true);  // this so future queries do not steal this connnection, this is a total HACK! Thanks PHP!
 	
 		$result = mysql_unbuffered_query($this->getSQL(), $conn) or trigger_error("DAOFactory Unbuffered Error: ". htmlentities($this->getSQL()), E_USER_ERROR);
 	
@@ -281,43 +282,11 @@ class DatabaseProcessor
 	
 	}
 	
-	function useMasterConnectionFromGlobalConfig($databaseName)
+	private function connectToMySQLDatabase($new = false)
 	{
-		if(is_array($GLOBALS[self::GLOBAL_DATABASE_PROCESSOR_CONNECTIONS]) && array_key_exists($databaseName, $GLOBALS[self::GLOBAL_DATABASE_PROCESSOR_CONNECTIONS]))
-		{
-			$this->setDatabaseName($GLOBALS[self::GLOBAL_DATABASE_PROCESSOR_CONNECTIONS][$databaseName]['master']['name']);
-			$this->setDatabaseHost($GLOBALS[self::GLOBAL_DATABASE_PROCESSOR_CONNECTIONS][$databaseName]['master']['host']);
-			$this->setDatabaseUsername($GLOBALS[self::GLOBAL_DATABASE_PROCESSOR_CONNECTIONS][$databaseName]['master']['username']);
-			$this->setDatabasePassword($GLOBALS[self::GLOBAL_DATABASE_PROCESSOR_CONNECTIONS][$databaseName]['master']['password']);
-		}
+		$this->connection = mysql_connect($this->databaseNode->getServerHost(), $this->databaseNode->getServerUserName(), $this->databaseNode->getServerPassword(), $new);
+		mysql_select_db($this->databaseNode->getMySQLDatabaseName(),$this->connection);
 	}
-	
-	// opens a connection and sets $this->connection (note: this connection could be closed anywhere if connection close is called )
-	function openConnection($openNew = false)
-	{
-		try
-		{
-			$this->connection = mysql_connect($this->getDatabaseHost(), $this->getDatabaseUsername(), $this->getDatabasePassword(),$openNew);
-			mysql_select_db($this->getDatabaseName(),$this->connection);
-			return $this->connection;
-		}
-		catch(ErrorException $e)
-		{
-			throw new ErrorException("DatabaseProcessor Connection Error. Unable to Connect.",$e->code,E_USER_ERROR,$e->filename,$e->lineno,$e->previous);
-		}
-	}
-	
-	function setDatabaseName($val) { $this->databaseName = $val; }
-	function getDatabaseName() { return $this->databaseName; }
-	
-	function setDatabaseUsername($val) { $this->databaseUsername = $val; }
-	function getDatabaseUsername() { return $this->databaseUsername; }
-	
-	function setDatabaseHost($val) { $this->databaseHost = $val; }
-	function getDatabaseHost() { return $this->databaseHost; }
-	
-	function setDatabasePassword($val) { $this->databasePassword = $val; }
-	function getDatabasePassword() { return $this->databasePassword; }
 	
 	// util
 	static function formatTextCSV($text)

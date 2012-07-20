@@ -25,22 +25,12 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		// setup connection properties
 		parent::__construct($this->getDatabaseName());
 		
-		// open a connection for mysql_real_escape_string
-		$this->openConnection();
-		
 		// fields used in the SELECT clause
 		$this->setSelectFields($this->getFields());
 		
 		// conditional used in building the WHERE clause
 		$this->conditional = new FactoryConditional();
 		
-	}
-	
-	// saves and deletes must open a master connection
-	function openMasterConnection($openNew = false)
-	{
-		$this->useMasterConnectionFromGlobalConfig($databaseName);
-		return $this->openConnection($openNew);
 	}
 	
 	function getObjects()
