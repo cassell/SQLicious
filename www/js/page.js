@@ -1,3 +1,6 @@
+
+var GitHubVersion = '85fa447db72e13a7b36fd45443b5d3473281e619';
+
 var Page = new Class
 ({
 	initialize: function()
@@ -25,9 +28,28 @@ var Page = new Class
 			new Element('img',{'src' : 'img/refresh_icon_16.png'}).inject(regenerateLink);
 			new Element('span',{'text' : 'Regenerate All'}).inject(regenerateLink);
 			
-//		var settingsLink = new Element('a',{'href' : '#/settings'}).inject(actions);
-//			new Element('img',{'src' : 'img/cog_icon_16.png'}).inject(settingsLink);
-//			new Element('span',{'text' : 'Settings'}).inject(settingsLink);
+		var githubLink = new Element('a',{'target':'_BLANK', 'href' : 'https://github.com/cassell/SQLicious'}).inject(actions);
+			new Element('img',{'src' : 'img/github_16.png'}).inject(githubLink);
+			var githubLinkText = new Element('span',{'text' : 'View on GitHub'}).inject(githubLink);
+			
+		
+		new Request.JSONP({'url': 'https://api.github.com/repos/cassell/SQLicious/commits', onSuccess: function(resp){
+			
+			if(resp != null && resp.data != null && resp.data[1] != null && resp.data[1].sha != GitHubVersion)
+			{
+				githubLinkText.set('text','Get the Latest Update on GitHub');
+				githubLink.setStyle('background','#E5FFE5');
+				
+				if(resp.data[0] != null && resp.data[0].commit && resp.data[0].commit.author != null)
+				{
+					githubLink.set('title',resp.data[0].commit.author.name + ' last updated SQLicious on ' + Date.parse(resp.data[0].commit.author.date) )
+				}
+			}
+				
+				
+		}}).send();
+			
+			
 		
 		new Element('div',{'class' : 'cb'}).inject(header);
 		
@@ -70,10 +92,6 @@ var Page = new Class
 		{
 			this.severCodingTools();
 		}
-		else if(relativeURL == "/tools/client")
-		{
-			this.clientCodingTools();
-		}
 		else if(relativeURL == "/regenerate")
 		{
 			var content = new Element('div',{'class' : 'content generating'}).inject(this.content);
@@ -81,11 +99,11 @@ var Page = new Class
 			new Element('div',{'class' : 'title', 'text' : 'Regenerating DAO'}).inject(content);
 			new Element('br').inject(content);
 			
-			var pacman = new Element('div',{ 'class' : 'pacman' }).inject(content);
+			var pacman = new Element('div',{'class' : 'pacman'}).inject(content);
 			new Element('img',{'src' : 'img/pacman.gif'}).inject(pacman);
 			new Element('span',{'html' : '.&nbsp;&nbsp;.&nbsp;&nbsp;.'}).inject(pacman);
 			
-			new Request.WithErrorHandling({'url': this.getAjaxUrl('generate.php'), onSuccess: function(resp) { window.location = '#/'; } }).send();
+			new Request.WithErrorHandling({'url': this.getAjaxUrl('generate.php'), onSuccess: function(resp) {window.location = '#/';}}).send();
 		}
 		else if(relativeURL.match(/\/regenerate\/(\w+)/))
 		{
@@ -96,11 +114,11 @@ var Page = new Class
 			new Element('div',{'class' : 'title', 'text' : 'Regenerating ' + database + ' DAO'}).inject(content);
 			new Element('br').inject(content);
 			
-			var pacman = new Element('div',{ 'class' : 'pacman' }).inject(content);
+			var pacman = new Element('div',{'class' : 'pacman'}).inject(content);
 			new Element('img',{'src' : 'img/pacman.gif'}).inject(pacman);
 			new Element('span',{'html' : '.&nbsp;&nbsp;.&nbsp;&nbsp;.'}).inject(pacman);
 			
-			new Request.WithErrorHandling({'url': this.getAjaxUrl('generate.php?database='+database), onSuccess: function(resp) { window.location = '/#/database/'+resp.databaseName; } }).send();
+			new Request.WithErrorHandling({'url': this.getAjaxUrl('generate.php?database='+database), onSuccess: function(resp) {window.location = '/#/database/'+resp.databaseName;}}).send();
 			
 		}
 		else if(relativeURL.match(/\/database\/(\w+)\/table\/(\w+)\/action\/(\w+)/))
@@ -115,7 +133,7 @@ var Page = new Class
 			}
 			else if(this.action == "new")
 			{
-				new Request.WithErrorHandling({'url': this.getAjaxUrl('object_creation.php'), onSuccess: this.showNewObjectBuilder.bind(this) }).send(Object.toQueryString({'database' : this.database, 'table' : this.table}));
+				new Request.WithErrorHandling({'url': this.getAjaxUrl('object_creation.php'), onSuccess: this.showNewObjectBuilder.bind(this)}).send(Object.toQueryString({'database' : this.database, 'table' : this.table}));
 			}
 			else if(this.action == "query")
 			{
@@ -123,7 +141,7 @@ var Page = new Class
 			}
 			else if(this.action == "extensions")
 			{
-				new Request.WithErrorHandling({'url': this.getAjaxUrl('stub_builder.php'), onSuccess: this.showExtendedObjectStubBuilder.bind(this) }).send(Object.toQueryString({'database' : this.database, 'table' : this.table}));
+				new Request.WithErrorHandling({'url': this.getAjaxUrl('stub_builder.php'), onSuccess: this.showExtendedObjectStubBuilder.bind(this)}).send(Object.toQueryString({'database' : this.database, 'table' : this.table}));
 			}
 			else
 			{
@@ -139,7 +157,7 @@ var Page = new Class
 		else if(relativeURL.match(/database/))
 		{
 			this.database = relativeURL.match(/\/database\/(\w+)/)[1];
-			new Request.WithErrorHandling({'url': this.getAjaxUrl('list_tables.php'), onSuccess: this.listTables.bind(this) }).send(Object.toQueryString({'database' : this.database}));
+			new Request.WithErrorHandling({'url': this.getAjaxUrl('list_tables.php'), onSuccess: this.listTables.bind(this)}).send(Object.toQueryString({'database' : this.database}));
 		}
 		else
 		{
@@ -159,12 +177,7 @@ var Page = new Class
 		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
 		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 		new Element('div',{'text' : 'PHP Server Tools'}).inject(div);
-		div.addEvent('click',function(){ window.location = '#/tools/server'; }.bind(this));
-		
-//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
-//		new Element('div',{'text' : 'Clientside Tools'}).inject(div);
-//		div.addEvent('click',function(){ window.location = '#/tools/client'; }.bind(this));
+		div.addEvent('click',function(){window.location = '#/tools/server';}.bind(this));
 		
 	},
 
@@ -211,16 +224,6 @@ var Page = new Class
 		
 	},
 	
-	clientCodingTools: function()
-	{
-		var content = new Element('div',{'class' : 'content'}).inject(this.content);
-		
-		var h2 = new Element('h2',{'text' : 'Coding Tools'}).inject(content);
-		
-		
-		
-	},
-	
 	selectADatabase: function()
 	{
 		var h1 = new Element('h1',{'text' : 'Select a Database'}).inject(this.content);
@@ -235,7 +238,7 @@ var Page = new Class
 			new Element('img',{'src' : 'img/db_32.png'}).inject(item);
 			new Element('span',{'text' : db.name}).inject(item);
 
-			item.addEvent('click',function(){ window.location = '#/database/' + db.name; });
+			item.addEvent('click',function(){window.location = '#/database/' + db.name;});
 			
 		});
 	},
@@ -244,7 +247,7 @@ var Page = new Class
 	{
 		var h1 = new Element('h1').inject(this.content);
 		var databaseLink = new Element('a',{'text' : this.database}).inject(h1);
-		databaseLink.addEvent('click',function(){ window.location = '#/database/' + this.database; }.bind(this));
+		databaseLink.addEvent('click',function(){window.location = '#/database/' + this.database;}.bind(this));
 		
 		new Element('span',{'text' : " > "}).inject(h1);
 		new Element('span',{'text' : "Select a Table"}).inject(h1);
@@ -256,7 +259,7 @@ var Page = new Class
 		this.searchBox = new Element('input',{'type' : 'text'}).inject(search);
 		
 		var a = new Element('a',{'class': 'regenerateDatabase', 'text':'Regenerate Tables'}).inject(search);
-		a.addEvent('click',function(){ window.location = '#/regenerate/' + this.database }.bind(this));
+		a.addEvent('click',function(){window.location = '#/regenerate/' + this.database}.bind(this));
 		
 		var tableList = new Element('ul',{'class' : 'listOfThings listOfTables'}).inject(content);
 		
@@ -268,7 +271,7 @@ var Page = new Class
 			new Element('img',{'src' : 'img/align_just_16.png'}).inject(item);
 			new Element('span',{'text' : table}).inject(item);
 	
-			item.addEvent('click',function(){ window.location = '#/database/' + this.database + "/table/" + table; }.bind(this));
+			item.addEvent('click',function(){window.location = '#/database/' + this.database + "/table/" + table;}.bind(this));
 			
 			this.listItems.push(item);
 			
@@ -311,18 +314,18 @@ var Page = new Class
 	{
 		var h1 = new Element('h1').inject(this.content);
 		var databaseLink = new Element('a',{'text' : this.database}).inject(h1);
-		databaseLink.addEvent('click',function(){ window.location = '#/database/' + this.database; }.bind(this));
+		databaseLink.addEvent('click',function(){window.location = '#/database/' + this.database;}.bind(this));
 		
 		new Element('span',{'text' : " > "}).inject(h1);
 		var tableLink = new Element('a',{'text' : this.table}).inject(h1);
-		tableLink.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table; }.bind(this));
+		tableLink.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table;}.bind(this));
 		
 		var content = new Element('div',{'styles' : {'margin':'20px'}}).inject(this.content);
 		
 		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
 		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 		new Element('div',{'text' : 'Object Creation'}).inject(div);
-		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/new'; }.bind(this));
+		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/new';}.bind(this));
 		
 //		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
 //		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
@@ -332,7 +335,7 @@ var Page = new Class
 		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
 		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 		new Element('div',{'text' : 'Extended Object Stubs'}).inject(div);
-		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/extensions'; }.bind(this));
+		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/extensions';}.bind(this));
 //		
 //		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
 //		new Element('img',{'src' : 'img/cogs_48.png'}).inject(div);
@@ -345,11 +348,11 @@ var Page = new Class
 	{
 		var h1 = new Element('h1').inject(this.content);
 		var databaseLink = new Element('a',{'text' : this.database}).inject(h1);
-		databaseLink.addEvent('click',function(){ window.location = '#/database/' + this.database; }.bind(this));
+		databaseLink.addEvent('click',function(){window.location = '#/database/' + this.database;}.bind(this));
 		
 		new Element('span',{'text' : " > "}).inject(h1);
 		var tableLink = new Element('a',{'text' : this.table}).inject(h1);
-		tableLink.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table; }.bind(this));
+		tableLink.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table;}.bind(this));
 		
 		var content = new Element('div',{'class' : 'content'}).inject(this.content);
 		
@@ -403,11 +406,11 @@ var Page = new Class
 	{
 		var h1 = new Element('h1').inject(this.content);
 		var databaseLink = new Element('a',{'text' : this.database}).inject(h1);
-		databaseLink.addEvent('click',function(){ window.location = '#/database/' + this.database; }.bind(this));
+		databaseLink.addEvent('click',function(){window.location = '#/database/' + this.database;}.bind(this));
 		
 		new Element('span',{'text' : " > "}).inject(h1);
 		var tableLink = new Element('a',{'text' : this.table}).inject(h1);
-		tableLink.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table; }.bind(this));
+		tableLink.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table;}.bind(this));
 		
 		var content = new Element('div',{'class' : 'content'}).inject(this.content);
 		

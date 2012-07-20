@@ -1,6 +1,6 @@
 // MooTools: the javascript framework.
-// Load this file's selection again by visiting: http://mootools.net/more/95966ad3715df65565e8dfe4a708d80d 
-// Or build this file again with packager using: packager build More/Array.Extras More/Date More/Date.Extras More/Number.Format More/Object.Extras More/URI More/Element.Forms More/Element.Measure More/Element.Position More/Fx.Reveal More/Fx.Scroll More/Drag More/Drag.Move More/Sortables More/Color More/HtmlTable More/HtmlTable.Sort More/Tips More/Locale
+// Load this file's selection again by visiting: http://mootools.net/more/4799cd40146a58706d0790a55d78be47 
+// Or build this file again with packager using: packager build More/Array.Extras More/Date More/Date.Extras More/Number.Format More/Object.Extras More/URI More/Element.Forms More/Element.Measure More/Element.Position More/Fx.Reveal More/Fx.Scroll More/Drag More/Drag.Move More/Sortables More/Request.JSONP More/Color More/HtmlTable More/HtmlTable.Sort More/Tips More/Locale
 /*
 ---
 
@@ -49,7 +49,7 @@ license: MIT-style license
 
 authors:
   - Christoph Pojer
-  - Sebastian Markbåge
+  - Sebastian Markb√•ge
 
 requires:
   - Core/Array
@@ -1278,7 +1278,7 @@ description: Methods for dealing with URI query strings.
 license: MIT-style license
 
 authors:
-  - Sebastian Markbåge
+  - Sebastian Markb√•ge
   - Aaron Newton
   - Lennart Pilon
   - Valerio Proietti
@@ -1348,7 +1348,7 @@ description: Provides methods useful in managing the window location and uris.
 license: MIT-style license
 
 authors:
-  - Sebastian Markbåge
+  - Sebastian Markb√•ge
   - Aaron Newton
 
 requires:
@@ -1536,47 +1536,47 @@ provides: [String.Extras]
 (function(){
 
 var special = {
-	'a': /[àáâãäåăą]/g,
-	'A': /[ÀÁÂÃÄÅĂĄ]/g,
-	'c': /[ćčç]/g,
-	'C': /[ĆČÇ]/g,
-	'd': /[ďđ]/g,
-	'D': /[ĎÐ]/g,
-	'e': /[èéêëěę]/g,
-	'E': /[ÈÉÊËĚĘ]/g,
-	'g': /[ğ]/g,
-	'G': /[Ğ]/g,
-	'i': /[ìíîï]/g,
-	'I': /[ÌÍÎÏ]/g,
-	'l': /[ĺľł]/g,
-	'L': /[ĹĽŁ]/g,
-	'n': /[ñňń]/g,
-	'N': /[ÑŇŃ]/g,
-	'o': /[òóôõöøő]/g,
-	'O': /[ÒÓÔÕÖØ]/g,
-	'r': /[řŕ]/g,
-	'R': /[ŘŔ]/g,
-	's': /[ššş]/g,
-	'S': /[ŠŞŚ]/g,
-	't': /[ťţ]/g,
-	'T': /[ŤŢ]/g,
-	'ue': /[ü]/g,
-	'UE': /[Ü]/g,
-	'u': /[ùúûůµ]/g,
-	'U': /[ÙÚÛŮ]/g,
-	'y': /[ÿý]/g,
-	'Y': /[ŸÝ]/g,
-	'z': /[žźż]/g,
-	'Z': /[ŽŹŻ]/g,
-	'th': /[þ]/g,
-	'TH': /[Þ]/g,
-	'dh': /[ð]/g,
-	'DH': /[Ð]/g,
-	'ss': /[ß]/g,
-	'oe': /[œ]/g,
-	'OE': /[Œ]/g,
-	'ae': /[æ]/g,
-	'AE': /[Æ]/g
+	'a': /[√†√°√¢√£√§√•ƒÉƒÖ]/g,
+	'A': /[√Ä√Å√Ç√É√Ñ√ÖƒÇƒÑ]/g,
+	'c': /[ƒáƒç√ß]/g,
+	'C': /[ƒÜƒå√á]/g,
+	'd': /[ƒèƒë]/g,
+	'D': /[ƒé√ê]/g,
+	'e': /[√®√©√™√´ƒõƒô]/g,
+	'E': /[√à√â√ä√ãƒöƒò]/g,
+	'g': /[ƒü]/g,
+	'G': /[ƒû]/g,
+	'i': /[√¨√≠√Æ√Ø]/g,
+	'I': /[√å√ç√é√è]/g,
+	'l': /[ƒ∫ƒæ≈Ç]/g,
+	'L': /[ƒπƒΩ≈Å]/g,
+	'n': /[√±≈à≈Ñ]/g,
+	'N': /[√ë≈á≈É]/g,
+	'o': /[√≤√≥√¥√µ√∂√∏≈ë]/g,
+	'O': /[√í√ì√î√ï√ñ√ò]/g,
+	'r': /[≈ô≈ï]/g,
+	'R': /[≈ò≈î]/g,
+	's': /[≈°≈°≈ü]/g,
+	'S': /[≈†≈û≈ö]/g,
+	't': /[≈•≈£]/g,
+	'T': /[≈§≈¢]/g,
+	'ue': /[√º]/g,
+	'UE': /[√ú]/g,
+	'u': /[√π√∫√ª≈Ø¬µ]/g,
+	'U': /[√ô√ö√õ≈Æ]/g,
+	'y': /[√ø√Ω]/g,
+	'Y': /[≈∏√ù]/g,
+	'z': /[≈æ≈∫≈º]/g,
+	'Z': /[≈Ω≈π≈ª]/g,
+	'th': /[√æ]/g,
+	'TH': /[√û]/g,
+	'dh': /[√∞]/g,
+	'DH': /[√ê]/g,
+	'ss': /[√ü]/g,
+	'oe': /[≈ì]/g,
+	'OE': /[≈í]/g,
+	'ae': /[√¶]/g,
+	'AE': /[√Ü]/g
 },
 
 tidy = {
@@ -1640,7 +1640,7 @@ String.implement({
 
 	truncate: function(max, trail, atChar){
 		var string = this;
-		if (trail == null && arguments.length == 1) trail = '…';
+		if (trail == null && arguments.length == 1) trail = '‚Ä¶';
 		if (string.length > max){
 			string = string.substring(0, max);
 			if (atChar){
@@ -3369,6 +3369,150 @@ var Sortables = new Class({
 /*
 ---
 
+script: Request.JSONP.js
+
+name: Request.JSONP
+
+description: Defines Request.JSONP, a class for cross domain javascript via script injection.
+
+license: MIT-style license
+
+authors:
+  - Aaron Newton
+  - Guillermo Rauch
+  - Arian Stolwijk
+
+requires:
+  - Core/Element
+  - Core/Request
+  - MooTools.More
+
+provides: [Request.JSONP]
+
+...
+*/
+
+Request.JSONP = new Class({
+
+	Implements: [Chain, Events, Options],
+
+	options: {/*
+		onRequest: function(src, scriptElement){},
+		onComplete: function(data){},
+		onSuccess: function(data){},
+		onCancel: function(){},
+		onTimeout: function(){},
+		onError: function(){}, */
+		onRequest: function(src){
+			if (this.options.log && window.console && console.log){
+				console.log('JSONP retrieving script with url:' + src);
+			}
+		},
+		onError: function(src){
+			if (this.options.log && window.console && console.warn){
+				console.warn('JSONP '+ src +' will fail in Internet Explorer, which enforces a 2083 bytes length limit on URIs');
+			}
+		},
+		url: '',
+		callbackKey: 'callback',
+		injectScript: document.head,
+		data: '',
+		link: 'ignore',
+		timeout: 0,
+		log: false
+	},
+
+	initialize: function(options){
+		this.setOptions(options);
+	},
+
+	send: function(options){
+		if (!Request.prototype.check.call(this, options)) return this;
+		this.running = true;
+
+		var type = typeOf(options);
+		if (type == 'string' || type == 'element') options = {data: options};
+		options = Object.merge(this.options, options || {});
+
+		var data = options.data;
+		switch (typeOf(data)){
+			case 'element': data = document.id(data).toQueryString(); break;
+			case 'object': case 'hash': data = Object.toQueryString(data);
+		}
+
+		var index = this.index = Request.JSONP.counter++;
+
+		var src = options.url +
+			(options.url.test('\\?') ? '&' :'?') +
+			(options.callbackKey) +
+			'=Request.JSONP.request_map.request_'+ index +
+			(data ? '&' + data : '');
+
+		if (src.length > 2083) this.fireEvent('error', src);
+
+		Request.JSONP.request_map['request_' + index] = function(){
+			this.success(arguments, index);
+		}.bind(this);
+
+		var script = this.getScript(src).inject(options.injectScript);
+		this.fireEvent('request', [src, script]);
+
+		if (options.timeout) this.timeout.delay(options.timeout, this);
+
+		return this;
+	},
+
+	getScript: function(src){
+		if (!this.script) this.script = new Element('script', {
+			type: 'text/javascript',
+			async: true,
+			src: src
+		});
+		return this.script;
+	},
+
+	success: function(args, index){
+		if (!this.running) return;
+		this.clear()
+			.fireEvent('complete', args).fireEvent('success', args)
+			.callChain();
+	},
+
+	cancel: function(){
+		if (this.running) this.clear().fireEvent('cancel');
+		return this;
+	},
+
+	isRunning: function(){
+		return !!this.running;
+	},
+
+	clear: function(){
+		this.running = false;
+		if (this.script){
+			this.script.destroy();
+			this.script = null;
+		}
+		return this;
+	},
+
+	timeout: function(){
+		if (this.running){
+			this.running = false;
+			this.fireEvent('timeout', [this.script.get('src'), this.script]).fireEvent('failure').cancel();
+		}
+		return this;
+	}
+
+});
+
+Request.JSONP.counter = 0;
+Request.JSONP.request_map = {};
+
+
+/*
+---
+
 script: Color.js
 
 name: Color
@@ -3958,12 +4102,10 @@ var pseudos = {relay: false},
 
 while (count--) pseudos[copyFromEvents[count]] = Events.lookupPseudo(copyFromEvents[count]);
 
-
 DOMEvent.definePseudo = function(key, listener){
 	pseudos[key] = listener;
 	return this;
 };
-
 
 var proto = Element.prototype;
 [Element, Window, Document].invoke('implement', Events.Pseudos(pseudos, proto.addEvent, proto.removeEvent));
