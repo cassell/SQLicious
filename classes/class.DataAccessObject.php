@@ -68,7 +68,7 @@ abstract class DataAccessObject extends DataAccessArray
 				{
 					if($this->data[$field] !== null)
 					{
-						$sql[] = $this->getTableName()  . "." . $field . ' = "' . mysql_real_escape_string($this->data[$field]) . '"';
+						$sql[] = $this->getTableName()  . "." . $field . ' = "' . $f->escapeString($this->data[$field]) . '"';
 					}
 					else
 					{
@@ -94,8 +94,8 @@ abstract class DataAccessObject extends DataAccessArray
 				}
 				
 				$result = $f->getMySQLResult($sql);
-				$this->data[$this->getIdField()] = mysql_insert_id();
-				@mysql_free_result($result);
+				
+				$this->data[$this->getIdField()] = $f->connection->insert_id;
 			}
 			
 			unset($this->modifiedColumns);

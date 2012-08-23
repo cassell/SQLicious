@@ -4,8 +4,8 @@ class DatabaseProcessor
 {
 	const DATATBASE_CONFIG_GLOBAL_VARIABLE = 'DATABASE_CONFIG';
 	
-	private $connection;
-	private $databaseNode;
+	var $connection;
+	var $databaseNode;
 	
 	protected $result = null;
 	protected $numberOfRows = null;
@@ -41,13 +41,18 @@ class DatabaseProcessor
 		{
 			throw new ErrorException("SQLicious Configuration Missing",null,E_USER_ERROR);
 		}
+		
 	}
 	
-	function openNewConnection()
+	function escapeString($string)
 	{
-		$this->connectToMySQLDatabase(true);
+		if($this->connection == null)
+		{
+			$this->connectToMySQLDatabase();
+		}
+		
+		return $this->connection->real_escape_string($string);
 	}
-	
 	
 	// returns an array of rows from the database
 	function getArray()
@@ -103,23 +108,15 @@ class DatabaseProcessor
 	
 	function process($function)
 	{
-		// should we free the result later
-		$free = false;
-		
-		// run query if it hasn't been already
-		if($this->result == null && $this->numberOfRows == null)
-		{
-			$this->query();
-			$free = true;
-		}
+		$this->query();
 		
 		if($this->result != null)
 		{
 			if($this->numberOfRows > 0)
 			{
-				mysql_data_seek($this->result,0); // reset result back to first row
+				$this->result->data_seek(0);
 				
-				while ($row = mysql_fetch_assoc($this->result))
+				while ($row = $this->result->fetch_assoc())
 				{
 					call_user_func($function,$this->loadDataObject($row));
 				}
@@ -130,25 +127,19 @@ class DatabaseProcessor
 			throw new ErrorException("SQLicious DatabaseProcessor SQL Error. No MySQL Result: " . htmlentities($this->getSQL()),null,E_USER_ERROR);
 		}
 	
-		if($free == true)
-		{
-			$this->freeResult();
-		}
+		$this->freeResult();
+	}
 	
+	function openNewConnection()
+	{
+		$this->connectToMySQLDatabase(true);
 	}
 	
 	function query()
 	{
-		$this->result = $this->getMySQLResult($this->getSQL());
-		if($this->result && is_resource($this->result))
-		{
-			$this->numberOfRows = mysql_num_rows($this->result);
-		}
-		else
-		{
-			$this->numberOfRows = null;
-		}
-	
+		$this->getMySQLResult($this->getSQL());
+		$this->numberOfRows = (int)$this->result->num_rows;
+		
 		return $this->result;
 	}
 	
@@ -162,8 +153,14 @@ class DatabaseProcessor
 	{
 		try 
 		{
-			$result = mysql_query($sql, $this->connection);
-			return $result;
+			if($this->connection == null)
+			{
+				$this->connectToMySQLDatabase();
+			}
+			
+			$this->result = $this->connection->query($sql);
+			
+			return $this->result;
 		}
 		catch(ErrorException $e)
 		{
@@ -174,21 +171,24 @@ class DatabaseProcessor
 	// using unbuffered mysql queries
 	function unbufferedProcess($function)
 	{
-		$conn = $this->connectToMySQLDatabase(true);
-		$this->connectToMySQLDatabase(true);  // this so future queries do not steal this connnection, this is a total HACK! Thanks PHP!
-	
-		$result = mysql_unbuffered_query($this->getSQL(), $conn) or trigger_error("DAOFactory Unbuffered Error: ". htmlentities($this->getSQL()), E_USER_ERROR);
-	
-		if($result)
-		{
-			while ($row = mysql_fetch_assoc($result))
-			{
-				call_user_func($function,$this->loadDataObject($row));
-			}
-		}
-	
-		mysql_free_result($result);
-		mysql_close($conn); // close the connnection we created in this method
+		die("unbufferedProcess");
+		exit;
+		
+//		$conn = $this->connectToMySQLDatabase(true);
+//		$this->connectToMySQLDatabase(true);  // this so future queries do not steal this connnection, this is a total HACK! Thanks PHP!
+//	
+//		$result = mysql_unbuffered_query($this->getSQL(), $conn) or trigger_error("DAOFactory Unbuffered Error: ". htmlentities($this->getSQL()), E_USER_ERROR);
+//	
+//		if($result)
+//		{
+//			while ($row = mysql_fetch_assoc($result))
+//			{
+//				call_user_func($function,$this->loadDataObject($row));
+//			}
+//		}
+//	
+//		mysql_free_result($result);
+//		mysql_close($conn); // close the connnection we created in this method
 	
 		return true;
 	}
@@ -205,7 +205,7 @@ class DatabaseProcessor
 		}
 		else
 		{
-			$result = $this->getMySQLResult("SELECT CONVERT_TZ('2004-01-01 12:00:00','" . mysql_real_escape_string($sourceTimezone) . "','" . mysql_real_escape_string($destTimezone) . "');");
+			$result = $this->getMySQLResult("SELECT CONVERT_TZ('2004-01-01 12:00:00','" . $this->escapeString($sourceTimezone) . "','" . $this->escapeString($destTimezone) . "');");
 				
 			if($result != null)
 			{
@@ -231,8 +231,11 @@ class DatabaseProcessor
 	{
 		if($this->result != null)
 		{
-			mysql_free_result($this->result);
+			$this->result->free();
 			unset($this->result);
+			
+			//mysql_free_result($this->result);
+			//
 		}
 	}
 	
@@ -307,8 +310,12 @@ class DatabaseProcessor
 	
 	private function connectToMySQLDatabase($new = false)
 	{
-		$this->connection = mysql_connect($this->databaseNode->getServerHost(), $this->databaseNode->getServerUserName(), $this->databaseNode->getServerPassword(), $new);
-		mysql_select_db($this->databaseNode->getMySQLDatabaseName(),$this->connection);
+		$this->connection = new mysqli($this->databaseNode->getServerHost(), $this->databaseNode->getServerUserName(), $this->databaseNode->getServerPassword(), $this->databaseNode->getMySQLDatabaseName(), $this->databaseNode->getPort(), $this->databaseNode->getSocket());
+		
+		if($this->connection == null || $this->connection->connect_errno)
+		{
+			throw new ErrorException("SQLicioius Connection Errro",null,E_USER_ERROR);
+		}
 	}
 	
 	// util
@@ -330,6 +337,13 @@ class DatabaseProcessor
 		}
 	
 		return html_entity_decode($text);
+	}
+	
+	static function mysql_real_escape_string($string)
+	{
+		$dp = new DatabaseProcessor();
+		
+		return $dp->escapeString($string);
 	}
 	
 }

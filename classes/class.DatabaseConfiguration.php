@@ -82,6 +82,12 @@ class DatabaseNode
 	function setServerPassword($val) { $this->serverPassword = $val; }
 	function getServerPassword() { return $this->serverPassword; }
 	
+	function setPort($val) { $this->port = $val; }
+	function getPort() { return $this->port; }
+	
+	function setSocket($val) { $this->socket = $val; }
+	function getSocket() { return $this->socket; }
+	
 }
 
 ?>

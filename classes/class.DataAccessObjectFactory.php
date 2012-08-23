@@ -14,6 +14,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	private $joinClause = '';
 	private $groupByClause = '';
 	private $orderByClause = '';
+	private $limitClause = '';
 	
 	private $paging = false;
 	private $pageNumber = 1;
@@ -30,13 +31,10 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		
 		// conditional used in building the WHERE clause
 		$this->conditional = new FactoryConditional();
-		
 	}
 	
 	function getObjects()
 	{
-		$this->query();
-		
 		$data = array();
 		
 		$this->process(function($obj) use (&$data)
@@ -51,8 +49,6 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 			}
 			
 		});
-		
-		$this->freeResult();
 		
 		return $data;
 	}
@@ -74,15 +70,12 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
             $f->addPrimaryKeyBinding($id);
             return $f->getFirstObject();
         }
-        else
-        {
-            //throw
-        }
+        else return null;
 	}
 	
 	function getFirstObject()
 	{
-		$this->setLimit(1);
+		$this->limit(1);
 		$array = $this->getObjects();
 		if($array != null && is_array($array))
 		{
@@ -199,22 +192,22 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 			{
 				$this->groupBy($field);
 			}
-			
 		}
 		else if(func_num_args() == 1 && is_string($fieldOrArray))
 		{
 			// passed a single field $f->addGroupBy("last_name")
 			if($this->getGroupByClause() == "")
 			{
-				$this->setGroupByClause("GROUP BY " . mysql_real_escape_string($fieldOrArray));
+				$this->setGroupByClause("GROUP BY " . $this->escapeString($fieldOrArray));
 			}
 			else
 			{
-				$this->setGroupByClause($this->getGroupByClause() . ", " . mysql_real_escape_string($fieldOrArray));
+				$this->setGroupByClause($this->getGroupByClause() . ", " . $this->escapeString($fieldOrArray));
 			}
 		}
 		
 	}
+	
 	function setGroupByClause($val) { $this->groupByClause = $val; }
 	function getGroupByClause() { return $this->groupByClause; }
 	
@@ -231,7 +224,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 			$this->setOrderByClause($this->getOrderByClause() . ", ");
 		}
 		
-		$this->setOrderByClause($this->getOrderByClause() . mysql_real_escape_string($field) . " " .  mysql_real_escape_string($direction));
+		$this->setOrderByClause($this->getOrderByClause() . $this->escapeString($field) . " " .  $this->escapeString($direction));
 	}
 	function setOrderByClause($val) { $this->orderByClause = $val; }
 	function getOrderByClause() { return $this->orderByClause; }
@@ -294,10 +287,10 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
     {
         $result = $this->getMySQLResult(implode(" ",array("SELECT " . $function . "(" . $field . ") as val",$this->getFromClause(),$this->getJoinClause(),$this->getConditionalSql())));
 	
-		if($result && is_resource($result))
+		if($result != null)
 		{
-			$row = mysql_fetch_row($result);
-			mysql_free_result($result);
+			$row = $result->fetch_row();
+			$result->free();
 			return intval($row[0]);
 		}
 		else
@@ -346,15 +339,8 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	
 	function query()
 	{
-		$this->result = $this->getMySQLResult($this->getSQL());
-		if($this->result && is_resource($this->result))
-		{
-			$this->numberOfRows = mysql_num_rows($this->result);
-		}
-		else
-		{
-			$this->numberOfRows = null;
-		}
+		$this->getMySQLResult($this->getSQL());
+		$this->numberOfRows = (int)$this->result->num_rows;
 		
 		if($this->paging)
 		{
@@ -405,7 +391,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	
     protected function getConditionalSql()
 	{
-		$conditionalSQL =  $this->conditional->getSql();
+		$conditionalSQL =  $this->conditional->getSql($this);
 		
 		if($conditionalSQL != "")
 		{
@@ -439,14 +425,16 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
 		$array = array();
 		
-		$result = $this->getMySQLResult('SELECT DISTINCT(' . mysql_real_escape_string($field) . ") as fdf FROM ". $this->getTableName() . " " . $clause);
+		$result = $this->getMySQLResult('SELECT DISTINCT(' . $this->escapeString($field) . ") as fdf FROM ". $this->getTableName() . " " . $clause);
 		
-		if($result != null && is_resource($result) && mysql_numrows($result) > 0)
+		if($result != null && $result->num_rows > 0)
 		{
-			while ($row = mysql_fetch_assoc($result))
+			while ($row = $result->fetch_assoc())
 			{
 				$array[] = $row["fdf"];
 			}
+			
+			$result->free();
 		}
 		
 		return $array;
@@ -456,14 +444,16 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
 		$array = array();
 		
-		$result = $this->getMySQLResult('SELECT ' . mysql_real_escape_string($field) . " as ff FROM ". $this->getTableName() . " " . $clause);
+		$result = $this->getMySQLResult('SELECT ' . $this->escapeString($field) . " as ff FROM ". $this->getTableName() . " " . $clause);
 		
-		if($result != null && is_resource($result) && mysql_numrows($result) > 0)
+		if($result != null && $result->num_rows > 0)
 		{
-			while ($row = mysql_fetch_assoc($result))
+			while ($row = $result->fetch_assoc())
 			{
 				$array[] = $row["ff"];
 			}
+			
+			$result->free();
 		}
 		
 		return $array;
@@ -498,7 +488,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	
 	private function sqlFunctionFieldQuery($sqlFunction,$field,$clause)
 	{
-		return reset($this->findField($sqlFunction . '(' . mysql_real_escape_string($field) . ')',$clause));
+		return reset($this->findField($sqlFunction . '(' . $this->escapeString($field) . ')',$clause));
 	}
     
     // deprecate old naming convetion
@@ -514,14 +504,14 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		
 		$result = $this->getMySQLResult($sql);
 		
-		if($result != null && is_resource($result) && mysql_num_rows($result) > 0)
+		if($result != null && $result->num_rows > 0)
 		{
-			while ($row = mysql_fetch_assoc($result))
+			while ($row = $result->fetch_assoc())
 			{
 				$data[] = $row;
 			}
 			
-			@mysql_free_result($result);
+			$result->free();
 		}
 		
 		return $data;
@@ -535,7 +525,7 @@ abstract class SQLString
 {
 	function __construct() { }
 	
-	abstract protected function getSQL();
+	abstract protected function getSQL($factory);
 	
 }
 
@@ -543,11 +533,11 @@ abstract class SQLString
 /* used to logical AND together bindings */
 class Conditional extends SQLString
 {
+	var $items = array();
+	
 	function __construct()
 	{
 		parent::__construct();
-		
-		$this->items = array();
 	}
 	
 	function addBinding($binding)
@@ -572,7 +562,7 @@ class Conditional extends SQLString
 		$this->items[] = $item;
 	}
 	
-	function getSQL()
+	function getSQL($factory)
 	{
 		if($this->items != null && count($this->items) > 0)
 		{
@@ -580,7 +570,7 @@ class Conditional extends SQLString
 			
 			foreach($this->items as $item)
 			{
-				$sql[] = $item->getSQL();
+				$sql[] = $item->getSQL($factory);
 			}
 			
 			return "(" . implode(" AND ",$sql) . ")";
@@ -599,7 +589,7 @@ class OrConditional extends Conditional
 		parent::__construct();
 	}
 	
-	function getSQL()
+	function getSQL($factory)
 	{
 		if($this->items != null && count($this->items) > 0)
 		{
@@ -607,7 +597,7 @@ class OrConditional extends Conditional
 			
 			foreach($this->items as $item)
 			{
-				$sql[] = $item->getSQL();
+				$sql[] = $item->getSQL($factory);
 			}
 			
 			return "(" . implode(" OR ",$sql) . ")";
@@ -623,10 +613,10 @@ class FactoryConditional extends Conditional
 {
 	function __construct()
 	{
-		parent::__construct($argv);
+		parent::__construct();
 	}
 	
-	function getSQL()
+	function getSQL($factory)
 	{
 		if($this->items != null && count($this->items) > 0)
 		{
@@ -634,7 +624,7 @@ class FactoryConditional extends Conditional
 			
 			foreach($this->items as $item)
 			{
-				$sql[] = $item->getSQL();
+				$sql[] = $item->getSQL($factory);
 			}
 			
 			return implode(" AND ",$sql);
@@ -654,9 +644,9 @@ class Binding extends SQLString
 		parent::__construct();
 	}
 	
-	function getSQL()
+	function getSQL($factory)
 	{
-		return mysql_real_escape_string($this->field) . " " . $this->operator . " '". mysql_real_escape_string($this->value) ."'";
+		return $factory->escapeString($this->field) . " " . $this->operator . " '". $factory->escapeString($this->value) ."'";
 	}
 }
 
@@ -669,7 +659,7 @@ class StringBinding extends SQLString
 		parent::__construct();
 	}
 	
-	function getSQL()
+	function getSQL($factory)
 	{
 		return $this->sql;
 	}
@@ -720,9 +710,9 @@ class ContainsBinding extends SQLString
 		$this->query = $query;
 	}
 	
-	function getSQL()
+	function getSQL($factory)
 	{
-		return mysql_real_escape_string($this->field) . " LIKE '%". mysql_real_escape_string($this->query) ."%'";
+		return $factory->escapeString($this->field) . " LIKE '%". $factory->escapeString($this->query) ."%'";
 	}
 }
 
@@ -735,20 +725,20 @@ class InBinding extends SQLString
 		$this->array = $array;
 	}
 	
-	function getSQL()
+	function getSQL($factory)
 	{
 		if(count($this->array) == 1)
 		{
-			return mysql_real_escape_string($this->field) . " = " . reset($this->array);
+			return $factory->escapeString($this->field) . " = " . reset($this->array);
 		}
 		else if(count($this->array) > 0)
 		{
 			foreach($this->array as $key => $item)
 			{
-				$this->array[$key] = "'".mysql_real_escape_string($item)."'";
+				$this->array[$key] = "'".$factory->escapeString($item)."'";
 			}
 			
-			return mysql_real_escape_string($this->field) . " IN (" . implode(",",$this->array) . ")";
+			return $factory->escapeString($this->field) . " IN (" . implode(",",$this->array) . ")";
 		}
 		else
 		{
@@ -766,16 +756,16 @@ class NotInBinding extends SQLString
 		$this->array = $array;
 	}
 	
-	function getSQL()
+	function getSQL($factory)
 	{
 		if(count($this->array > 0))
 		{
 			foreach($this->array as $key => $item)
 			{
-				$this->array[$key] = mysql_real_escape_string($item);
+				$this->array[$key] = $factory->escapeString($item);
 			}
 			
-			return mysql_real_escape_string($this->field) . " NOT IN (" . implode(",",$this->array) . ")";
+			return $factory->escapeString($this->field) . " NOT IN (" . implode(",",$this->array) . ")";
 		}
 		else
 		{
