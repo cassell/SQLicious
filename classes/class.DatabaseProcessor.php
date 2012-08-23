@@ -171,25 +171,22 @@ class DatabaseProcessor
 	// using unbuffered mysql queries
 	function unbufferedProcess($function)
 	{
-		die("unbufferedProcess");
-		exit;
+		$connection = new mysqli($this->databaseNode->getServerHost(), $this->databaseNode->getServerUserName(), $this->databaseNode->getServerPassword(), $this->databaseNode->getMySQLDatabaseName(), $this->databaseNode->getPort(), $this->databaseNode->getSocket());
+		new mysqli($this->databaseNode->getServerHost(), $this->databaseNode->getServerUserName(), $this->databaseNode->getServerPassword(), $this->databaseNode->getMySQLDatabaseName(), $this->databaseNode->getPort(), $this->databaseNode->getSocket());
 		
-//		$conn = $this->connectToMySQLDatabase(true);
-//		$this->connectToMySQLDatabase(true);  // this so future queries do not steal this connnection, this is a total HACK! Thanks PHP!
-//	
-//		$result = mysql_unbuffered_query($this->getSQL(), $conn) or trigger_error("DAOFactory Unbuffered Error: ". htmlentities($this->getSQL()), E_USER_ERROR);
-//	
-//		if($result)
-//		{
-//			while ($row = mysql_fetch_assoc($result))
-//			{
-//				call_user_func($function,$this->loadDataObject($row));
-//			}
-//		}
-//	
-//		mysql_free_result($result);
-//		mysql_close($conn); // close the connnection we created in this method
-	
+		if($connection != null)
+		{
+			$connection->real_query($this->getSQL());
+			$result = $connection->use_result();
+			
+			while ($row = $result->fetch_assoc())
+			{
+				call_user_func($function,$this->loadDataObject($row));
+			}
+			
+			$result->free();
+		}
+		
 		return true;
 	}
 	
@@ -233,9 +230,6 @@ class DatabaseProcessor
 		{
 			$this->result->free();
 			unset($this->result);
-			
-			//mysql_free_result($this->result);
-			//
 		}
 	}
 	
