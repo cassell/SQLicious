@@ -177,14 +177,18 @@ class DatabaseProcessor
 		if($connection != null)
 		{
 			$connection->real_query($this->getSQL());
+			
 			$result = $connection->use_result();
 			
-			while ($row = $result->fetch_assoc())
+			if($result != null)
 			{
-				call_user_func($function,$this->loadDataObject($row));
+				while ($row = $result->fetch_assoc())
+				{
+					call_user_func($function,$this->loadDataObject($row));
+				}
+
+				$result->free();
 			}
-			
-			$result->free();
 		}
 		
 		return true;

@@ -1,6 +1,4 @@
 
-var LastGitHubVersion = '3d970a0bb965589c65ed12a346982e4a22e255cd';
-
 var Page = new Class
 ({
 	initialize: function()
