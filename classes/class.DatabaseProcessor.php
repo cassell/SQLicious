@@ -333,6 +333,9 @@ class DatabaseProcessor
 		return html_entity_decode($text);
 	}
 	
+	
+	// this function should only be used if you need to replace a bunch of mysql_real_escape_string($string)
+	// functions with DatabaseProcessor::mysql_real_escape_string($sring)
 	static function mysql_real_escape_string($string)
 	{
 		$dp = new DatabaseProcessor();

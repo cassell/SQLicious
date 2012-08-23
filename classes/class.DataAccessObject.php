@@ -30,7 +30,6 @@ abstract class DataAccessObject extends DataAccessArray
 				$this->modifiedColumns[static::getIdField()] = 1;
 			}
 		}
-		
 	}
 	
 	static function findId($id)

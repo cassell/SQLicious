@@ -1,5 +1,5 @@
 
-var LastGitHubVersion = '7693eda3b0e07f2ae57219643c768a74f4ae2e55';
+var LastGitHubVersion = '3d970a0bb965589c65ed12a346982e4a22e255cd';
 
 var Page = new Class
 ({
