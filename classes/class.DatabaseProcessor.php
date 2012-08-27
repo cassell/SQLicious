@@ -177,18 +177,14 @@ class DatabaseProcessor
 		if($connection != null)
 		{
 			$connection->real_query($this->getSQL());
-			
 			$result = $connection->use_result();
 			
-			if($result != null)
+			while ($row = $result->fetch_assoc())
 			{
-				while ($row = $result->fetch_assoc())
-				{
-					call_user_func($function,$this->loadDataObject($row));
-				}
-
-				$result->free();
+				call_user_func($function,$this->loadDataObject($row));
 			}
+			
+			$result->free();
 		}
 		
 		return true;
@@ -337,9 +333,6 @@ class DatabaseProcessor
 		return html_entity_decode($text);
 	}
 	
-	
-	// this function should only be used if you need to replace a bunch of mysql_real_escape_string($string)
-	// functions with DatabaseProcessor::mysql_real_escape_string($sring)
 	static function mysql_real_escape_string($string)
 	{
 		$dp = new DatabaseProcessor();

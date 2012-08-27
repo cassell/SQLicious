@@ -5,7 +5,10 @@ class DatabaseConfiguration
 	private $master;
 	private $slaves = array();
 
-	function __construct() { }
+	function __construct()
+	{
+		
+	}
 	
 	function configureMaster($mysqlDatabaseName,$host,$username,$password)
 	{
@@ -46,6 +49,7 @@ class DatabaseConfiguration
 		{
 			$this->slaves[] = $slave;
 		}
+		
 	}
 	
 	function getSlave($slaveName = null)
@@ -59,6 +63,7 @@ class DatabaseConfiguration
 			return array_rand($this->slaves,1);
 		}
 	}
+	
 }
 
 class DatabaseNode
@@ -82,6 +87,9 @@ class DatabaseNode
 	
 	function setSocket($val) { $this->socket = $val; }
 	function getSocket() { return $this->socket; }
+	
 }
+
+
 
 ?>

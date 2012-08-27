@@ -8,7 +8,7 @@ class SQLiciousPage
 	const FAVICON_PNG = 'img/favicon.png';
 	const TOUCH_ICON_PNG = 'img/touch_icon.png';
 	
-	const GITHUB_VERSION = 'd679b874a740f0ee21ec641f73beba5304e9e946';
+	const GITHUB_VERSION = 'c3c3d03d7ea063ce2614a9a168a3fefe16cab3fe';
 	
 	function __construct($sqlicious)
 	{
