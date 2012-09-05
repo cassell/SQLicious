@@ -2,14 +2,12 @@
 
 include('ajax.inc.php');
 
-require_once($generator->getDatabaseConnectorDestinationDirectory().'/class.DatabaseConnector.php');
-
 $db = $generator->databases[$_POST['database']];
 
-if($db != null)
+if($db != null && $_POST['table'] != "")
 {
-	DatabaseConnector::openMasterConnection($db->getDatabaseName());
-	$columns = $db->getColumns($_POST['table']);
+	$table = $_POST['table'];
+	$columns = $db->getColumns($table);
 	
 	if($columns != null && count($columns) > 0)
 	{
@@ -20,6 +18,19 @@ if($db != null)
 			$c['type'] = $column['Type'];
 			$c['null'] = ($column['Null'] == 'YES' ? 1 : 0);
 			$c['default'] = $column['Default'];
+			
+			if($column['Key'] == "PRI")
+			{
+				$c['getter'] = '$' . SQLiciousGenerator::toFieldCase($table) . '->getId()';
+				$c['setter'] = '';
+			}
+			else
+			{
+				$c['getter'] = '$' . SQLiciousGenerator::toFieldCase($table) . '->get' . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '()';
+				$c['setter'] = '$' . SQLiciousGenerator::toFieldCase($table) . '->set' . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . '($val)';
+			}
+			
+			
 			
 			$resp['columns'][] = $c;
 			

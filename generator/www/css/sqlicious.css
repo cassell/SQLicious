@@ -215,6 +215,46 @@ h1 a
 }
 
 
-	
-	
-	
+.table
+{
+
+}
+	.table th,
+	.table td {
+	padding: 8px;
+	line-height: 18px;
+	text-align: left;
+	vertical-align: top;
+	border-top: 1px solid #dddddd;
+	}
+	.table th {
+	font-weight: bold;
+	}
+	.table thead th {
+	vertical-align: bottom;
+	}
+	.table colgroup + thead tr:first-child th,
+	.table colgroup + thead tr:first-child td,
+	.table thead:first-child tr:first-child th,
+	.table thead:first-child tr:first-child td {
+	border-top: 0;
+	}
+	.table tbody + tbody {
+	border-top: 2px solid #dddddd;
+	}
+
+	.table {
+	border: 1px solid #dddddd;
+	border-left: 0;
+	border-collapse: separate;
+	*border-collapse: collapsed;
+	}
+	.table th,
+	.table td {
+	border-left: 1px solid #dddddd;
+	}
+	.table thead:first-child tr:first-child th,
+	.table tbody:first-child tr:first-child th,
+	.table tbody:first-child tr:first-child td {
+	border-top: 0;
+	}

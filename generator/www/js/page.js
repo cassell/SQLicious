@@ -119,7 +119,7 @@ var Page = new Class
 			
 			if(this.action == "structure")
 			{
-				this.showTableStructure();
+				new Request.WithErrorHandling({'url': this.getAjaxUrl('table_details.php'), onSuccess: this.showTableStructure.bind(this)}).send(Object.toQueryString({'database' : this.database, 'table' : this.table}));
 			}
 			else if(this.action == "new")
 			{
@@ -340,7 +340,6 @@ var Page = new Class
 			input.fireEvent('change');
 		});
 		
-		
 		var pre = new Element('pre',{'type' : 'text','html':'<br/><br/><br/>'}).inject(content);
 		
 		input.addEvent('change',function(resp,input,pre){
@@ -393,6 +392,46 @@ var Page = new Class
 	showTableStructure: function(resp)
 	{
 		this.addBreadCrumb('Table Structure');
+		
+		var content = new Element('div',{'class' : 'content'}).inject(this.content);
+		
+		var table = new Element('table', {'class':'table'}).inject(content);
+		
+			var tableHeader = new Element('tr').inject(new Element('thead').inject(table));
+				new Element('th',{'text':'Column'}).inject(tableHeader);
+				new Element('th',{'text':'Type'}).inject(tableHeader);
+				new Element('th',{'text':'Null'}).inject(tableHeader);
+				new Element('th',{'text':'Default Value'}).inject(tableHeader);
+				new Element('th',{'text':'Getter'}).inject(tableHeader);
+				new Element('th',{'text':'Setter'}).inject(tableHeader);
+				
+			if(resp.columns != null)
+			{
+				var tbody = new Element('tbody').inject(table);
+				resp.columns.each(function(col)
+				{
+					var row = new Element('tr').inject(tbody);
+						new Element('td',{'text':col['name']}).inject(row);
+						new Element('td',{'text':col['type']}).inject(row);
+						new Element('td',{'text':col['null']}).inject(row);
+						new Element('td',{'text':col['default']}).inject(row);
+						new Element('pre',{'text':col['getter']}).inject(new Element('td').inject(row));
+						new Element('pre',{'text':col['setter']}).inject(new Element('td').inject(row));
+				})
+			}
+				
+				
+//				columns: [{name:asset_id, type:int(11), null:0, default:}, {name:location_id, type:int(11), null:1, default:},…]
+//0: {name:asset_id, type:int(11), null:0, default:}
+//1: {name:location_id, type:int(11), null:1, default:}
+//2: {name:equipment_type_link_id, type:int(11), null:1, default:}
+//3: {name:equipment_id, type:int(11), null:1, default:}
+//4: {name:name, type:varchar(100), null:1, default:}
+//5: {name:parent_id, type:int(11), null:1, default:}
+//6: {name:email, type:varchar(100), null:1, default:}
+//7: {name:update_date, type:datetime, null:1, default:}
+//8: {name:updated_by, type:varchar(50), null:1, default:}
+		
 	},
 	
 	buildTitle: function()
