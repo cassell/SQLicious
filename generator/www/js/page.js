@@ -419,19 +419,6 @@ var Page = new Class
 						new Element('pre',{'text':col['setter']}).inject(new Element('td').inject(row));
 				})
 			}
-				
-				
-//				columns: [{name:asset_id, type:int(11), null:0, default:}, {name:location_id, type:int(11), null:1, default:},…]
-//0: {name:asset_id, type:int(11), null:0, default:}
-//1: {name:location_id, type:int(11), null:1, default:}
-//2: {name:equipment_type_link_id, type:int(11), null:1, default:}
-//3: {name:equipment_id, type:int(11), null:1, default:}
-//4: {name:name, type:varchar(100), null:1, default:}
-//5: {name:parent_id, type:int(11), null:1, default:}
-//6: {name:email, type:varchar(100), null:1, default:}
-//7: {name:update_date, type:datetime, null:1, default:}
-//8: {name:updated_by, type:varchar(50), null:1, default:}
-		
 	},
 	
 	buildTitle: function()
