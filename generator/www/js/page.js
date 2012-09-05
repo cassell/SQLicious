@@ -108,7 +108,7 @@ var Page = new Class
 			new Element('img',{'src' : 'img/pacman.gif'}).inject(pacman);
 			new Element('span',{'html' : '.&nbsp;&nbsp;.&nbsp;&nbsp;.'}).inject(pacman);
 			
-			new Request.WithErrorHandling({'url': this.getAjaxUrl('generate.php?database='+database), onSuccess: function(resp) {window.location = '/#/database/'+resp.databaseName;}}).send();
+			new Request.WithErrorHandling({'url': this.getAjaxUrl('generate.php?database='+database), onSuccess: function(resp) {window.location = '#/';}}).send();
 			
 		}
 		else if(relativeURL.match(/\/database\/(\w+)\/table\/(\w+)\/action\/(\w+)/))
