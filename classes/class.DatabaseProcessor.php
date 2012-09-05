@@ -120,10 +120,6 @@ class DatabaseProcessor
 				}
 			}
 		}
-		else
-		{
-			throw new ErrorException("SQLicious DatabaseProcessor SQL Error. No MySQL Result: " . htmlentities($this->getSQL()),null,E_USER_ERROR);
-		}
 	
 		$this->freeResult();
 	}
@@ -144,7 +140,7 @@ class DatabaseProcessor
 	function update($sql)
 	{
 		$result = $this->getMySQLResult($sql);
-		@mysql_free_result($result);
+		$this->freeResult();
 	}
 	
 	function getMySQLResult($sql)
@@ -162,7 +158,7 @@ class DatabaseProcessor
 		}
 		catch(ErrorException $e)
 		{
-			throw new ErrorException("SQLicious DatabaseProcessor SQL Error. Unable to MySQL Query: " . htmlentities($sql),null,E_USER_ERROR);
+			throw new ErrorException("SQLicious DatabaseProcessor SQL Error. MySQL Query Failed: " . htmlentities($sql) . '\n\nReason given ' . $e . '\n\n',null,E_USER_ERROR);
 		}
 	}
 	
@@ -201,7 +197,8 @@ class DatabaseProcessor
 		else
 		{
 			$result = $this->getMySQLResult("SELECT CONVERT_TZ('2004-01-01 12:00:00','" . $this->escapeString($sourceTimezone) . "','" . $this->escapeString($destTimezone) . "');");
-				
+			die("convertTimezone");
+			/*
 			if($result != null)
 			{
 				$row = mysql_fetch_row($result);
@@ -210,6 +207,7 @@ class DatabaseProcessor
 	
 				return strtotime(reset($row));
 			}
+			 */
 				
 		}
 	
@@ -226,7 +224,15 @@ class DatabaseProcessor
 	{
 		if($this->result != null)
 		{
-			$this->result->free();
+			try
+			{
+				$this->result->free();
+			}
+			catch(ErrorException $e)
+			{
+				// My eyes! The goggles do nothing!
+			}
+			
 			unset($this->result);
 		}
 	}
@@ -265,6 +271,8 @@ class DatabaseProcessor
 	
 	function explain()
 	{
+		die("explain");
+		
 		$explain = $this->getMySQLResult('EXPLAIN ' . $this->getSQL());
 	
 		$params = mysql_fetch_assoc($explain);

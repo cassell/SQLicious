@@ -299,26 +299,6 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		}
     }
     
-	function getCountNoLimit()
-	{
-		// no order by or limit clauses
-		$sql = implode(" ",array("SELECT count(" . $this->getIdField() . ") FROM " . $this->getTableName(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause()));
-	
-		$result = $this->getMySQLResult($sql);
-		
-		if($result && is_resource($result))
-		{
-			$row = mysql_fetch_row($result);
-			mysql_free_result($result);
-			return intval($row[0]);
-		}
-		else
-		{
-			return null;
-		}
-	
-	}
-	
 	function query()
 	{
 		$this->getMySQLResult($this->getSQL());
