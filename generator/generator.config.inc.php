@@ -1,30 +1,25 @@
 <?php
 
-require_once('lib/class.SQLiciousGenerator.php');
+require_once(str_replace("/generator","",dirname(__FILE__))."/sqlicious.inc.php");
+require_once(SQLICIOUS_INCLUDE_PATH."/config.inc.php");
+require_once(SQLICIOUS_INCLUDE_PATH.'/generator/lib/class.SQLiciousGenerator.php');
 
-if(array_key_exists(DatabaseProcessor::DATATBASE_CONFIG_GLOBAL_VARIABLE, $GLOBALS))
+if(defined("SQLICIOUS_CONFIG_GLOBAL") && array_key_exists(SQLICIOUS_CONFIG_GLOBAL, $GLOBALS))
 {
 	$generator = new SQLiciousGenerator();
 	
-	foreach($GLOBALS[DatabaseProcessor::DATATBASE_CONFIG_GLOBAL_VARIABLE] as $name => $config)
+	foreach($GLOBALS[SQLICIOUS_CONFIG_GLOBAL] as $name => $config)
 	{
 		$node = $config->getMaster();
 		
-		$node = new DatabaseNode();
-		$node->setMySQLDatabaseName($mysqlDatabaseName);
-		$node->setServerHost($host);
-		$node->setServerUserName($username);
-		$node->setServerPassword($password);
-		
 		$db = new SQLiciousGeneratorDatabase();
-		$db->setDatabaseName('intranet');
-		$db->setDatabaseHost('127.0.0.1');
-		$db->setDatabaseUsername('web');
-		$db->setDatabasePassword($node->get);
+		$db->setDatabaseName($node->getMySQLDatabaseName());
+		$db->setDatabaseHost($node->getServerHost());
+		$db->setDatabaseUsername($node->getServerUserName());
+		$db->setDatabasePassword($node->getServerPassword());
 		$db->setGeneratorDestinationDirectory($config->getGeneratorCodeDestinationDirectory());
 		
-		echo $name;
-		exit;
+		$generator->addDatabase($db);
 	}
 	
 }
@@ -33,5 +28,6 @@ else
 	echo "Database Configuration Not Found";
 	exit;
 }
+
 
 ?>

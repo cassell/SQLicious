@@ -2,7 +2,7 @@
 
 class DatabaseProcessor
 {
-	const DATATBASE_CONFIG_GLOBAL_VARIABLE = 'DATABASE_CONFIG';
+	const DATATBASE_CONFIG_GLOBAL_VARIABLE = 'SQLICIOUS_CONFIG';
 	
 	var $connection;
 	var $databaseNode;

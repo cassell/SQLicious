@@ -1,8 +1,6 @@
 <?php
 
-include('../../config.inc.php');
-include('../../www/ajax/ajax.inc.php');
-
+include('ajax.inc.php');
 
 $db = $generator->databases[$_POST['database']];
 

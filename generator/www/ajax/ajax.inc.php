@@ -1,5 +1,7 @@
 <?php
 
+include('../../generator.config.inc.php');
+
 $resp = array();
 
 function utf8EncodeArray($array)

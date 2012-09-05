@@ -1,7 +1,6 @@
 <?php
 
-include('../../config.inc.php');
-include('../../www/ajax/ajax.inc.php');
+include('ajax.inc.php');
 
 require_once($generator->getDatabaseConnectorDestinationDirectory().'/class.DatabaseConnector.php');
 
