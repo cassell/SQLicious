@@ -382,7 +382,7 @@ class SQLiciousGenerator
 		{
 			if(!file_exists($database->getGeneratorDestinationDirectory()))
 			{
-				if(!mkdir($database->getGeneratorDestinationDirectory()))
+				if(!@mkdir($database->getGeneratorDestinationDirectory()))
 				{
 					$this->setErrorMessage('Unable to create database destination directory.');
 					return false;
