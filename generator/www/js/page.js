@@ -70,7 +70,9 @@ var Page = new Class
 	
 	parseURL: function(relativeURL,rewrite)
 	{
-		this.database, this.table, this.action = null;
+		this.database = null;
+		this.table = null;
+		this.action = null;
 		
 		if(relativeURL == "/tools")
 		{
@@ -151,6 +153,9 @@ var Page = new Class
 		{
 			this.selectADatabase();
 		}
+		
+		this.buildTitle();
+		
 	},
 	
 	cleanupPage: function()
@@ -214,8 +219,6 @@ var Page = new Class
 	
 	selectADatabase: function()
 	{
-		var h1 = new Element('h1',{'text' : 'Select a Database'}).inject(this.content);
-		
 		var content = new Element('div',{'class' : 'content noPadding'}).inject(this.content);
 		
 		var databaseList = new Element('ul',{'class' : 'listOfThings'}).inject(content);
@@ -233,13 +236,6 @@ var Page = new Class
 	
 	listTables: function(resp)
 	{
-		var h1 = new Element('h1').inject(this.content);
-		var databaseLink = new Element('a',{'text' : this.database}).inject(h1);
-		databaseLink.addEvent('click',function(){window.location = '#/database/' + this.database;}.bind(this));
-		
-		new Element('span',{'text' : " > "}).inject(h1);
-		new Element('span',{'text' : "Select a Table"}).inject(h1);
-		
 		var content = new Element('div',{'class' : 'content noPadding'}).inject(this.content);
 		
 		var search = new Element('div', {'class' : 'search'}).inject(content);
@@ -300,14 +296,6 @@ var Page = new Class
 	
 	showTableObtions: function()
 	{
-		var h1 = new Element('h1').inject(this.content);
-		var databaseLink = new Element('a',{'text' : this.database}).inject(h1);
-		databaseLink.addEvent('click',function(){window.location = '#/database/' + this.database;}.bind(this));
-		
-		new Element('span',{'text' : " > "}).inject(h1);
-		var tableLink = new Element('a',{'text' : this.table}).inject(h1);
-		tableLink.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table;}.bind(this));
-		
 		var content = new Element('div',{'styles' : {'margin':'20px'}}).inject(this.content);
 		
 		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
@@ -324,37 +312,38 @@ var Page = new Class
 		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 		new Element('div',{'text' : 'Extended Object Stubs'}).inject(div);
 		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/extensions';}.bind(this));
-//		
-//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'img/cogs_48.png'}).inject(div);
-//		new Element('div',{'text' : 'Table Structure'}).inject(div);
-//		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/structure'; }.bind(this));
+
+		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+		new Element('img',{'src' : 'img/cogs_48.png'}).inject(div);
+		new Element('div',{'text' : 'Table Structure'}).inject(div);
+		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/structure'; }.bind(this));
 		
 	},
 	
 	showNewObjectBuilder: function(resp)
 	{
-		var h1 = new Element('h1').inject(this.content);
-		var databaseLink = new Element('a',{'text' : this.database}).inject(h1);
-		databaseLink.addEvent('click',function(){window.location = '#/database/' + this.database;}.bind(this));
-		
-		new Element('span',{'text' : " > "}).inject(h1);
-		var tableLink = new Element('a',{'text' : this.table}).inject(h1);
-		tableLink.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table;}.bind(this));
-		
-		new Element('span',{'text' : " > "}).inject(h1);
-		var tableLink = new Element('span',{'text' : 'Object Creation'}).inject(h1);
+		this.addBreadCrumb('Object Creation');
 		
 		var content = new Element('div',{'class' : 'content'}).inject(this.content);
 		
-		new Element('h2',{'text' : 'New Object Creation'}).inject(content);
 		new Element('br').inject(content);
 		
 		var h3 = new Element('h3',{'text' : 'Object Variable Name: '}).inject(content);
-		var input = new Element('input',{'type' : 'text','value' : 'obj'}).inject(h3);
+		var input = new Element('input',{'type' : 'text','value' : resp.variableName}).inject(h3);
+		
+		new Element('br').inject(content);
+		
+		var label = new Element('label',{'text' : ' Use Extended Object'}).inject(content);
+		var extendObjects = new Element('input',{'type' : 'checkbox'}).inject(label,'top');
+		extendObjects.addEvent('change',function()
+		{
+			input.fireEvent('change');
+		});
+		
+		
 		var pre = new Element('pre',{'type' : 'text','html':'<br/><br/><br/>'}).inject(content);
 		
-		input.addEvent('keyup',function(resp,input,pre){
+		input.addEvent('change',function(resp,input,pre){
 			
 			variableName = input.value;
 			
@@ -371,9 +360,7 @@ var Page = new Class
 			
 			methods =  "<pre>\n\n";
 			
-			methods += resp.include + "\n\n";
-			
-			methods += '$' + variableName + " = new " + resp.className + "();\n";
+			methods += '$' + variableName + " = new " + resp.className + (extendObjects.checked ? '' : 'DaoObject') + "();\n";
 			
 			resp.columns.each(function(col)
 			{
@@ -389,29 +376,74 @@ var Page = new Class
 			
 		}.bind(this,resp,input,pre));
 		
-		input.fireEvent('keyup');
+		input.fireEvent('change');
 		
 	},
 	
 	showExtendedObjectStubBuilder: function(resp)
 	{
-		var h1 = new Element('h1').inject(this.content);
-		var databaseLink = new Element('a',{'text' : this.database}).inject(h1);
-		databaseLink.addEvent('click',function(){window.location = '#/database/' + this.database;}.bind(this));
-		
-		new Element('span',{'text' : " > "}).inject(h1);
-		var tableLink = new Element('a',{'text' : this.table}).inject(h1);
-		tableLink.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table;}.bind(this));
-		
-		new Element('span',{'text' : " > "}).inject(h1);
-		var tableLink = new Element('span',{'text' : 'Stubs'}).inject(h1);
+		this.addBreadCrumb('Extended DAO Stub Builder');
 		
 		var content = new Element('div',{'class' : 'content'}).inject(this.content);
 		
-		new Element('h2',{'text' : 'Extended DAO Stub Builder'}).inject(content);
-		new Element('br').inject(content);
+		new Element('pre',{'text':resp.stub.html + "\n\n"}).inject(content);
 		
-		new Element('pre',{'text':resp.stub.html + "\n\n\n"}).inject(content);
+	},
+	
+	showTableStructure: function(resp)
+	{
+		this.addBreadCrumb('Table Structure');
+	},
+	
+	buildTitle: function()
+	{
+		this.h1 = new Element('h1').inject(this.content,'top');
+		
+		if(this.database != null)
+		{
+			this.addBreadCrumb('Databases','#/');
+			if(this.table != null)
+			{
+				this.addBreadCrumb(this.database,'#/database/' + this.database);
+				
+				if(this.action != null)
+				{
+					this.addBreadCrumb(this.table,'#/database/' + this.database + '/table/' + this.table);
+				}
+				else
+				{
+					this.addBreadCrumb(this.table);
+				}
+			}
+			else
+			{
+				this.addBreadCrumb(this.database);
+			}
+		}
+		else
+		{
+			this.addBreadCrumb('Select a Database');
+		}
+		
+	},
+	
+	addBreadCrumb: function(text,url)
+	{
+		if(this.h1.getChildren().length != 0)
+		{
+			new Element('span',{'text' : " > "}).inject(this.h1);
+		}
+		
+		if(url != null)
+		{
+			var link = new Element('a',{'text' : text}).inject(this.h1);
+			link.addEvent('click',function(){window.location = url;}.bind(this));
+		}
+		else
+		{
+			new Element('span',{'text' : text}).inject(this.h1);
+		}
+		
 		
 	}
 	

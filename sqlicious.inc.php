@@ -9,4 +9,15 @@ require_once(SQLICIOUS_INCLUDE_PATH.'/classes/class.DatabaseProcessor.php');
 require_once(SQLICIOUS_INCLUDE_PATH.'/classes/class.DataAccessObject.php');
 require_once(SQLICIOUS_INCLUDE_PATH.'/classes/class.DataAccessObjectFactory.php');
 
+// configuration file
+if(file_exists(SQLICIOUS_INCLUDE_PATH."/config.inc.php"))
+{ 
+	require_once(SQLICIOUS_INCLUDE_PATH."/config.inc.php");
+}
+else
+{
+	throw new Exception("SQLicious configuration file (" . SQLICIOUS_INCLUDE_PATH."/config.inc.php) not found. ");
+}
+
+
 ?>

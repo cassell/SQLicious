@@ -14,12 +14,12 @@ if($db != null)
 		$resp['object']['html'] = '';
 		
 		$resp['className'] = ucfirst(SQLiciousGenerator::toFieldCase($table));
-		$resp['include'] = $tools->getDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table).'DaoObject'));
+//		$resp['include'] = $tools->getDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table).'DaoObject'));
 		
 		$resp['stub']['html'] .= "<?php" . "\n";
-		$resp['stub']['html'] .= $tools->getDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table).'DaoFactory')) . "\n";
-		$resp['stub']['html'] .= $tools->getDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table).'DaoObject')) . "\n";
-		$resp['stub']['html'] .= "\n";
+//		$resp['stub']['html'] .= $tools->getDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table).'DaoFactory')) . "\n";
+//		$resp['stub']['html'] .= $tools->getDaoClassRequireOnce($db,ucfirst(SQLiciousGenerator::toFieldCase($table).'DaoObject')) . "\n";
+//		$resp['stub']['html'] .= "\n";
 		$resp['stub']['html'] .= "\n";
 		$resp['stub']['html'] .= "class " . $resp['className'] . "Factory extends " . $resp['className'] . "DaoFactory" . "\n";
 		$resp['stub']['html'] .= "{" . "\n";

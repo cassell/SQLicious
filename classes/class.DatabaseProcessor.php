@@ -2,8 +2,6 @@
 
 class DatabaseProcessor
 {
-	const DATATBASE_CONFIG_GLOBAL_VARIABLE = 'SQLICIOUS_CONFIG';
-	
 	var $connection;
 	var $databaseNode;
 	
@@ -18,14 +16,14 @@ class DatabaseProcessor
 		{
 			$this->databaseNode = $databaseNodeOrConfigurationName;
 		}
-		else if(is_string($databaseNodeOrConfigurationName) && $GLOBALS[self::DATATBASE_CONFIG_GLOBAL_VARIABLE][$databaseNodeOrConfigurationName] instanceof DatabaseConfiguration)
+		else if(is_string($databaseNodeOrConfigurationName) && $GLOBALS[SQLICIOUS_CONFIG_GLOBAL][$databaseNodeOrConfigurationName] instanceof DatabaseConfiguration)
 		{
-			$this->databaseNode = $GLOBALS[self::DATATBASE_CONFIG_GLOBAL_VARIABLE][$databaseNodeOrConfigurationName]->getMaster();
+			$this->databaseNode = $GLOBALS[SQLICIOUS_CONFIG_GLOBAL][$databaseNodeOrConfigurationName]->getMaster();
 			$this->connectToMySQLDatabase();
 		}
-		else if($GLOBALS[self::DATATBASE_CONFIG_GLOBAL_VARIABLE] != null)
+		else if($GLOBALS[SQLICIOUS_CONFIG_GLOBAL] != null)
 		{
-			$this->databaseNode = reset($GLOBALS[self::DATATBASE_CONFIG_GLOBAL_VARIABLE])->getMaster();
+			$this->databaseNode = reset($GLOBALS[SQLICIOUS_CONFIG_GLOBAL])->getMaster();
 		}
 		else
 		{

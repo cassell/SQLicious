@@ -1,7 +1,6 @@
 <?php
 
 require_once(str_replace("/generator","",dirname(__FILE__))."/sqlicious.inc.php");
-require_once(SQLICIOUS_INCLUDE_PATH."/config.inc.php");
 require_once(SQLICIOUS_INCLUDE_PATH.'/generator/lib/class.SQLiciousGenerator.php');
 
 if(defined("SQLICIOUS_CONFIG_GLOBAL") && array_key_exists(SQLICIOUS_CONFIG_GLOBAL, $GLOBALS))
