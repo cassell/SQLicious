@@ -2,6 +2,8 @@
 
 define("SQLICIOUS_INCLUDE_PATH", dirname(__FILE__));
 define("SQLICIOUS_CONFIG_GLOBAL", "DATABASE_CONFIG");
+define("SQLICIOUS_MYSQL_DATE_FORMAT","Y-m-d");
+define("SQLICIOUS_MYSQL_DATETIME_FORMAT","Y-m-d H:i:s");
 
 require_once(SQLICIOUS_INCLUDE_PATH.'/classes/class.SQLiciousErrorException.php');
 require_once(SQLICIOUS_INCLUDE_PATH.'/classes/class.DatabaseConfiguration.php');
