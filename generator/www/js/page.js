@@ -33,25 +33,12 @@ var Page = new Class
 		
 		new Request.JSONP({'url': 'https://api.github.com/repos/cassell/SQLicious/commits', onSuccess: function(resp){
 			
-			if(resp != null && resp.data != null && resp.data[1] != null && resp.data[1].sha != LastGitHubVersion)
+			if(resp != null && resp.data != null && resp.data[0] != null)
 			{
-				githubLinkText.set('text','Get the Latest Update on GitHub');
-				githubLink.setStyle('background','#E5FFE5');
-				
-				if(resp.data[0] != null && resp.data[0].commit && resp.data[0].commit.author != null)
-				{
-					githubLink.set('title','SQLicious was last updated on ' + Date.parse(resp.data[0].commit.author.date));
-				}
+				githubLink.set('title','SQLicious was last updated on ' + Date.parse(resp.data[0].commit.author.date));
 			}
-			else
-			{
-				githubLink.set('title','You have the latest version of SQLicious.\nSQLicious was last updated on ' + Date.parse(resp.data[0].commit.author.date));
-			}
-				
 				
 		}}).send();
-			
-			
 		
 		new Element('div',{'class' : 'cb'}).inject(header);
 		
@@ -64,7 +51,6 @@ var Page = new Class
 		var footer = new Element('div',{'class' : 'footer'});
 		
 		return footer;
-		
 	},
 	
 	parseBrowserURL: function()

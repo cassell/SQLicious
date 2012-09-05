@@ -299,24 +299,6 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		}
     }
     
-    /*
-    function groupedCount()
-    {
-        
-    }
-    
-    
-    private function getGroupedFieldFunctionValue($function,$field)
-    {
-        
-    }
-    
-    private function getGroupedFieldFunctionSQL($function,$field)
-    {
-        return implode(" ",array("SELECT " . $function . "(" . $field . ") FROM " . $this->getTableName(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause()));
-    }
-    */
-    
 	function getCountNoLimit()
 	{
 		// no order by or limit clauses
@@ -375,9 +357,6 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	function setNumberOfPages($val) { $this->numberOfPages = $val; }
 	function getNumberOfPages() { return $this->numberOfPages; }
     
-    
-    
-	
 	// clear	
 	protected function clearBindings()
 	{

@@ -8,8 +8,6 @@ class SQLiciousPage
 	const FAVICON_PNG = 'img/favicon.png';
 	const TOUCH_ICON_PNG = 'img/touch_icon.png';
 	
-	const GITHUB_VERSION = 'c3c3d03d7ea063ce2614a9a168a3fefe16cab3fe';
-	
 	function __construct($sqlicious)
 	{
 		$this->sqlicious = $sqlicious;
@@ -19,7 +17,6 @@ class SQLiciousPage
 		$this->insertScript('js/mootools_sqlicious.js');
 		
 		$this->insertScript('js/onhashchange.js');
-		$this->insertJavaScriptBlock('var LastGitHubVersion = \'' . static::GITHUB_VERSION . '\';');
 		
 		$this->insertScript('js/page.js');
 		
