@@ -701,7 +701,7 @@ class InBinding extends SQLString
 		}
 		else
 		{
-			die("InBinding array is empty");
+			throw new SQLiciousErrorException("The array passed to the InBinding is empty");
 		}
 	}
 }
@@ -728,7 +728,7 @@ class NotInBinding extends SQLString
 		}
 		else
 		{
-			die("NotInBinding array is empty");
+			throw new SQLiciousErrorException("The array passed to the NotInBinding is empty");
 		}
 	}
 }

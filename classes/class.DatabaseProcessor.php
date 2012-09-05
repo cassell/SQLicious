@@ -185,6 +185,7 @@ class DatabaseProcessor
 	}
 	
 	// convert timezones
+	/*
 	function convertTimezone($dateTime,$sourceTimezone,$destTimezone)
 	{
 		if(!is_integer($dateTime))
@@ -197,8 +198,6 @@ class DatabaseProcessor
 		else
 		{
 			$result = $this->getMySQLResult("SELECT CONVERT_TZ('2004-01-01 12:00:00','" . $this->escapeString($sourceTimezone) . "','" . $this->escapeString($destTimezone) . "');");
-			die("convertTimezone");
-			/*
 			if($result != null)
 			{
 				$row = mysql_fetch_row($result);
@@ -207,13 +206,13 @@ class DatabaseProcessor
 	
 				return strtotime(reset($row));
 			}
-			 */
 				
 		}
 	
 		// failed
 		return false;
 	}
+	*/
 	
 	function getNumberOfRows()
 	{
@@ -269,10 +268,9 @@ class DatabaseProcessor
 		});
 	}
 	
+	/*
 	function explain()
 	{
-		die("explain");
-		
 		$explain = $this->getMySQLResult('EXPLAIN ' . $this->getSQL());
 	
 		$params = mysql_fetch_assoc($explain);
@@ -281,6 +279,7 @@ class DatabaseProcessor
 	
 		return $params;
 	}
+	 */
 	
 	function queryTest()
 	{

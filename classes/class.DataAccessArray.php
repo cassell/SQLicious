@@ -77,10 +77,10 @@ class DataAccessArray implements ArrayAccess
 	}
 	
 	// return the row values seperated by commas
-	function toCSV()
-	{
-		die("toCSV");
-	}
+//	function toCSV()
+//	{
+//		throw new SQLiciousErrorException("toCSV has not been implemented on DataAccessArray");
+//	}
 	
 	// utils
 	static function toFieldCase($val)
