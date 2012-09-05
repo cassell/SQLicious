@@ -1,5 +1,10 @@
 <?php
 
+if(defined("SQLICIOUS_THIS_IS_PRODUCTION"))
+{
+	exit;
+}
+
 require_once(str_replace("/generator","",dirname(__FILE__))."/sqlicious.inc.php");
 require_once(SQLICIOUS_INCLUDE_PATH.'/generator/lib/class.SQLiciousGenerator.php');
 

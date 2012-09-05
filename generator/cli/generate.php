@@ -2,7 +2,7 @@
 
 require_once('../generator.config.inc.php');
 
-echo "Command Line Generator Coming Soon....";
+echo "\n\nCommand Line Generator Coming Soon....\n\n";
 
 exit;
 
