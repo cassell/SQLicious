@@ -409,7 +409,7 @@ class SQLiciousGenerator
 			$this->setErrorMessage('File is unwritable: ' . $fileName);
 			return false;
 		}
-		else if(file_put_contents($fileName,$contents) !== FALSE)
+		else if(@file_put_contents($fileName,$contents) !== FALSE)
 		{
 			chmod($fileName,0777);
 			return true;
