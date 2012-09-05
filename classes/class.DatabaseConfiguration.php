@@ -4,6 +4,7 @@ class DatabaseConfiguration
 {
 	private $master;
 	private $slaves = array();
+	private $generatorCodeDestinationDirectory = '';
 
 	function __construct()
 	{
@@ -63,6 +64,9 @@ class DatabaseConfiguration
 			return array_rand($this->slaves,1);
 		}
 	}
+	
+	function setGeneratorCodeDestinationDirectory($val) { $this->generatorCodeDestinationDirectory = $val; }
+	function getGeneratorCodeDestinationDirectory() { return $this->generatorCodeDestinationDirectory; }
 	
 }
 
