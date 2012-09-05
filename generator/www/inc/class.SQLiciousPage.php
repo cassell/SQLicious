@@ -25,8 +25,6 @@ class SQLiciousPage
 		
 		$this->insertJavascriptData($this->getConfigData(),'config');
 		
-		
-		
 	}
 	
 	function getConfigData()

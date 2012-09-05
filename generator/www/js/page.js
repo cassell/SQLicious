@@ -307,7 +307,7 @@ var Page = new Class
 //		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 //		new Element('div',{'text' : 'Query Builder'}).inject(div);
 //		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/query'; }.bind(this));
-//		
+		
 		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
 		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 		new Element('div',{'text' : 'Extended Object Stubs'}).inject(div);
