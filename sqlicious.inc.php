@@ -3,6 +3,7 @@
 define("SQLICIOUS_INCLUDE_PATH", dirname(__FILE__));
 define("SQLICIOUS_CONFIG_GLOBAL", "DATABASE_CONFIG");
 
+require_once(SQLICIOUS_INCLUDE_PATH.'/classes/class.SQLiciousErrorException.php');
 require_once(SQLICIOUS_INCLUDE_PATH.'/classes/class.DatabaseConfiguration.php');
 require_once(SQLICIOUS_INCLUDE_PATH.'/classes/class.DataAccessArray.php');
 require_once(SQLICIOUS_INCLUDE_PATH.'/classes/class.DatabaseProcessor.php');
@@ -16,7 +17,7 @@ if(file_exists(SQLICIOUS_INCLUDE_PATH."/config.inc.php"))
 }
 else
 {
-	throw new Exception("SQLicious configuration file (" . SQLICIOUS_INCLUDE_PATH."/config.inc.php) not found. ");
+	throw new SQLiciousErrorException("SQLicious configuration file (" . SQLICIOUS_INCLUDE_PATH."/config.inc.php) not found.");
 }
 
 

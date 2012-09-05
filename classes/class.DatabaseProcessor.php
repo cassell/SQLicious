@@ -27,7 +27,7 @@ class DatabaseProcessor
 		}
 		else
 		{
-			throw new ErrorException("SQLicious Configuration Error",null,E_USER_ERROR);
+			throw new SQLiciousErrorException("SQLicious Configuration Error");
 		}
 		
 		// open connection
@@ -37,7 +37,7 @@ class DatabaseProcessor
 		}
 		else
 		{
-			throw new ErrorException("SQLicious Configuration Missing",null,E_USER_ERROR);
+			throw new SQLiciousErrorException("SQLicious Configuration Missing");
 		}
 		
 	}
@@ -158,7 +158,7 @@ class DatabaseProcessor
 		}
 		catch(ErrorException $e)
 		{
-			throw new ErrorException("SQLicious DatabaseProcessor SQL Error. MySQL Query Failed: " . htmlentities($sql) . '\n\nReason given ' . $e . '\n\n',null,E_USER_ERROR);
+			throw new SQLiciousErrorException("SQLicious DatabaseProcessor SQL Error. MySQL Query Failed: " . htmlentities($sql) . '\n\nReason given ' . $e . '\n\n');
 		}
 	}
 	
@@ -314,7 +314,7 @@ class DatabaseProcessor
 		
 		if($this->connection == null || $this->connection->connect_errno)
 		{
-			throw new ErrorException("SQLicioius Connection Errro",null,E_USER_ERROR);
+			throw new SQLiciousErrorException("SQLicioius Connection Errro");
 		}
 	}
 	
