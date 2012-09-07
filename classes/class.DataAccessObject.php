@@ -149,13 +149,21 @@ abstract class DataAccessObject extends DataAccessArray
 	{
 		if($val != "" && $val != '')
 		{
-			$this->setFieldValue($fieldName, $val);
+			if(is_integer($val))
+			{
+				$this->setFieldValue($fieldName,date(SQLICIOUS_MYSQL_DATETIME_FORMAT,$val));
+			}
+			else
+			{
+				$this->setFieldValue($fieldName, $val);
+			}
 		}
 		else
 		{
 			$this->setFieldValue($fieldName, NULL);
 		}
 	}
+	
 	
 }
 
