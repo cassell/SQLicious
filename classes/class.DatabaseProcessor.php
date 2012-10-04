@@ -139,7 +139,7 @@ class DatabaseProcessor
 	
 	function update($sql)
 	{
-		$result = $this->getMySQLResult($sql);
+		$this->result = $this->getMySQLResult($sql);
 		$this->freeResult();
 	}
 	
