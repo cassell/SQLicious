@@ -72,6 +72,13 @@ class DatabaseConfiguration
 
 class DatabaseNode
 {
+	var $MySQLDatabaseName;
+	var $serverHost;
+	var $serverUserName;
+	var $serverPassword;
+	var $port;
+	var $socket;
+	
 	function __construct() { }
 	
 	function setMySQLDatabaseName($val) { $this->MySQLDatabaseName = $val; }
