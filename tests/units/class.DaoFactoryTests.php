@@ -7,157 +7,152 @@ class DaoFactoryTests extends \Enhance\TestFixture
 {
 	// http://www.enhance-php.com/Content/Quick-Start-Guide/
 
-	public function countTotalRows()
-	{
-		$f = new ZipcodesDaoFactory();
-		
-		\Enhance\Assert::areIdentical($f->count(), 33178);
-	}
-	
-	
 	function findId()
 	{
-		\Enhance\Assert::isTrue(false);
+		$f = new ZipcodesDaoFactory();
+		$beverlyHills = $f->findId(1968);
+		
+		\Enhance\Assert::areIdentical('90210',$beverlyHills->getZipcode());
 	}
 	
 	
 	// return all objects
 	function findAll()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	// generate the select clause from $this->fields
 	function getSelectClause()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
     
     function getFromClause()
     {
-       \Enhance\Assert::isTrue(false);
+        \Enhance\Assert::inconclusive();
     }
 	
 	function setSelectFields()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	function addSelectField()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	// joins
 	function join()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	
 	// group by
 	function groupBy()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	// order by
 	function orderBy()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	function orderByAsc()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	// limits
 	function limit()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	function count()
 	{
-        \Enhance\Assert::isTrue(false);
+       $f = new ZipcodesDaoFactory();
+	   \Enhance\Assert::areIdentical($f->count(), 33178);
+	   
+	   
+	   $f = new ZipcodesDaoFactory();
+	   $f->addBinding("state LIKE 'PA'");
+	   \Enhance\Assert::areIdentical($f->count(), 1776);
 	}
-    
+		
     function sum()
     {
-         \Enhance\Assert::isTrue(false);
+         \Enhance\Assert::inconclusive();
     }
     
 	function paging()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
     
     public function truncateTable()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
     /* below are functions that are slowly being phased out */
     // used to do custom queries, uses the same get select clause that the query() method 
 	function find()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
     
     function deleteWhere()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	// find the first object matching the clause
 	function findFirst()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	function findDistinctField()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	function findField()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	function findFirstField()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	function getCount()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	function getMaxField()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	function getSumField()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
     // deprecate old naming convetion
 	function orderByField()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
-	public function countFilteredRows()
-	{
-		$f = new ZipcodesDaoFactory();
-		$f->addBinding("state LIKE 'PA'");
-		
-		\Enhance\Assert::areIdentical($f->count(), 1776);
-	}
+	
 	
 	public function equalsBinding()
 	{

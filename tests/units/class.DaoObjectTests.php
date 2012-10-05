@@ -8,42 +8,50 @@ class DaoObjectTests extends \Enhance\TestFixture
 	
 	function getDatabaseName()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 
 	static function findId()
 	{
-		\Enhance\Assert::isTrue(false);
+		$f = new ZipcodesDaoFactory();
+		$beverlyHills = ZipcodesDaoObject::findId(1968);
+		
+		\Enhance\Assert::areIdentical('90210',$beverlyHills->getZipcode());
 	}
 	
 	function cloneNewObject()
 	{
-		\Enhance\Assert::isTrue(false);
+		$f = new ZipcodesDaoFactory();
+		$beverlyHills = ZipcodesDaoObject::findId(1968);
+		
+		$notBeverlyHills = $beverlyHills->cloneNewObject();
+		
+		\Enhance\Assert::areIdentical('90210',$notBeverlyHills->getZipcode());
 	}
 	
 	function save()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	function delete()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	function toJSON()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	function setFieldValue()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 	function setDatetimeFieldValue()
 	{
-		\Enhance\Assert::isTrue(false);
+		\Enhance\Assert::inconclusive();
 	}
 	
 }
