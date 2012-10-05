@@ -185,34 +185,32 @@ class DatabaseProcessor
 	}
 	
 	// convert timezones
-	/*
-	function convertTimezone($dateTime,$sourceTimezone,$destTimezone)
-	{
-		if(!is_integer($dateTime))
-		{
-			if(strtotime($dateTime) !== false)
-			{
-				return $this->convertTimezone(strtotime($dateTime),$sourceTimezone,$destTimezone);
-			}
-		}
-		else
-		{
-			$result = $this->getMySQLResult("SELECT CONVERT_TZ('2004-01-01 12:00:00','" . $this->escapeString($sourceTimezone) . "','" . $this->escapeString($destTimezone) . "');");
-			if($result != null)
-			{
-				$row = mysql_fetch_row($result);
-	
-				mysql_free_result($result);
-	
-				return strtotime(reset($row));
-			}
-				
-		}
-	
-		// failed
-		return false;
-	}
-	*/
+//	function convertTimezone($dateTime,$sourceTimezone,$destTimezone)
+//	{
+//		if(!is_integer($dateTime))
+//		{
+//			if(strtotime($dateTime) !== false)
+//			{
+//				return $this->convertTimezone(strtotime($dateTime),$sourceTimezone,$destTimezone);
+//			}
+//		}
+//		else
+//		{
+//			$result = $this->getMySQLResult("SELECT CONVERT_TZ('2004-01-01 12:00:00','" . $this->escapeString($sourceTimezone) . "','" . $this->escapeString($destTimezone) . "');");
+//			if($result != null)
+//			{
+//				$row = mysql_fetch_row($result);
+//	
+//				mysql_free_result($result);
+//	
+//				return strtotime(reset($row));
+//			}
+//				
+//		}
+//	
+//		// failed
+//		return false;
+//	}
 	
 	function getNumberOfRows()
 	{
@@ -225,7 +223,11 @@ class DatabaseProcessor
 		{
 			try
 			{
-				$this->result->free();
+				if($this->result instanceof mysqli_result)
+				{
+					$this->result->free();
+				}
+				
 			}
 			catch(ErrorException $e)
 			{
@@ -259,53 +261,51 @@ class DatabaseProcessor
 		echo "]";
 	}
 	
-	function outputCSV()
-	{
-		$this->unbufferedProcess(function($obj)
-		{
-			echo $obj->toCSV();
-			echo "\n";
-		});
-	}
+//	function outputCSV()
+//	{
+//		$this->unbufferedProcess(function($obj)
+//		{
+//			echo $obj->toCSV();
+//			echo "\n";
+//		});
+//	}
 	
-	/*
-	function explain()
-	{
-		$explain = $this->getMySQLResult('EXPLAIN ' . $this->getSQL());
+//	function explain()
+//	{
+//		$explain = $this->getMySQLResult('EXPLAIN ' . $this->getSQL());
+//	
+//		$params = mysql_fetch_assoc($explain);
+//	
+//		@mysql_free_result($explain);
+//	
+//		return $params;
+//	}
 	
-		$params = mysql_fetch_assoc($explain);
-	
-		@mysql_free_result($explain);
-	
-		return $params;
-	}
-	 */
-	
-	function queryTest()
-	{
-		echo '<pre>';
-	
-		echo 'SQL: ' . htmlentities($this->getSQL());
-	
-		echo "\n\n";
-	
-		echo 'EXPLAIN: ' . htmlentities(print_r($this->explain(),true));
-	
-		echo "\n\n";
-	
-		$result = $this->query();
-	
-		echo 'ROW COUNT: '  . htmlentities($this->getNumberOfRows(),true);
-	
-		echo "\n\n";
-	
-		echo 'FIRST ROW: ' . htmlentities(print_r(reset($this->getArray()),true));
-	
-		$this->freeResult();
-	
-		echo '</pre>';
-	
-	}
+//	function queryTest()
+//	{
+//		echo '<pre>';
+//	
+//		echo 'SQL: ' . htmlentities($this->getSQL());
+//	
+//		echo "\n\n";
+//	
+//		echo 'EXPLAIN: ' . htmlentities(print_r($this->explain(),true));
+//	
+//		echo "\n\n";
+//	
+//		$result = $this->query();
+//	
+//		echo 'ROW COUNT: '  . htmlentities($this->getNumberOfRows(),true);
+//	
+//		echo "\n\n";
+//	
+//		echo 'FIRST ROW: ' . htmlentities(print_r(reset($this->getArray()),true));
+//	
+//		$this->freeResult();
+//	
+//		echo '</pre>';
+//	
+//	}
 	
 	private function connectToMySQLDatabase($new = false)
 	{
