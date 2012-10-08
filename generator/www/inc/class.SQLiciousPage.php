@@ -4,6 +4,7 @@ class SQLiciousPage
 {
 	var $scripts;
 	var $styleSheets;
+	var $htmlTitle = 'SQLicious';
 	
 	const FAVICON_PNG = 'img/favicon.png';
 	const TOUCH_ICON_PNG = 'img/touch_icon.png';

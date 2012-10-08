@@ -6,6 +6,7 @@ var Page = new Class
 		this.content = $('content');
 		this.header = $('pageTop');
 		this.footer = $('pageBottom');
+		this.showTitle = true;
 	},
 	
 	getHeader: function()
@@ -73,14 +74,17 @@ var Page = new Class
 		this.database = null;
 		this.table = null;
 		this.action = null;
+		this.showTitle = true;
 		
 		if(relativeURL == "/tools")
 		{
 			this.codingTools();
+			this.showTitle = false;
 		}
 		else if(relativeURL == "/tools/server")
 		{
 			this.severCodingTools();
+			this.showTitle = false;
 		}
 		else if(relativeURL == "/regenerate")
 		{
@@ -132,6 +136,10 @@ var Page = new Class
 			else if(this.action == "extensions")
 			{
 				new Request.WithErrorHandling({'url': this.getAjaxUrl('stub_builder.php'), onSuccess: this.showExtendedObjectStubBuilder.bind(this)}).send(Object.toQueryString({'database' : this.database, 'table' : this.table}));
+			}
+			else if(this.action == "api")
+			{
+				this.showAPIOptions();
 			}
 			else
 			{
@@ -294,6 +302,22 @@ var Page = new Class
 		}
 	},
 	
+	showAPIOptions: function()
+	{
+		var content = new Element('div',{'styles' : {'margin':'20px'}}).inject(this.content);
+		
+		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+		new Element('div',{'text' : 'Delete API'}).inject(div);
+		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/delete';}.bind(this));
+		
+		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+		new Element('div',{'text' : 'Save API'}).inject(div);
+		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/save';}.bind(this));
+	
+	},
+	
 	showTableObtions: function()
 	{
 		var content = new Element('div',{'styles' : {'margin':'20px'}}).inject(this.content);
@@ -308,10 +332,18 @@ var Page = new Class
 //		new Element('div',{'text' : 'Query Builder'}).inject(div);
 //		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/query'; }.bind(this));
 		
+		
 		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
 		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 		new Element('div',{'text' : 'Extended Object Stubs'}).inject(div);
 		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/extensions';}.bind(this));
+
+		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+		new Element('div',{'text' : 'API Builder'}).inject(div);
+		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api';}.bind(this));
+
+
 
 		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
 		new Element('img',{'src' : 'img/cogs_48.png'}).inject(div);
@@ -319,6 +351,7 @@ var Page = new Class
 		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/structure'; }.bind(this));
 		
 	},
+	
 	
 	showNewObjectBuilder: function(resp)
 	{
@@ -446,7 +479,7 @@ var Page = new Class
 				this.addBreadCrumb(this.database);
 			}
 		}
-		else
+		else if(this.showTitle)
 		{
 			this.addBreadCrumb('Select a Database');
 		}
