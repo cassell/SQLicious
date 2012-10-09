@@ -273,6 +273,7 @@ class SQLiciousGeneratorDatabase
 					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "NotFalseBinding(){ \$this->addBinding(new NotEqualsBinding('" . $tableName . "." . $column['Field'] . "',0));  }";
 					$bindingsPack[] = "\n";
 				}
+				
 			}
 		}
 		
@@ -292,6 +293,22 @@ class SQLiciousGeneratorDatabase
 		$dp = new DatabaseProcessor($this->getDatabaseName());
 		$dp->setSQL("SHOW COLUMNS FROM " . $dp->escapeString($tableName) . "");
 		return $dp->getArray();
+	}
+	
+	
+	function getStubFactoryContents()
+	{
+		
+	}
+	
+	function getStubObjectContents()
+	{
+		
+	}
+	
+	function getStubCombinedFileContents()
+	{
+		
 	}
 	
 }

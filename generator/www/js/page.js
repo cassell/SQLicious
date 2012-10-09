@@ -115,6 +115,35 @@ var Page = new Class
 			new Request.WithErrorHandling({'url': this.getAjaxUrl('generate.php?database='+database), onSuccess: function(resp) {window.location = '#/';}}).send();
 			
 		}
+		else if(relativeURL.match(/\/database\/(\w+)\/table\/(\w+)\/action\/api\/(\w+)/))
+		{
+			var matches = relativeURL.match(/\/database\/(\w+)\/table\/(\w+)\/action\/api\/(\w+)/);
+			this.database = matches[1];
+			this.table = matches[2];
+			this.action = 'api';
+			var api = matches[3];
+			
+			if(api == "save")
+			{
+				new Request.WithErrorHandling({'url': this.getAjaxUrl('api_save.php'), onSuccess: this.showApiBuilderResult.bind(this)}).send(Object.toQueryString({'database' : this.database, 'table' : this.table}));
+			}
+			else if(api == "list")
+			{
+				new Request.WithErrorHandling({'url': this.getAjaxUrl('api_list.php'), onSuccess: this.showApiBuilderResult.bind(this)}).send(Object.toQueryString({'database' : this.database, 'table' : this.table}));
+			}
+			else if(api == "get")
+			{
+				new Request.WithErrorHandling({'url': this.getAjaxUrl('api_get.php'), onSuccess: this.showApiBuilderResult.bind(this)}).send(Object.toQueryString({'database' : this.database, 'table' : this.table}));
+			}
+			else if(api == "delete")
+			{
+				new Request.WithErrorHandling({'url': this.getAjaxUrl('api_delete.php'), onSuccess: this.showApiBuilderResult.bind(this)}).send(Object.toQueryString({'database' : this.database, 'table' : this.table}));
+			}
+			else if(api == "search")
+			{
+				new Request.WithErrorHandling({'url': this.getAjaxUrl('api_search.php'), onSuccess: this.showApiBuilderResult.bind(this)}).send(Object.toQueryString({'database' : this.database, 'table' : this.table}));
+			}
+		}
 		else if(relativeURL.match(/\/database\/(\w+)\/table\/(\w+)\/action\/(\w+)/))
 		{
 			this.database = relativeURL.match(/\/database\/(\w+)\/table\/(\w+)\/action\/(\w+)/)[1];
@@ -304,18 +333,35 @@ var Page = new Class
 	
 	showAPIOptions: function()
 	{
-		var content = new Element('div',{'styles' : {'margin':'20px'}}).inject(this.content);
+		alert("Not yet implemented");
 		
-		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
-		new Element('div',{'text' : 'Delete API'}).inject(div);
-		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/delete';}.bind(this));
+//		var content = new Element('div',{'styles' : {'margin':'20px'}}).inject(this.content);
+//		
+//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+//		new Element('div',{'text' : 'Save API'}).inject(div);
+//		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/save';}.bind(this));
+//		
+//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+//		new Element('div',{'text' : 'List API'}).inject(div);
+//		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/list';}.bind(this));
+//		
+//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+//		new Element('div',{'text' : 'Get API'}).inject(div);
+//		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/get';}.bind(this));
+//		
+//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+//		new Element('div',{'text' : 'Delete API'}).inject(div);
+//		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/delete';}.bind(this));
+//		
+//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+//		new Element('div',{'text' : 'Search API'}).inject(div);
+//		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/search';}.bind(this));
 		
-		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
-		new Element('div',{'text' : 'Save API'}).inject(div);
-		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/save';}.bind(this));
-	
 	},
 	
 	showTableObtions: function()
@@ -327,12 +373,6 @@ var Page = new Class
 		new Element('div',{'text' : 'Object Creation'}).inject(div);
 		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/new';}.bind(this));
 		
-//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
-//		new Element('div',{'text' : 'Query Builder'}).inject(div);
-//		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/query'; }.bind(this));
-		
-		
 		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
 		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 		new Element('div',{'text' : 'Extended Object Stubs'}).inject(div);
@@ -342,8 +382,6 @@ var Page = new Class
 		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
 		new Element('div',{'text' : 'API Builder'}).inject(div);
 		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api';}.bind(this));
-
-
 
 		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
 		new Element('img',{'src' : 'img/cogs_48.png'}).inject(div);
@@ -454,6 +492,13 @@ var Page = new Class
 			}
 	},
 	
+	showApiBuilderResult: function(resp)
+	{
+		
+		
+		
+	},
+	
 	buildTitle: function()
 	{
 		this.h1 = new Element('h1').inject(this.content,'top');
@@ -468,6 +513,11 @@ var Page = new Class
 				if(this.action != null)
 				{
 					this.addBreadCrumb(this.table,'#/database/' + this.database + '/table/' + this.table);
+					
+					if(this.action == 'api')
+					{
+						this.addBreadCrumb('API','#/database/' + this.database + '/table/' + this.table + '/action/api');
+					}
 				}
 				else
 				{
