@@ -12,7 +12,7 @@ abstract class DataAccessObject extends DataAccessArray
 	abstract function getDatabaseName();
 	abstract function getTableName();
 	abstract function getIdField();
-	abstract function getFactory();
+	static function getFactory() {} 
 	abstract function getDefaultRow();
 	
 	function __construct($row = null)

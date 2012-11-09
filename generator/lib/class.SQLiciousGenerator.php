@@ -149,7 +149,7 @@ class SQLiciousGeneratorDatabase
 		$contents .= "\n";
 		
 		// getFactory
-		$contents .= "\tfunction getFactory()\n";
+		$contents .= "\tstatic function getFactory()\n";
 		$contents .= "\t{\n";
 		$contents .= "\t\treturn new " . $className . "DaoFactory();\n";
 		$contents .= "\t}\n";
@@ -273,7 +273,6 @@ class SQLiciousGeneratorDatabase
 					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "NotFalseBinding(){ \$this->addBinding(new NotEqualsBinding('" . $tableName . "." . $column['Field'] . "',0));  }";
 					$bindingsPack[] = "\n";
 				}
-				
 			}
 		}
 		
@@ -293,22 +292,6 @@ class SQLiciousGeneratorDatabase
 		$dp = new DatabaseProcessor($this->getDatabaseName());
 		$dp->setSQL("SHOW COLUMNS FROM " . $dp->escapeString($tableName) . "");
 		return $dp->getArray();
-	}
-	
-	
-	function getStubFactoryContents()
-	{
-		
-	}
-	
-	function getStubObjectContents()
-	{
-		
-	}
-	
-	function getStubCombinedFileContents()
-	{
-		
 	}
 	
 }

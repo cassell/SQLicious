@@ -85,8 +85,6 @@ class DataAccessArray implements ArrayAccess
 	// utils
 	static function toFieldCase($val)
 	{
-		$result = '';
-		
 		$segments = explode("_", $val);
 		for ($i = 0; $i < count($segments); $i++)
 		{
