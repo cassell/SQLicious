@@ -694,7 +694,14 @@ class InBinding extends SQLString
 		{
 			foreach($this->array as $key => $item)
 			{
-				$this->array[$key] = "'".$factory->escapeString($item)."'";
+				if(is_numeric($item))
+				{
+					$this->array[$key] = (int)$item;
+				}
+				else
+				{
+					$this->array[$key] = "'".$factory->escapeString($item)."'";
+				}
 			}
 			
 			return $factory->escapeString($this->field) . " IN (" . implode(",",$this->array) . ")";

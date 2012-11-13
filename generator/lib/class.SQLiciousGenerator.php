@@ -237,7 +237,17 @@ class SQLiciousGenerator
 					$this->setErrorMessage('Unable to create database destination directory.');
 					return false;
 				}
-				chmod($database->getGeneratorDestinationDirectory(),0777);
+				
+				try
+				{
+					chmod($database->getGeneratorDestinationDirectory(),0777);
+					chown($database->getGeneratorDestinationDirectory(),'_www');
+				}
+				catch(Exception $e)
+				{
+					// do nothing
+				}
+				
 			}
 			else
 			{
@@ -261,7 +271,15 @@ class SQLiciousGenerator
 		}
 		else if(@file_put_contents($fileName,$contents) !== FALSE)
 		{
-			chmod($fileName,0777);
+			try
+			{
+				@chmod($fileName,0777);
+			}
+			catch(Exception $e)
+			{
+				// do nothing
+			}
+			
 			return true;
 		}
 		else
