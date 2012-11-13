@@ -4,41 +4,44 @@ require_once('../generator.config.inc.php');
 
 array_shift($argv);
 
-$database = $argv[0];
-$table = $argv[1];
-$action = $argv[2];
+$databaseArg = $argv[0];
+$tableArg = $argv[1];
+$actionArg = $argv[2];
+$actionParamArg = $argv[3];
 
-if($generator->generate())
+if($databaseArg)
 {
-	echo "\n";
-	echo "Generation Successful.";
-	echo "\n";
+	$database = null;
+	foreach($generator->databases as $d)
+	{
+		if($d->databaseName == $databaseArg)
+		{
+			$database = $generator->databases[$db->databaseName];
+		}
+	}
+}
+
+if($database != null && $tableArg)
+{
+	if($actionArg == "extend" || $actionArg == "extended")
+	{
+		echo $database->getExtendedObjectStub($tableArg);
+	}
 }
 else
 {
-	echo "\n";
-	echo "Generation Failed.";
-	echo "\n";
+	if($generator->generate())
+	{
+		echo "\n";
+		echo "Generation Successful.";
+		echo "\n";
+	}
+	else
+	{
+		echo "\n";
+		echo "Generation Failed.";
+		echo "\n";
+	}
 }
-
-exit;
-
-
-//foreach($generator->databases as $db)
-//{
-//	if($db->databaseName != $_GET['database'])
-//	{
-//		unset($generator->databases[$db->databaseName]);
-//	}
-//	else
-//	{
-//		$resp['databaseName'] = $db->databaseName;
-//	}
-//
-//}
-
-
-
-
 
 ?>

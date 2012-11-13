@@ -60,6 +60,12 @@ class SQLiciousGeneratorDatabase
 		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/dao_factory.template'),$this->getTemplatingDataFromTableName($tableName));
 	}
 	
+	function getExtendedObjectStub($tableName)
+	{
+		$m = new Mustache_Engine();
+		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/extended_stub.template'),$this->getTemplatingDataFromTableName($tableName));
+	}
+	
 	function getTemplatingDataFromTableName($tableName)
 	{
 		$idFieldName = '';

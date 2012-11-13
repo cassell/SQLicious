@@ -456,7 +456,7 @@ var Page = new Class
 		
 		var content = new Element('div',{'class' : 'content'}).inject(this.content);
 		
-		new Element('pre',{'text':resp.stub.html + "\n\n"}).inject(content);
+		new Element('pre',{'text':resp.html + "\n\n"}).inject(content);
 		
 	},
 	
