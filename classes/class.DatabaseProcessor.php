@@ -65,6 +65,19 @@ class DatabaseProcessor
 		return $data;
 	}
 	
+	function getSingleColumnArray($column)
+	{
+		$data = array();
+	
+		$this->process(function($obj) use (&$data,$column)
+		{
+			$t = $obj->toArray();
+			$data[] = $t[$column];
+		});
+	
+		return $data;
+	}
+	
 	// returns an array of rows from the database
 	function getJSON()
 	{
