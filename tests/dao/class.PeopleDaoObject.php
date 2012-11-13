@@ -35,48 +35,32 @@ class PeopleDaoObject extends DataAccessObject
 	{
 		return new PeopleDaoFactory();
 	}
-
+	
 	final function setPeopleId($val) { $this->setFieldValue('people_id',$val); }
 	final function getPeopleId(){ return $this->getFieldValue('people_id'); }
-
+	
 	final function setFirstName($val) { $this->setFieldValue('first_name',$val); }
 	final function getFirstName(){ return $this->getFieldValue('first_name'); }
-
+	
 	final function setLastName($val) { $this->setFieldValue('last_name',$val); }
 	final function getLastName(){ return $this->getFieldValue('last_name'); }
-
+	
 	final function setZipcodeId($val) { $this->setFieldValue('zipcode_id',$val); }
 	final function getZipcodeId(){ return $this->getFieldValue('zipcode_id'); }
-
+	
+	final function setArchived($val) { $this->setFieldValue('archived',$val); }
+	final function getArchived(){ return $this->getFieldValue('archived'); }
+	
 	final function setCreateDate($val) { $this->setDatetimeFieldValue('create_date',$val); }
-	final function getCreateDate($format = null)
-	{
-		if($format == null)
-		{
-			return $this->getFieldValue('create_date');
-		}
-		else
-		{
-			return ($this->getFieldValue('create_date') ? date($format,strtotime($this->getFieldValue('create_date'))) : null);
-		}
-	}
-
+	final function getCreateDate($val) { $this->getDatetimeFieldValue('create_date',$val); }
+	
 	final function setCreateDatetime($val) { $this->setDatetimeFieldValue('create_datetime',$val); }
-	final function getCreateDatetime($format = null)
-	{
-		if($format == null)
-		{
-			return $this->getFieldValue('create_datetime');
-		}
-		else
-		{
-			return ($this->getFieldValue('create_datetime') ? date($format,strtotime($this->getFieldValue('create_datetime'))) : null);
-		}
-	}
+	final function getCreateDatetime($val) { $this->getDatetimeFieldValue('create_datetime',$val); }
+	
 
 	function getDefaultRow()
 	{
-		return array('people_id' => null,'first_name' => null,'last_name' => null,'zipcode_id' => null,'create_date' => null,'create_datetime' => null);
+		return array('people_id' => null, 'first_name' => null, 'last_name' => null, 'zipcode_id' => null, 'archived' => null, 'create_date' => null, 'create_datetime' => null);
 	}
 
 }

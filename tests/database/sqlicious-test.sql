@@ -27,10 +27,12 @@ CREATE TABLE `people` (
   `first_name` varchar(50) DEFAULT NULL,
   `last_name` int(50) DEFAULT NULL,
   `zipcode_id` int(11) DEFAULT NULL,
+  `archived` tinyint(1) DEFAULT NULL,
   `create_date` date DEFAULT NULL,
   `create_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`people_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

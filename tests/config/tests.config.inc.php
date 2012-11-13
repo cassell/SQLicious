@@ -1,14 +1,5 @@
 <?php
 
-/*
-
-$_SERVER['MYSQL_DB_NAME'] = "sqlicious_test";
-$_SERVER['MYSQL_DB_HOST'] = "localhost";
-$_SERVER['MYSQL_USERNAME'] = "username";
-$_SERVER['MYSQL_PASSWORD'] = "password";
-
-*/
-
 define("TESTS_CONFIG_PATH", dirname(__FILE__) . '/');
 
 if(file_exists(TESTS_CONFIG_PATH.'tests.environment.inc.php'))

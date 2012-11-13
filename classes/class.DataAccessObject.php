@@ -164,6 +164,18 @@ abstract class DataAccessObject extends DataAccessArray
 		}
 	}
 	
+	function getDatetimeFieldValue($fieldName,$format = null)
+	{
+		if($format == null)
+		{
+			return $this->getFieldValue($fieldName);
+		}
+		else
+		{
+			return ($this->getFieldValue($fieldName) ? date($format,strtotime($this->getFieldValue($fieldName))) : null);
+		}
+	}
+	
 	
 }
 

@@ -38,8 +38,16 @@ class PeopleDaoFactory extends DataAccessObjectFactory
 
 	function getFields()
 	{
-		return array('people_id', 'first_name', 'last_name', 'zipcode_id', 'create_date', 'create_datetime');
+		return array('people_id', 'first_name', 'last_name', 'zipcode_id', 'archived', 'create_date', 'create_datetime');
 	}
+	
+	final function addArchivedTrueBinding(){ $this->addBinding(new TrueBooleanBinding('people.archived')); }
+	final function addArchivedFalseBinding(){ $this->addBinding(new FalseBooleanBinding('people.archived')); }
+	final function addArchivedNotTrueBinding(){ $this->addBinding(new NotEqualsBinding('people.archived',1)); }
+	final function addArchivedNotFalseBinding(){ $this->addBinding(new NotEqualsBinding('people.archived',0));  }
+
 
 
 }
+
+?>
