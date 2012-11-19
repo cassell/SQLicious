@@ -3,23 +3,23 @@
 SQLicious
 =============
 
-SQLicious is a PHP Database ORM and abstraction layer for MySQL that handles generating
-an object model from your database schema. It's powerful closure based query processing and 
+SQLicious is a PHP ORM that generates an object model from your MySQL database. It's powerful closure based query processing and 
 ability to handle large datasets make it powerful and flexible. Its included web interface and ease of 
 development make it a joy to use.
 
-The ten features that make SQLicious easy and powerful are:
+The features that make SQLicious easy and powerful are:
 
-1. Closure based query processing that lets you handle data efficently and fully customizable manner
-1. Web UI for code generation and fast paced development. It helps with common programming tasks (object creation, class stubs, queries).
+1. Web UI for code generation and fast paced development. It helps with common programming tasks (object creation, APIs, class stubs, queries).
 1. Queries can easily be limited to a subset of fields in a table ("select first_name, last_name from table" vs. "select * from table"). You can still use objects when using a subset of the fields.
 1. UPDATEs are minimal and only changed columns are updated
+1. Closure based query processing that lets you handle data efficently and fully customizable manner
 1. Buffered queries for performance and Unbuffered queries for processing huge datasets while staying memory safe
 1. Factories and Objects are Automatically Generated
 1. You can extend the Factories and Objects to encapsulate the logic of a model
 1. Process any SQL query (multiple tables and joins) using the same closure based process model
 1. Handles the CRUD
 1. Convert Timezones Using MySQL Timezone Tables
+1. Generated Code is creating using Mustache Templates
 
 
 CRUD: Creating, Reading, Updating, and Deleting
@@ -58,7 +58,7 @@ Contains searches for objects
 	
 String based binding clauses
 	
-	// looking for users with example.com in their email
+	// looking for active users
 	$f = new UserFactory();
 	$f->addBinding("user.archived != 1");
 	$users = $f->getObjects();
@@ -69,10 +69,16 @@ Updating a record.
 	$user->setArchived(1);
 	$user->save();
 	
-Deleting a record.
+Deleting a single record.
 	
 	$user = User::findId(18);
 	$user->delete();
+
+Deleting multiple records.
+	// delete archived users
+	$f = new UserFactory();
+	$f->addBinding(new EqualsBinding("archived","1"));
+	$f->delete();
 	
 Limit the query to the first 20 rows
 	
@@ -204,19 +210,7 @@ Count query with custom where clause (returns an integer)
 
 Web UI
 ===========
-
-Selecting a database:
-![Select a database](http://static.andrewcassell.com/github/sqlicious/select_a_db.png)
-
-
-Selecting a table from database:
-![Select a database](http://static.andrewcassell.com/github/sqlicious/select_a_table.png)
-
-Helper page for creating new objects:
-![Creating a new object](http://static.andrewcassell.com/github/sqlicious/new_object_creation.png)
-
-Helper page for extending dao factories and objects:
-![Extended object stubs](http://static.andrewcassell.com/github/sqlicious/extended_dao_object_stub.png)
+[http://demo.sqlicious.com]
 
 
 Converting Timezones
@@ -240,3 +234,7 @@ Requirements
 =============
 * PHP 5.3 or greater
 * MySQL
+
+What next?
+=============
+Profit.

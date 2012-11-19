@@ -18,7 +18,7 @@ Thanks.
 
 ========================================
 
-SQLicious uses Glyphicons images in the web-based code generator. You shouldn't include the web interface as part of your distributed app. But if you do, then you will need to comply with the following license:
+SQLicious uses Glyphicons images in the web-based code generator. You should not need never include the web interface as part of your distributed app. But if you do, then you will need to comply with the following license:
 
 THANK YOU FOR USING GLYPHICONS!
 
