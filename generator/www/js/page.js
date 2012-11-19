@@ -333,34 +333,32 @@ var Page = new Class
 	
 	showAPIOptions: function()
 	{
-		alert("Not yet implemented");
+		var content = new Element('div',{'styles' : {'margin':'20px'}}).inject(this.content);
 		
-//		var content = new Element('div',{'styles' : {'margin':'20px'}}).inject(this.content);
-//		
-//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
-//		new Element('div',{'text' : 'Save API'}).inject(div);
-//		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/save';}.bind(this));
-//		
-//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
-//		new Element('div',{'text' : 'List API'}).inject(div);
-//		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/list';}.bind(this));
-//		
-//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
-//		new Element('div',{'text' : 'Get API'}).inject(div);
-//		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/get';}.bind(this));
-//		
-//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
-//		new Element('div',{'text' : 'Delete API'}).inject(div);
-//		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/delete';}.bind(this));
-//		
-//		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
-//		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
-//		new Element('div',{'text' : 'Search API'}).inject(div);
-//		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/search';}.bind(this));
+		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+		new Element('div',{'text' : 'Save API'}).inject(div);
+		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/save';}.bind(this));
+		
+		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+		new Element('div',{'text' : 'List API'}).inject(div);
+		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/list';}.bind(this));
+		
+		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+		new Element('div',{'text' : 'Get API'}).inject(div);
+		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/get';}.bind(this));
+		
+		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+		new Element('div',{'text' : 'Delete API'}).inject(div);
+		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/delete';}.bind(this));
+		
+		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
+		new Element('img',{'src' : 'img/round_plus_48.png'}).inject(div);
+		new Element('div',{'text' : 'Search API'}).inject(div);
+		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/api/search';}.bind(this));
 		
 	},
 	
@@ -456,7 +454,7 @@ var Page = new Class
 		
 		var content = new Element('div',{'class' : 'content'}).inject(this.content);
 		
-		new Element('pre',{'text':resp.html + "\n\n"}).inject(content);
+		new Element('pre',{'html':resp.html + "\n\n"}).inject(content);
 		
 	},
 	
@@ -494,8 +492,9 @@ var Page = new Class
 	
 	showApiBuilderResult: function(resp)
 	{
+		this.addBreadCrumb(resp.breadCrumb);
 		
-		
+		var content = new Element('div',{'class' : 'content', 'html' : resp.html}).inject(this.content);
 		
 	},
 	

@@ -37,14 +37,14 @@ class {{className}}DaoObject extends DataAccessObject
 	}
 	
 {{#columns}}
-{{^dateTimeField}}
-	final function set{{FieldCase}}($val) { $this->setFieldValue('{{Field}}',$val); }
-	final function get{{FieldCase}}(){ return $this->getFieldValue('{{Field}}'); }
-	
-{{/dateTimeField}}
 {{#dateTimeField}}
 	final function set{{FieldCase}}($val) { $this->setDatetimeFieldValue('{{Field}}',$val); }
 	final function get{{FieldCase}}($val) { $this->getDatetimeFieldValue('{{Field}}',$val); }
+	
+{{/dateTimeField}}
+{{^dateTimeField}}
+	final function set{{FieldCase}}($val) { $this->setFieldValue('{{Field}}',$val); }
+	final function get{{FieldCase}}(){ return $this->getFieldValue('{{Field}}'); }
 	
 {{/dateTimeField}}
 {{/columns}}
