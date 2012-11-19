@@ -3,7 +3,7 @@
 SQLicious
 =============
 
-SQLicious is a PHP ORM that generates an object model from your MySQL database. It's powerful closure based query processing and 
+SQLicious is a PHP ORM that generates an object model from your MySQL database. Its powerful closure based query processing and 
 ability to handle large datasets make it powerful and flexible. Its included web interface and ease of 
 development make it a joy to use.
 
@@ -75,6 +75,7 @@ Deleting a single record.
 	$user->delete();
 
 Deleting multiple records.
+
 	// delete archived users
 	$f = new UserFactory();
 	$f->addBinding(new EqualsBinding("archived","1"));
@@ -210,7 +211,7 @@ Count query with custom where clause (returns an integer)
 
 Web UI
 ===========
-[http://demo.sqlicious.com]
+http://demo.sqlicious.com
 
 
 Converting Timezones
