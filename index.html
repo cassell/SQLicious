@@ -7,7 +7,8 @@
     <meta name="description" content="Sqlicious : SQLicious is a PHP Database ORM and abstraction layer for MySQL that handles generating an object model from your database schema. Its powerful closure based query processing and ability to handle large datasets make it powerful and flexible. It's included web interface and ease of development make it a joy to use." />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+	<script src="javascripts/readme.js" type="text/javascript"></script>
     <title>Sqlicious</title>
   </head>
 <script type="text/javascript">
@@ -31,7 +32,7 @@
           <a id="forkme_banner" href="https://github.com/cassell/SQLicious">View on GitHub</a>
 
           <img style="border:none; margin: 0px 0px 30px -5px; -webkit-box-shadow:none; box-shadow:none; width: 400px" src="images/sqlicious-logo-white.png" alt="Sqlicious">
-		  <h2 id="project_tagline" style="margin: 0;">SQLicious is a PHP Database ORM and abstraction layer for MySQL that handles generating an object model from your database schema. Its powerful closure based query processing and ability to handle large datasets make it powerful and flexible. It's included web interface and ease of development make it a joy to use.</h2>
+		  <h2 id="project_tagline" style="margin: 0;">SQLicious is a PHP ORM that generates an object model from your MySQL database. It's powerful closure based query processing and ability to handle large datasets make it powerful and flexible. Its included web interface and ease of development make it a joy to use.</h2>
 		  
             <section id="downloads">
               <a class="zip_download_link" href="https://github.com/cassell/SQLicious/zipball/master">Download this project as a .zip file</a>
@@ -41,6 +42,9 @@
 		
 	
     </div>
+	
+	
+	
 
     <!-- MAIN CONTENT -->
 <div id="main_content_wrap" class="outer">
@@ -62,33 +66,58 @@
 					Web Interface Demo Video
 				</th>
 				<td>
-					<iframe width="420" height="315" src="http://www.youtube.com/embed/OC7W1TpygQo" frameborder="0" allowfullscreen></iframe>
+					<a href="http://www.youtube.com/embed/OC7W1TpygQo">Watch on YouTube</a>
 				</td>
 			</tr>
 		</table>
 	
-		<h2>What is so special about SQLicious?</h2>
-		<p>The ten features that make SQLicious easy and powerful are:</p>
+<!--- README FROM GITHUB -->
 		
-		<ol>
-			<li>Closure based query processing that lets you handle data efficently and fully customizable manner</li>
-			<li>Web UI for code generation and fast paced development. It helps with common programming tasks (object creation, class stubs, queries).</li>
-			<li>Queries can easily be limited to a subset of fields in a table ("select first_name, last_name from table" vs. "select * from table"). You can still use objects when using a subset of the fields.</li>
-			<li>UPDATEs are minimal and only changed columns are updated</li>
-			<li>Buffered queries for performance and Unbuffered queries for processing huge datasets while staying memory safe</li>
-			<li>Factories and Objects are Automatically Generated</li>
-			<li>You can extend the Factories and Objects to encapsulate the logic of a model</li>
-			<li>Process any SQL query (multiple tables and joins) using the same closure based process model</li>
-			<li>Handles the CRUD</li>
-			<li>Convert Timezones Using MySQL Timezone Tables</li>
-		</ol>
-	
-		
-		
-		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <article class="markdown-body entry-content" itemprop="mainContentOfPage">
 
-<a name="crud-creating-reading-updating-and-deleting" class="anchor" href="#crud-creating-reading-updating-and-deleting"><span class="mini-icon mini-icon-link"></span></a><h3>CRUD: Creating, Reading, Updating, and Deleting</h3>
+<h2>Powerful Features</h2>
+
+<ol>
+<li>Web UI for code generation and fast paced development. It helps with common programming tasks (object creation, APIs, class stubs, queries).</li>
+<li>Easily output data as JSON for APIs</li>
+<li>Queries can easily be limited to a subset of fields in a table ("select first_name, last_name from table" vs. "select * from table"). You can still use objects when using a subset of the fields.</li>
+<li>UPDATEs are minimal and only changed columns are updated</li>
+<li>Closure based query processing that lets you handle data efficently and fully customizable manner</li>
+<li>Buffered queries for performance and Unbuffered queries for processing huge datasets while staying memory safe</li>
+<li>You can extend the Factories and Objects to encapsulate the logic of a model</li>
+<li>Process any SQL query (multiple tables and joins) using the same closure based process model</li>
+<li>Handles the CRUD</li>
+<li>Convert Timezones Using MySQL Timezone Tables</li>
+<li>Generated Code is creating using Mustache Templates</li>
+<li>Command line tool for generating code</li>
+<li>Generate JSON APIs easily</li>
+
+</ol>
+
+<h1><a name="crud-creating-reading-updating-and-deleting" class="anchor" href="#crud-creating-reading-updating-and-deleting"><span class="mini-icon mini-icon-link"></span></a>CRUD <small>Creating, Reading, Updating, and Deleting</small></h1>
 
 <p>Creating a new record</p>
 
@@ -126,7 +155,7 @@ $users = $f-&gt;getObjects();
 
 <p>String based binding clauses</p>
 
-<pre><code>// looking for users with example.com in their email
+<pre><code>// looking for active users
 $f = new UserFactory();
 $f-&gt;addBinding("user.archived != 1");
 $users = $f-&gt;getObjects();
@@ -139,10 +168,18 @@ $user-&gt;setArchived(1);
 $user-&gt;save();
 </code></pre>
 
-<p>Deleting a record.</p>
+<p>Deleting a single record.</p>
 
 <pre><code>$user = User::findId(18);
 $user-&gt;delete();
+</code></pre>
+
+<p>Deleting multiple records.</p>
+
+<pre><code>// delete archived users
+$f = new UserFactory();
+$f-&gt;addBinding(new EqualsBinding("archived","1"));
+$f-&gt;delete();
 </code></pre>
 
 <p>Limit the query to the first 20 rows</p>
@@ -159,8 +196,8 @@ $f-&gt;addArchivedFalseBinding()
 $count = $f-&gt;count(); // count of all not archived users
 </code></pre>
 
-<h3>
-<a name="performance" class="anchor" href="#performance"><span class="mini-icon mini-icon-link"></span></a>Performance</h3>
+<h1>
+<a name="performance" class="anchor" href="#performance"><span class="mini-icon mini-icon-link"></span></a>Performance</h1>
 
 <p>Limiting the fields that are pulled back from the database. You can still use objects</p>
 
@@ -176,19 +213,19 @@ $f-&gt;setSelectFields("first_name","last_name","email");
 $userJSON = $f-&gt;getJSON(); // returns an an array of PHP objects that can be encoded to  [ { 'id' : 1, 'firstName' : 'John', 'lastName' : 'Doe', 'email' : 'doe@example.com'}, ... ]
 </code></pre>
 
-<h3>
-<a name="closures" class="anchor" href="#closures"><span class="mini-icon mini-icon-link"></span></a>Closures</h3>
+<h1>
+<a name="closures" class="anchor" href="#closures"><span class="mini-icon mini-icon-link"></span></a>Closures</h1>
 
 <p>Process each row queried with an anonymous function. To iterate over very large datasets without hitting memory constraints use unbufferedProcess()</p>
 
 <pre><code>$f = new UserFactory();
 $f-&gt;process(function($user)
 {
-	if(!validate_email($user-&gt;getEmail()))
-	{
-		$user-&gt;setEmail('');
-		$user-&gt;save();
-	}
+    if(!validate_email($user-&gt;getEmail()))
+    {
+        $user-&gt;setEmail('');
+        $user-&gt;save();
+    }
 });
 </code></pre>
 
@@ -199,17 +236,17 @@ $f-&gt;query();
 $countOfUsers = $f-&gt;getNumberOfRows();
 $f-&gt;process(function($user)
 {
-	if(!validate_email($user-&gt;getEmail()))
-	{
-		$user-&gt;setEmail('');
-		$user-&gt;save();
-	}
+    if(!validate_email($user-&gt;getEmail()))
+    {
+        $user-&gt;setEmail('');
+        $user-&gt;save();
+    }
 });
 $f-&gt;freeResult();
 </code></pre>
 
-<h3>
-<a name="memory-safe-outputs-works-with-billions-of-rows" class="anchor" href="#memory-safe-outputs-works-with-billions-of-rows"><span class="mini-icon mini-icon-link"></span></a>Memory Safe Outputs (works with billions of rows)</h3>
+<h1>
+<a name="memory-safe-outputs-works-with-billions-of-rows" class="anchor" href="#memory-safe-outputs-works-with-billions-of-rows"><span class="mini-icon mini-icon-link"></span></a>Memory Safe Outputs (works with billions of rows)</h1>
 
 <p>Output directly to CSV</p>
 
@@ -223,24 +260,24 @@ $f-&gt;outputCSV();
 $f-&gt;outputJSONString();
 </code></pre>
 
-<h3>
-<a name="memory-safe-closures" class="anchor" href="#memory-safe-closures"><span class="mini-icon mini-icon-link"></span></a>Memory Safe Closures</h3>
+<h1>
+<a name="memory-safe-closures" class="anchor" href="#memory-safe-closures"><span class="mini-icon mini-icon-link"></span></a>Memory Safe Closures</h1>
 
 <p>Unbuffered Processing of large datasets (will potentially lock the table while processing)</p>
 
 <pre><code>$f = new UserFactory(); // imagine a table with millions of rows
 $f-&gt;unbufferedProcess(function($user)
 {
-	if(!validate_email($user-&gt;getEmail()))
-	{
-		$user-&gt;setEmail('');
-		$user-&gt;save();
-	}
+    if(!validate_email($user-&gt;getEmail()))
+    {
+        $user-&gt;setEmail('');
+        $user-&gt;save();
+    }
 });
 </code></pre>
 
-<h3>
-<a name="data-processors" class="anchor" href="#data-processors"><span class="mini-icon mini-icon-link"></span></a>Data Processors</h3>
+<h1>
+<a name="data-processors" class="anchor" href="#data-processors"><span class="mini-icon mini-icon-link"></span></a>Data Processors</h1>
 
 <p>Data processors are great for processing the results from an entirely custom SELECT query with closures.</p>
 
@@ -250,8 +287,8 @@ $f-&gt;unbufferedProcess(function($user)
 $p-&gt;setSQL('select first_name, last_name from user');
 $p-&gt;process(function($row)
 {
-	echo $row['first_name'];
-	print_r($row);
+    echo $row['first_name'];
+    print_r($row);
 
 });
 </code></pre>
@@ -262,12 +299,12 @@ $p-&gt;process(function($row)
 $p-&gt;setSQL('select first_name, last_name from user');
 $p-&gt;unbufferedProcess(function($row)
 {
-	echo $row['first_name'];
+    echo $row['first_name'];
 });
 </code></pre>
 
-<h3>
-<a name="other-flexibile-queries" class="anchor" href="#other-flexibile-queries"><span class="mini-icon mini-icon-link"></span></a>Other flexibile queries</h3>
+<h1>
+<a name="other-flexibile-queries" class="anchor" href="#other-flexibile-queries"><span class="mini-icon mini-icon-link"></span></a>Other flexibile queries</h1>
 
 <p>Find method for writing a custom where clause (returns objects)</p>
 
@@ -281,15 +318,20 @@ $users = $f-&gt;find("where archived != 1 and email like '%@example.com'");
 $countOfUsers = $f-&gt;getCount("where archived != 1 and email like '%@example.com'");
 </code></pre>
 
-<h3>
-<a name="converting-timezones" class="anchor" href="#converting-timezones"><span class="mini-icon mini-icon-link"></span></a>Converting Timezones</h3>
+<h1>
+<a name="web-ui" class="anchor" href="#web-ui"><span class="mini-icon mini-icon-link"></span></a>Web UI</h1>
+
+<p><a href="http://demo.sqlicious.com">http://demo.sqlicious.com</a></p>
+
+<h1>
+<a name="converting-timezones" class="anchor" href="#converting-timezones"><span class="mini-icon mini-icon-link"></span></a>Converting Timezones</h1>
 
 <pre><code>$f = new UserLoginFactory();
 $centralTime = $f-&gt;convertTimezone('2012-02-23 04:10PM', 'US/Eastern',  'US/Central'); // usage: ($dateTime,$sourceTimezone,$destTimezone). $dateTime may be string or time(), returns a timestamp
 </code></pre>
 
-<h3>
-<a name="setup" class="anchor" href="#setup"><span class="mini-icon mini-icon-link"></span></a>Setup</h3>
+<h1>
+<a name="setup" class="anchor" href="#setup"><span class="mini-icon mini-icon-link"></span></a>Setup</h1>
 
 <ol>
 <li>Download the source code</li>
@@ -298,18 +340,52 @@ $centralTime = $f-&gt;convertTimezone('2012-02-23 04:10PM', 'US/Eastern',  'US/C
 <li>Generate the DAO using the web UI</li>
 <li>require_once('sqlicious.inc.php') in your project</li>
 <li>require_once or include any other generated factories that you need in your project</li>
-</ol>
-
-<h1><a name="requirements" class="anchor" href="#requirements"><span class="mini-icon mini-icon-link"></span></a>Requirements</h1>
+</ol><h1>
+<a name="requirements" class="anchor" href="#requirements"><span class="mini-icon mini-icon-link"></span></a>Requirements</h1>
 
 <ul>
 <li>PHP 5.3 or greater</li>
 <li>MySQL</li>
-</ul>
+</ul><h1>
+<a name="what-next" class="anchor" href="#what-next"><span class="mini-icon mini-icon-link"></span></a>What next?</h1>
 
-</article>
-		
-</section>	
+<p>Profit.</p></article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- END OF README -->
+	</section>	
 </div>
 
 <!-- FOOTER  -->
