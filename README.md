@@ -10,16 +10,18 @@ development make it a joy to use.
 The features that make SQLicious easy and powerful are:
 
 1. Web UI for code generation and fast paced development. It helps with common programming tasks (object creation, APIs, class stubs, queries).
+1. Easily output data as JSON for APIs
 1. Queries can easily be limited to a subset of fields in a table ("select first_name, last_name from table" vs. "select * from table"). You can still use objects when using a subset of the fields.
 1. UPDATEs are minimal and only changed columns are updated
 1. Closure based query processing that lets you handle data efficently and fully customizable manner
 1. Buffered queries for performance and Unbuffered queries for processing huge datasets while staying memory safe
-1. Factories and Objects are Automatically Generated
 1. You can extend the Factories and Objects to encapsulate the logic of a model
-1. Process any SQL query (multiple tables and joins) using the same closure based process model
-1. Handles the CRUD
+1. Process any SQL query (multiple tables and joins) using the same closure based process model, or get an Array, or JSON
+1. Handles the CRUD (Creating, Reading, Updating, and Deleting)
 1. Convert Timezones Using MySQL Timezone Tables
 1. Generated Code is creating using Mustache Templates
+1. Command line tool for generating code
+1. Generate JSON APIs easily
 
 
 CRUD: Creating, Reading, Updating, and Deleting
