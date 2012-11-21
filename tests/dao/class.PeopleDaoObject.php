@@ -52,10 +52,10 @@ class PeopleDaoObject extends DataAccessObject
 	final function getArchived(){ return $this->getFieldValue('archived'); }
 	
 	final function setCreateDate($val) { $this->setDatetimeFieldValue('create_date',$val); }
-	final function getCreateDate($val) { $this->getDatetimeFieldValue('create_date',$val); }
+	final function getCreateDate($format = null) { return $this->getDatetimeFieldValue('create_date',$format); }
 	
 	final function setCreateDatetime($val) { $this->setDatetimeFieldValue('create_datetime',$val); }
-	final function getCreateDatetime($val) { $this->getDatetimeFieldValue('create_datetime',$val); }
+	final function getCreateDatetime($format = null) { return $this->getDatetimeFieldValue('create_datetime',$format); }
 	
 
 	function getDefaultRow()
