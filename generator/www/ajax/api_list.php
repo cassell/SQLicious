@@ -11,7 +11,7 @@ if($db != null && $_POST['table'] != "")
 	$table = $_POST['table'];
 	$columns = $db->getColumns($table);
 	
-	$resp['html'] = '<p>Not yet implemented!<br/><br/><a href="https://github.com/cassell/SQLicious/issues/75">View on Github</a></p>';
+	$resp['html'] = $db->getApiListCode($table);
 	
 	returnResponse($resp);
 }

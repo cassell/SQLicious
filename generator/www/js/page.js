@@ -32,14 +32,14 @@ var Page = new Class
 			var githubLinkText = new Element('span',{'text' : 'View on GitHub'}).inject(githubLink);
 			
 		
-		new Request.JSONP({'url': 'https://api.github.com/repos/cassell/SQLicious/commits', onSuccess: function(resp){
-			
-			if(resp != null && resp.data != null && resp.data[0] != null)
-			{
-				githubLink.set('title','SQLicious was last updated on ' + Date.parse(resp.data[0].commit.author.date));
-			}
-				
-		}}).send();
+//		new Request.JSONP({'url': 'https://api.github.com/repos/cassell/SQLicious/commits', onSuccess: function(resp){
+//			
+//			if(resp != null && resp.data != null && resp.data[0] != null)
+//			{
+//				githubLink.set('title','SQLicious was last updated on ' + Date.parse(resp.data[0].commit.author.date));
+//			}
+//				
+//		}}).send();
 		
 		new Element('div',{'class' : 'cb'}).inject(header);
 		
@@ -384,7 +384,7 @@ var Page = new Class
 		var div = new Element('div',{'class':'content optionsBlock'}).inject(content);
 		new Element('img',{'src' : 'img/cogs_48.png'}).inject(div);
 		new Element('div',{'text' : 'Table Structure'}).inject(div);
-		div.addEvent('click',function(){ window.location = '#/database/' + this.database + '/table/' + this.table + '/action/structure'; }.bind(this));
+		div.addEvent('click',function(){window.location = '#/database/' + this.database + '/table/' + this.table + '/action/structure';}.bind(this));
 		
 	},
 	
@@ -450,11 +450,16 @@ var Page = new Class
 	
 	showExtendedObjectStubBuilder: function(resp)
 	{
+		console.log(resp);
+		
 		this.addBreadCrumb('Extended DAO Stub Builder');
 		
 		var content = new Element('div',{'class' : 'content'}).inject(this.content);
 		
-		new Element('pre',{'html':resp.html + "\n\n"}).inject(content);
+		console.log(resp.html);
+		
+		new Element('pre',{'text': resp.html}).inject(content);
+		//n
 		
 	},
 	
@@ -494,7 +499,29 @@ var Page = new Class
 	{
 		this.addBreadCrumb(resp.breadCrumb);
 		
+		var previousCheckboxes = 
+		
+		$$('extendedObjectCheckBox').each(function(checkbox){
+			checkbox.remove()
+		});
+		
 		var content = new Element('div',{'class' : 'content', 'html' : resp.html}).inject(this.content);
+		
+		$('apiListCheckbox').addEvent('click',function(){
+			
+			if($('extendedObjects').getStyle('display') == "none")
+			{
+				$('baseObjects').setStyle('display','none');
+				$('extendedObjects').setStyle('display','');
+			}
+			else
+			{
+				$('baseObjects').setStyle('display','');
+				$('extendedObjects').setStyle('display','none');
+			}
+			
+			
+		});
 		
 	},
 	

@@ -66,6 +66,12 @@ class SQLiciousGeneratorDatabase
 		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/extended_stub.template'),$this->getTemplatingDataFromTableName($tableName));
 	}
 	
+	function getApiListCode($tableName)
+	{
+		$m = new Mustache_Engine();
+		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/api_list.template'),$this->getTemplatingDataFromTableName($tableName));
+	}
+	
 	function getTemplatingDataFromTableName($tableName)
 	{
 		$idFieldName = '';
@@ -124,6 +130,7 @@ class SQLiciousGeneratorDatabase
 		}
 		
 		return array( 'tableName' => $tableName,
+					   'jsonArrayName' => SQLiciousGenerator::toFieldCase($tableName),
 					   'className' => $className,
 					   'databaseName' => $this->getDatabaseName(),
 					   'idFieldName' => $idFieldName,

@@ -1,4 +1,4 @@
-<?php
+<?php{{formattedRequireStatement}}
 
 class {{className}}Factory extends {{className}}DaoFactory
 {
