@@ -1,6 +1,6 @@
 <?php
 
-include('../../generator.config.inc.php');
+include('../../generator.inc.php');
 
 $resp = array();
 

@@ -1,0 +1,4 @@
+
+ISSUE: Figure out how to wrap JSONP request so it doesn't cause script errors when offline
+	GET https://api.github.com/repos/cassell/SQLicious/commits?callback=Request.JSONP.request_map.request_0  mootools_core.js:3095
+

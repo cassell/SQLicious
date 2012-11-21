@@ -1,6 +1,6 @@
 <?php
 
-require_once('../generator.config.inc.php');
+require_once('../generator.inc.php');
 
 array_shift($argv);
 
