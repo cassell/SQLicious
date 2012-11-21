@@ -31,7 +31,7 @@ class PeopleDaoObject extends DataAccessObject
 		return 'people_id';
 	}
 
-	function getFactory()
+	static function getFactory()
 	{
 		return new PeopleDaoFactory();
 	}

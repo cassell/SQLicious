@@ -31,7 +31,7 @@ class ZipcodesDaoObject extends DataAccessObject
 		return 'zipcode_id';
 	}
 
-	function getFactory()
+	static function getFactory()
 	{
 		return new ZipcodesDaoFactory();
 	}
