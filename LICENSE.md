@@ -8,8 +8,6 @@ I also kindly ask you (optional) to keep the generation notice at the top of you
 
 Thanks.
 
-- Andy
-
 -----------------------------------------------
 
 http://opensource.org/licenses/BSD-2-Clause
