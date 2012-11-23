@@ -31,7 +31,7 @@ class {{className}}DaoObject extends DataAccessObject
 		return '{{idFieldName}}';
 	}
 
-	function getFactory()
+	static function getFactory()
 	{
 		return new {{className}}DaoFactory();
 	}

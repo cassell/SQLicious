@@ -148,7 +148,10 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 			
 			foreach($arrayOfFields as $field)
 			{
-				$this->addSelectField($field);
+				if($field != $this->getIdField())
+				{
+					$this->addSelectField($field);
+				}
 			}
 		}
 		else

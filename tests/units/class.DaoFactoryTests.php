@@ -15,32 +15,53 @@ class DaoFactoryTests extends \Enhance\TestFixture
 		\Enhance\Assert::areIdentical('90210',$beverlyHills->getZipcode());
 	}
 	
-	
 	// return all objects
 	function findAll()
 	{
-		\Enhance\Assert::inconclusive();
+		$f = new ZipcodesDaoFactory();
+		$allZipcodes = $f->findAll();
+		
+		\Enhance\Assert::areIdentical(33178,count($allZipcodes));
 	}
 	
 	// generate the select clause from $this->fields
 	function getSelectClause()
 	{
-		\Enhance\Assert::inconclusive();
+		$f = new ZipcodesDaoFactory();
+		
+		\Enhance\Assert::areIdentical('s:129:"SELECT zipcodes.zipcode_id,zipcodes.zipcode,zipcodes.state,zipcodes.longitude,zipcodes.latitude,zipcodes.city,zipcodes.state_name";',serialize($f->getSelectClause()));
 	}
-    
-    function getFromClause()
-    {
-        \Enhance\Assert::inconclusive();
-    }
 	
 	function setSelectFields()
 	{
-		\Enhance\Assert::inconclusive();
+		$f = new ZipcodesDaoFactory();
+		$f->setSelectFields(array("zipcode","state"));
+		\Enhance\Assert::areIdentical('s:58:"SELECT zipcodes.zipcode_id,zipcodes.zipcode,zipcodes.state";',serialize($f->getSelectClause()));
+		
+		$f = new ZipcodesDaoFactory();
+		$f->setSelectFields(array("zipcodes.longitude","zipcodes.latitude"));
+		\Enhance\Assert::areIdentical('s:63:"SELECT zipcodes.zipcode_id,zipcodes.longitude,zipcodes.latitude";',serialize($f->getSelectClause()));
+		
 	}
+	
 	function addSelectField()
 	{
-		\Enhance\Assert::inconclusive();
+		$f = new ZipcodesDaoFactory();
+		$f->setSelectFields(array("zipcode"));
+		$f->addSelectField("state");
+		
+		\Enhance\Assert::areIdentical('s:58:"SELECT zipcodes.zipcode_id,zipcodes.zipcode,zipcodes.state";',serialize($f->getSelectClause()));
 	}
+	
+    
+    function getFromClause()
+    {
+		$f = new ZipcodesDaoFactory();
+		\Enhance\Assert::areIdentical('FROM zipcodes',$f->getFromClause());
+    }
+	
+	
+	
 	
 	// joins
 	function join()
@@ -68,6 +89,11 @@ class DaoFactoryTests extends \Enhance\TestFixture
 	
 	// limits
 	function limit()
+	{
+		\Enhance\Assert::inconclusive();
+	}
+	
+	function delete()
 	{
 		\Enhance\Assert::inconclusive();
 	}
