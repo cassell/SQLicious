@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `people`;
 CREATE TABLE `people` (
   `people_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) DEFAULT NULL,
-  `last_name` int(50) DEFAULT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
   `zipcode_id` int(11) DEFAULT NULL,
   `archived` tinyint(1) DEFAULT NULL,
   `create_date` date DEFAULT NULL,

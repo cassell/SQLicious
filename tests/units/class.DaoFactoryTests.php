@@ -5,8 +5,6 @@ require_once(TESTS_CONFIG_PATH."../dao/class.ZipcodesDaoFactory.php");
 
 class DaoFactoryTests extends \Enhance\TestFixture
 {
-	// http://www.enhance-php.com/Content/Quick-Start-Guide/
-
 	function findId()
 	{
 		$f = new ZipcodesDaoFactory();
@@ -60,36 +58,89 @@ class DaoFactoryTests extends \Enhance\TestFixture
 		\Enhance\Assert::areIdentical('FROM zipcodes',$f->getFromClause());
     }
 	
+	static function clearPeopleTestData()
+	{
+		$dp = new DatabaseProcessor('sqlicious_test');
+		$dp->update("TRUNCATE TABLE `people`;");
+	}
 	
+	static function insertPeopleTestData()
+	{
+		self::clearPeopleTestData();
+		
+		$dp = new DatabaseProcessor('sqlicious_test');
+		
+		$dp->update("INSERT INTO `people` (`people_id`, `first_name`, `last_name`, `zipcode_id`, `archived`, `create_date`, `create_datetime`)
+VALUES
+	(1, 'Barack', 'Obama', 4505, 0, now(), now()),
+	(2, 'George', 'Bush', 4505, 0, now(), now()),
+	(3, 'Bill', 'Clinton', 4505, 0, now(), now());
+");
+
+	}
 	
 	
 	// joins
 	function join()
 	{
-		\Enhance\Assert::inconclusive();
+		self::insertPeopleTestData();
+		
+		$f = new PeopleDaoFactory();
+		
+		$f->join("join zipcodes on zipcodes.zipcode_id = people.zipcode_id");
+		$f->addBinding(new EqualsBinding("zipcodes.state", "DC"));
+
+		\Enhance\Assert::areIdentical(3,$f->count());
+		
+		self::clearPeopleTestData();
+		
 	}
 	
 	
 	// group by
 	function groupBy()
 	{
-		\Enhance\Assert::inconclusive();
+		$f = new ZipcodesDaoFactory();
+		$f->groupBy("state");
+		$f->addBinding(new EqualsBinding("zipcodes.state", "DC"));
+		
+		\Enhance\Assert::areIdentical(28,$f->count());
+		
 	}
 	
 	// order by
 	function orderBy()
 	{
-		\Enhance\Assert::inconclusive();
+		$f = new ZipcodesDaoFactory();
+		$f->orderBy("zipcode","desc");
+		$f->addBinding(new EqualsBinding("zipcodes.state", "VA"));
+		$f->addBinding(new EqualsBinding("city", "Herndon"));
+		
+		$herndon = $f->getFirstObject();
+		
+		\Enhance\Assert::areIdentical('20171',$herndon->getZipcode());
+		
 	}
 	
-	function orderByAsc()
-	{
-		\Enhance\Assert::inconclusive();
-	}
+//	function orderByAsc()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
 	
 	// limits
 	function limit()
 	{
+		$f = new ZipcodesDaoFactory();
+		$f->orderBy("zipcode");
+		$f->addBinding(new EqualsBinding("zipcodes.state", "VA"));
+		$f->limit(10,5);
+		print_r($f->getFirstObject());
+		
+		$herndon = $f->getFirstObject();
+		
+		\Enhance\Assert::areIdentical('20171',$herndon->getZipcode());
+		
+		
 		\Enhance\Assert::inconclusive();
 	}
 	

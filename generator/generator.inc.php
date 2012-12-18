@@ -27,9 +27,14 @@ if(defined("SQLICIOUS_CONFIG_GLOBAL") && array_key_exists(SQLICIOUS_CONFIG_GLOBA
 	}
 	
 }
+else if(!defined("SQLICIOUS_CONFIG_GLOBAL"))
+{
+	throw new SQLiciousErrorException("SQLICIOUS_CONFIG_GLOBAL] not defined.");
+	exit;
+}
 else
 {
-	echo "Database Configuration Not Found";
+	throw new SQLiciousErrorException("\$GLOBALS[SQLICIOUS_CONFIG_GLOBAL] not found.");
 	exit;
 }
 

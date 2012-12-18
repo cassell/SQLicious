@@ -5,7 +5,6 @@ require_once(TESTS_CONFIG_PATH."../dao/class.ZipcodesDaoFactory.php");
 
 class DaoObjectTests extends \Enhance\TestFixture
 {
-	
 	function getDatabaseName()
 	{
 		\Enhance\Assert::inconclusive();
