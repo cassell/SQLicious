@@ -8,6 +8,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	abstract function getTableName();
 	abstract function getIdField();
 	abstract function getFields();
+	abstract function getDatabaseName();
 	
 	private $fields = array();
 	private $conditional;
