@@ -1,33 +1,48 @@
 <?php
 
+class DAOConfig
+{
+	public function getDatabases()
+	{
+		return get_object_vars($this);
+	}
+}
+
+class DatabaseNode
+{
+	var $serverDatabaseName;
+	var $serverHost;
+	var $serverUsername;
+	var $serverPassword;
+	var $serverPort;
+	var $serverSocket;
+	var $serverCharset;
+	
+	function __construct($serverDatabaseName, $serverHost, $serverUsername, $serverPassword, $serverPort = null, $serverSocket = null, $serverCharset = 'utf8')
+	{
+		$this->serverDatabaseName = $serverDatabaseName;
+		$this->serverHost = $serverHost;
+		$this->serverUsername = $serverUsername;
+		$this->serverPassword = $serverPassword;
+		$this->serverPort = $serverPort;
+		$this->serverSocket = $serverSocket;
+		$this->serverCharset = $serverCharset;
+	}
+}
+
+
 class DatabaseConfiguration
 {
+	private $databaseName = null;
 	private $master;
 	private $slaves = array();
-	private $generatorCodeDestinationDirectory = '';
 
-	function __construct()
+	function __construct($databaseName)
 	{
+		$this->databaseName = $databaseName;
 		
-	}
-	
-	function configureMaster($mysqlDatabaseName,$host,$username,$password)
-	{
-		$this->master = new DatabaseNode();
-		$this->master->setMySQLDatabaseName($mysqlDatabaseName);
-		$this->master->setServerHost($host);
-		$this->master->setServerUserName($username);
-		$this->master->setServerPassword($password);
-	}
-	
-	function configureSlave($mysqlDatabaseName,$host,$username,$password, $slaveName = null)
-	{
-		$dn = new DatabaseNode();
-		$dn->setMySQLDatabaseName($mysqlDatabaseName);
-		$dn->setServerHost($host);
-		$dn->setServerUserName($username);
-		$dn->setServerPassword($password);
-		$this->addSlave($dn,$slaveName);
+		// default to a folder per database in the same folder as classes, generator, etc.
+		$this->setGeneratorCodeDestinationDirectory(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . $this->databaseName);
 	}
 	
 	function setMaster($master)
@@ -50,7 +65,6 @@ class DatabaseConfiguration
 		{
 			$this->slaves[] = $slave;
 		}
-		
 	}
 	
 	function getSlave($slaveName = null)
@@ -69,38 +83,5 @@ class DatabaseConfiguration
 	function getGeneratorCodeDestinationDirectory() { return $this->generatorCodeDestinationDirectory; }
 	
 }
-
-class DatabaseNode
-{
-	var $MySQLDatabaseName;
-	var $serverHost;
-	var $serverUserName;
-	var $serverPassword;
-	var $port;
-	var $socket;
-	
-	function __construct() { }
-	
-	function setMySQLDatabaseName($val) { $this->MySQLDatabaseName = $val; }
-	function getMySQLDatabaseName() { return $this->MySQLDatabaseName; }
-	
-	function setServerHost($val) { $this->serverHost = $val; }
-	function getServerHost() { return $this->serverHost; }
-	
-	function setServerUserName($val) { $this->serverUserName = $val; }
-	function getServerUserName() { return $this->serverUserName; }
-
-	function setServerPassword($val) { $this->serverPassword = $val; }
-	function getServerPassword() { return $this->serverPassword; }
-	
-	function setPort($val) { $this->port = $val; }
-	function getPort() { return $this->port; }
-	
-	function setSocket($val) { $this->socket = $val; }
-	function getSocket() { return $this->socket; }
-	
-}
-
-
 
 ?>
