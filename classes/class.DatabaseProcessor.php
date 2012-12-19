@@ -169,6 +169,8 @@ class DatabaseProcessor
 		
 		if($connection != null)
 		{
+			$connection->set_charset($this->databaseNode->serverCharset);
+			
 			$connection->real_query($this->getSQL());
 			$result = $connection->use_result();
 			
@@ -315,6 +317,8 @@ class DatabaseProcessor
 		{
 			throw new SQLiciousErrorException("SQLicioius Connection Error");
 		}
+		
+		$this->connection->set_charset($this->databaseNode->serverCharset);
 	}
 	
 	// util
