@@ -5,7 +5,6 @@ class DatabaseProcessorTests extends \Enhance\TestFixture
     public function getMySqlResult() 
     {
 		$dp = new DatabaseProcessor('sqlicious_test');
-		$dp->openNewConnection();
 		$dp->setSQL('SHOW TABLES');
 		$result = $dp->query();
 		
@@ -15,7 +14,6 @@ class DatabaseProcessorTests extends \Enhance\TestFixture
 	public function countNumberOfTables()
 	{
 		$dp = new DatabaseProcessor('sqlicious_test');
-		$dp->openNewConnection();
 		$dp->setSQL('SHOW TABLES');
 		$result = $dp->query();
 		
@@ -25,7 +23,6 @@ class DatabaseProcessorTests extends \Enhance\TestFixture
 	function process()
 	{
 		$dp = new DatabaseProcessor('sqlicious_test');
-		$dp->openNewConnection();
 		$dp->setSQL("select * from zipcodes where city = 'Herndon' order by state asc");
 		
 		$count = 0;
@@ -43,7 +40,6 @@ class DatabaseProcessorTests extends \Enhance\TestFixture
 	public function getArray()
 	{
 		$dp = new DatabaseProcessor('sqlicious_test');
-		$dp->openNewConnection();
 		$dp->setSQL("select * from zipcodes where city = 'Reston' order by state asc");
 		
 		$array = $dp->getArray();
@@ -56,7 +52,6 @@ class DatabaseProcessorTests extends \Enhance\TestFixture
 	function getJSON()
 	{
 		$dp = new DatabaseProcessor('sqlicious_test');
-		$dp->openNewConnection();
 		$dp->setSQL("select * from zipcodes where city = 'Herndon' order by state asc");
 		
 		$jsonObjects = $dp->getJSON();
@@ -69,7 +64,6 @@ class DatabaseProcessorTests extends \Enhance\TestFixture
 	function getFirstField()
 	{
 		$dp = new DatabaseProcessor('sqlicious_test');
-		$dp->openNewConnection();
 		$dp->setSQL("select state as state_abbreviation from zipcodes where city = 'Greenville' order by state asc");
 		
 		Enhance\Assert::areIdentical($dp->getFirstField("state_abbreviation"), 'AL');
@@ -78,7 +72,6 @@ class DatabaseProcessorTests extends \Enhance\TestFixture
 	function update()
 	{
 		$dp = new DatabaseProcessor('sqlicious_test');
-		$dp->openNewConnection();
 		$dp->update("delete from people");
 		
 		\Enhance\Assert::isTrue(true);
@@ -89,7 +82,6 @@ class DatabaseProcessorTests extends \Enhance\TestFixture
 	function unbufferedProcess()
 	{
 		$dp = new DatabaseProcessor('sqlicious_test');
-		$dp->openNewConnection();
 		$dp->setSQL("select * from zipcodes");
 		
 		$sumZipcodes = 0;
@@ -105,7 +97,6 @@ class DatabaseProcessorTests extends \Enhance\TestFixture
 	function outputJSONString()
 	{
 		$dp = new DatabaseProcessor('sqlicious_test');
-		$dp->openNewConnection();
 		$dp->setSQL("select * from zipcodes where city = 'Herndon' order by state asc limit 3");
 		
 		ob_start();
