@@ -9,37 +9,28 @@ class DatabaseProcessor
 	protected $numberOfRows = null;
 	protected $sql = null;
 	
-	function __construct($databaseNodeOrConfigurationName = null)
+	function __construct($databaseNodeOrConfigurationName)
 	{
 		// setup node
 		if($databaseNodeOrConfigurationName instanceof DatabaseNode)
 		{
 			$this->databaseNode = $databaseNodeOrConfigurationName;
 		}
-		else if(is_string($databaseNodeOrConfigurationName) && $GLOBALS[SQLICIOUS_CONFIG_GLOBAL][$databaseNodeOrConfigurationName] instanceof DatabaseConfiguration)
+		else if(is_string($databaseNodeOrConfigurationName) && defined('SQLICIOUS_CONFIG_GLOBAL') && array_key_exists(SQLICIOUS_CONFIG_GLOBAL, $GLOBALS))
 		{
-			$this->databaseNode = $GLOBALS[SQLICIOUS_CONFIG_GLOBAL][$databaseNodeOrConfigurationName]->getMaster();
-			$this->connectToMySQLDatabase();
-		}
-		else if($GLOBALS[SQLICIOUS_CONFIG_GLOBAL] != null)
-		{
-			$this->databaseNode = reset($GLOBALS[SQLICIOUS_CONFIG_GLOBAL])->getMaster();
-		}
-		else
-		{
-			throw new SQLiciousErrorException("SQLicious Configuration Error");
-		}
-		
-		// open connection
-		if($this->databaseNode != null)
-		{
-			$this->connectToMySQLDatabase();
+			if($GLOBALS[SQLICIOUS_CONFIG_GLOBAL]->$databaseNodeOrConfigurationName instanceof DatabaseConfiguration)
+			{
+				$this->databaseNode = $GLOBALS[SQLICIOUS_CONFIG_GLOBAL]->$databaseNodeOrConfigurationName->getMaster();
+			}
+			else
+			{
+				throw new SQLiciousErrorException("databaseNodeOrConfigurationName specified must be an instance of DatabaseConfiguration");
+			}
 		}
 		else
 		{
-			throw new SQLiciousErrorException("SQLicious Configuration Missing");
+			throw new SQLiciousErrorException("A DatabaseNode must be passed to DatabaseProcessor or SQLICIOUS_CONFIG_GLOBAL must be defined.");
 		}
-		
 	}
 	
 	function escapeString($string)
@@ -137,10 +128,6 @@ class DatabaseProcessor
 		$this->freeResult();
 	}
 	
-	function openNewConnection()
-	{
-		$this->connectToMySQLDatabase(true);
-	}
 	
 	function query()
 	{
@@ -178,8 +165,7 @@ class DatabaseProcessor
 	// using unbuffered mysql queries
 	function unbufferedProcess($function)
 	{
-		$connection = new mysqli($this->databaseNode->getServerHost(), $this->databaseNode->getServerUserName(), $this->databaseNode->getServerPassword(), $this->databaseNode->getMySQLDatabaseName(), $this->databaseNode->getPort(), $this->databaseNode->getSocket());
-		new mysqli($this->databaseNode->getServerHost(), $this->databaseNode->getServerUserName(), $this->databaseNode->getServerPassword(), $this->databaseNode->getMySQLDatabaseName(), $this->databaseNode->getPort(), $this->databaseNode->getSocket());
+		$connection = new mysqli($this->databaseNode->serverHost, $this->databaseNode->serverUsername, $this->databaseNode->serverPassword, $this->databaseNode->serverDatabaseName, $this->databaseNode->serverPort ? $this->databaseNode->serverPort : null, $this->databaseNode->serverSocket);
 		
 		if($connection != null)
 		{
@@ -244,7 +230,7 @@ class DatabaseProcessor
 			}
 			catch(ErrorException $e)
 			{
-				// My eyes! The goggles do nothing!
+				// Do nothing. My eyes! The goggles do nothing!
 			}
 			
 			unset($this->result);
@@ -320,13 +306,14 @@ class DatabaseProcessor
 //	
 //	}
 	
-	private function connectToMySQLDatabase($new = false)
+	
+	function connectToMySQLDatabase()
 	{
-		$this->connection = new mysqli($this->databaseNode->getServerHost(), $this->databaseNode->getServerUserName(), $this->databaseNode->getServerPassword(), $this->databaseNode->getMySQLDatabaseName(), $this->databaseNode->getPort(), $this->databaseNode->getSocket());
+		$this->connection = new mysqli($this->databaseNode->serverHost, $this->databaseNode->serverUsername, $this->databaseNode->serverPassword, $this->databaseNode->serverDatabaseName, $this->databaseNode->serverPort ? $this->databaseNode->serverPort : null, $this->databaseNode->serverSocket);
 		
 		if($this->connection == null || $this->connection->connect_errno)
 		{
-			throw new SQLiciousErrorException("SQLicioius Connection Errro");
+			throw new SQLiciousErrorException("SQLicioius Connection Error");
 		}
 	}
 	
@@ -351,11 +338,18 @@ class DatabaseProcessor
 		return html_entity_decode($text);
 	}
 	
+	// deprecate
 	static function mysql_real_escape_string($string)
 	{
-		$dp = new DatabaseProcessor();
-		
-		return $dp->escapeString($string);
+		if(defined('SQLICIOUS_CONFIG_GLOBAL') && array_key_exists(SQLICIOUS_CONFIG_GLOBAL, $GLOBALS))
+		{
+			$dp = new DatabaseProcessor(reset(array_keys($GLOBALS[SQLICIOUS_CONFIG_GLOBAL]->getDatabases())));
+			return $dp->escapeString($string);
+		}
+		else
+		{
+			throw new SQLiciousErrorException("DatabaseProcess::mysql_real_escape_string requires SQLICIOUS_CONFIG_GLOBAL");
+		}
 	}
 	
 }
