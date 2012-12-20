@@ -4,9 +4,15 @@ require_once('mustache/mustache.inc.php');
 
 class SQLiciousGeneratorDatabase
 {
-	function __construct()
+	function __construct($config)
 	{
+		$node = $config->getMaster();
 		
+		$this->setDatabaseName($node->serverDatabaseName);
+		$this->setDatabaseHost($node->serverHost);
+		$this->setDatabaseUsername($node->serverUsername);
+		$this->setDatabasePassword($node->serverPassword);
+		$this->setGeneratorDestinationDirectory($config->getGeneratorCodeDestinationDirectory());
 	}
 	
 	function setDatabaseName($val) { $this->databaseName = $val; }
@@ -241,7 +247,7 @@ class SQLiciousGenerator
 			{
 				if(!@mkdir($database->getGeneratorDestinationDirectory()))
 				{
-					$this->setErrorMessage('Unable to create database destination directory.');
+					$this->setErrorMessage('Unable to create database destination directory "' . htmlentities($database->getGeneratorDestinationDirectory()) . '".');
 					return false;
 				}
 				

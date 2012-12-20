@@ -12,29 +12,17 @@ if(defined("SQLICIOUS_CONFIG_GLOBAL") && array_key_exists(SQLICIOUS_CONFIG_GLOBA
 {
 	$generator = new SQLiciousGenerator();
 	
-	foreach($GLOBALS[SQLICIOUS_CONFIG_GLOBAL] as $name => $config)
+	foreach($GLOBALS[SQLICIOUS_CONFIG_GLOBAL]->getDatabases() as $name => $config)
 	{
-		$node = $config->getMaster();
-		
-		$db = new SQLiciousGeneratorDatabase();
-		$db->setDatabaseName($node->getMySQLDatabaseName());
-		$db->setDatabaseHost($node->getServerHost());
-		$db->setDatabaseUsername($node->getServerUserName());
-		$db->setDatabasePassword($node->getServerPassword());
-		$db->setGeneratorDestinationDirectory($config->getGeneratorCodeDestinationDirectory());
+		$db = new SQLiciousGeneratorDatabase($config);
 		
 		$generator->addDatabase($db);
 	}
 	
 }
-else if(!defined("SQLICIOUS_CONFIG_GLOBAL"))
-{
-	throw new SQLiciousErrorException("SQLICIOUS_CONFIG_GLOBAL] not defined.");
-	exit;
-}
 else
 {
-	throw new SQLiciousErrorException("\$GLOBALS[SQLICIOUS_CONFIG_GLOBAL] not found.");
+	echo "Database Configuration Not Found";
 	exit;
 }
 
