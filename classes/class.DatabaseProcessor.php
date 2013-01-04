@@ -4,8 +4,8 @@ class DatabaseProcessor
 {
 	var $connection;
 	var $databaseNode;
+	var $result = null;
 	
-	protected $result = null;
 	protected $numberOfRows = null;
 	protected $sql = null;
 	
@@ -128,6 +128,28 @@ class DatabaseProcessor
 		$this->freeResult();
 	}
 	
+	// using unbuffered mysql queries
+	function unbufferedProcess($function)
+	{
+		$connection = new mysqli($this->databaseNode->serverHost, $this->databaseNode->serverUsername, $this->databaseNode->serverPassword, $this->databaseNode->serverDatabaseName, $this->databaseNode->serverPort ? $this->databaseNode->serverPort : null, $this->databaseNode->serverSocket);
+		
+		if($connection != null)
+		{
+			$connection->set_charset($this->databaseNode->serverCharset);
+			
+			$connection->real_query($this->getSQL());
+			$result = $connection->use_result();
+			
+			while ($row = $result->fetch_assoc())
+			{
+				call_user_func($function,$this->loadDataObject($row));
+			}
+			
+			$result->free();
+		}
+		
+		return true;
+	}
 	
 	function query()
 	{
@@ -135,6 +157,37 @@ class DatabaseProcessor
 		$this->numberOfRows = (int)$this->result->num_rows;
 		
 		return $this->result;
+	}
+	
+	function executeMultiQuery()
+	{
+		return $this->__multiQuery();
+	}
+	
+	private function __multiQuery()
+	{
+		if($this->connection == null)
+		{
+			$this->connectToMySQLDatabase();
+		}
+		
+		$this->connection->multi_query($this->getSQL());
+		
+		do
+		{
+			if($this->connection->error)
+			{
+				throw new SQLiciousErrorException("SQLicious DatabaseProcessor multiQuery SQL Error. Reason given " . $this->connection->error);
+			}
+			
+			if(!$this->connection->next_result() && $this->connection->error == null)
+			{
+				break;
+			}
+			
+		} while (true);
+		
+		$this->connection->close();
 	}
 	
 	function update($sql)
@@ -162,28 +215,7 @@ class DatabaseProcessor
 		}
 	}
 	
-	// using unbuffered mysql queries
-	function unbufferedProcess($function)
-	{
-		$connection = new mysqli($this->databaseNode->serverHost, $this->databaseNode->serverUsername, $this->databaseNode->serverPassword, $this->databaseNode->serverDatabaseName, $this->databaseNode->serverPort ? $this->databaseNode->serverPort : null, $this->databaseNode->serverSocket);
-		
-		if($connection != null)
-		{
-			$connection->set_charset($this->databaseNode->serverCharset);
-			
-			$connection->real_query($this->getSQL());
-			$result = $connection->use_result();
-			
-			while ($row = $result->fetch_assoc())
-			{
-				call_user_func($function,$this->loadDataObject($row));
-			}
-			
-			$result->free();
-		}
-		
-		return true;
-	}
+	
 	
 	// convert timezones
 //	function convertTimezone($dateTime,$sourceTimezone,$destTimezone)
@@ -319,6 +351,7 @@ class DatabaseProcessor
 		}
 		
 		$this->connection->set_charset($this->databaseNode->serverCharset);
+		
 	}
 	
 	// util
