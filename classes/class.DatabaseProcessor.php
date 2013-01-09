@@ -18,9 +18,9 @@ class DatabaseProcessor
 		}
 		else if(is_string($databaseNodeOrConfigurationName) && defined('SQLICIOUS_CONFIG_GLOBAL') && array_key_exists(SQLICIOUS_CONFIG_GLOBAL, $GLOBALS))
 		{
-			if($GLOBALS[SQLICIOUS_CONFIG_GLOBAL]->$databaseNodeOrConfigurationName instanceof DatabaseConfiguration)
+			if($GLOBALS[SQLICIOUS_CONFIG_GLOBAL][$databaseNodeOrConfigurationName] instanceof DatabaseConfiguration)
 			{
-				$this->databaseNode = $GLOBALS[SQLICIOUS_CONFIG_GLOBAL]->$databaseNodeOrConfigurationName->getMaster();
+				$this->databaseNode = $GLOBALS[SQLICIOUS_CONFIG_GLOBAL][$databaseNodeOrConfigurationName]->getMaster();
 			}
 			else
 			{
