@@ -3,9 +3,7 @@
 SQLicious
 =============
 
-SQLicious is a PHP ORM that generates an object model from your MySQL database. Its powerful closure based query processing and 
-ability to handle large datasets make it powerful and flexible. Its included web interface and ease of 
-development make it a joy to use.
+SQLicious is a PHP Active Record ORM that generates an object models from your MySQL database. Its powerful closure based query processing and ability to handle large datasets make it powerful and flexible. Its included web interface and ease of development make it a joy to use.
 
 The features that make SQLicious easy and powerful are:
 
@@ -202,12 +200,7 @@ Other flexibile queries
 Find method for writing a custom where clause (returns objects)
 	
 	$f = new UserFactory();
-	$users = $f->find("where archived != 1 and email like '%@example.com'");
-
-Count query with custom where clause (returns an integer)
-
-	$f = new UserFactory();
-	$countOfUsers = $f->getCount("where archived != 1 and email like '%@example.com'");
+	$users = $f->findObjectWhere("where archived != 1 and email like '%@example.com'");
 	
 	
 
@@ -219,8 +212,10 @@ http://demo.sqlicious.com
 Converting Timezones
 =============
 
+	// Note requires time zones installed in mysql database
+	// usage: ($dateTime,$sourceTimezone,$destTimezone). $dateTime may be string or time(), returns a timestamp
 	$f = new UserLoginFactory();
-	$centralTime = $f->convertTimezone('2012-02-23 04:10PM', 'US/Eastern',  'US/Central'); // usage: ($dateTime,$sourceTimezone,$destTimezone). $dateTime may be string or time(), returns a timestamp
+	$centralTime = $f->convertTimezone('2012-02-23 04:10PM', 'US/Eastern',  'US/Central');
 
 
 Setup
