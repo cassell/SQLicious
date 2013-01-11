@@ -224,9 +224,9 @@ Setup
 1. Download the source code
 2. Use the example.config.inc.php to build your config.inc.php
 3. Make sure the generator has write access to the folders you specify in config
-4. Generate the DAO using the web UI
+4. Generate the DAO using the web UI or command line
 5. require_once('sqlicious.inc.php') in your project
-6. require_once or include any other generated factories that you need in your project
+6. require_once or include any other generated factories that you need in your project (suggestion: use an autoloader)
 
 Requirements
 =============
