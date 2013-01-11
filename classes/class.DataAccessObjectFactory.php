@@ -17,11 +17,6 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	private $orderByClause = '';
 	private $limitClause = '';
 	
-	private $paging = false;
-	private $pageNumber = 1;
-	private $rowsPerPage = 20;
-	private $numberOfPages = 1;
-	
 	function __construct()
 	{	
 		// setup connection properties
@@ -54,22 +49,14 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		return $data;
 	}
 	
-	final function addPrimaryKeyBinding($id)
-	{
-		if($this->getIdField())
-		{
-			$this->addBinding(new EqualsBinding($this->getIdField(),intval($id)));
-		}
-	}
-	
 	static function getObject($id)
 	{
         $f = new static();
           
         if($f->getIdField())
         {
-            $f->addPrimaryKeyBinding($id);
-            return $f->getFirstObject();
+           $f->addBinding(new EqualsBinding($f->getIdField(),intval($id)));
+           return $f->getFirstObject();
         }
         else return null;
 	}
@@ -254,24 +241,23 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	}
 	
 	// limits
-	function limit($number,$startAtRow = 0)
+	function limit($number,$offset = 0)
 	{
-		if($startAtRow > 0)
+		if((int)$offset > 0)
 		{
-			$this->setLimitClause("LIMIT " . intval($number) . "," . intval($startAtRow));
+			$this->setLimitClause("LIMIT " . (int)$offset . "," . (int)$number);
 		}
 		else
 		{
-			$this->setLimitClause("LIMIT " . intval($number));
+			$this->setLimitClause("LIMIT " . (int)$number);
 		}
 	}
 	function setLimitClause($val) { $this->limitClause = $val; }
 	function getLimitClause() { return $this->limitClause; }
 	
-	// deprecate old naming convention
-	function setLimit($numberOfRecords,$afterRow = 0)
+	function paging($pageNumber, $rowsPerPage = 20)
 	{
-		$this->limit($numberOfRecords,$afterRow);
+		$this->limit($rowsPerPage, ($pageNumber - 1) * $rowsPerPage);
 	}
 	
 	function count()
@@ -286,7 +272,6 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
         }
 	}
     
-    
     function sum($field)
     {
          return $this->getSingleFieldFunctionValue('SUM', $field);
@@ -295,11 +280,11 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
     private function getSingleFieldFunctionValue($function,$field)
     {
         $result = $this->getMySQLResult(implode(" ",array("SELECT " . $function . "(" . $field . ") as val",$this->getFromClause(),$this->getJoinClause(),$this->getConditionalSql())));
-	
+		
 		if($result != null)
 		{
 			$row = $result->fetch_row();
-			$result->free();
+			$this->freeResult($result);
 			return intval($row[0]);
 		}
 		else
@@ -307,45 +292,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 			return null;
 		}
     }
-    
-	function query()
-	{
-		$this->getMySQLResult($this->getSQL());
-		$this->numberOfRows = (int)$this->result->num_rows;
-		
-		if($this->paging)
-		{
-			$this->setNumberOfPages(ceil($this->getCountNoLimit() / $this->getRowsPerPage()));
-		}
-		
-		return $this->result;
-	}
 	
-	// paging
-	function setPageNumber($pageNumber, $rowsPerPage = null)
-	{
-		$this->paging = true;
-	
-		if(intval($pageNumber) > 0)
-		{
-			$this->pageNumber = $pageNumber;
-		}
-	
-		if(intval($rowsPerPage) > 0)
-		{
-			$this->rowsPerPage = $rowsPerPage;
-		}
-	
-		// limit() has bug
-		$this->setLimitClause("LIMIT " . ($this->getPageNumber() - 1) * $this->getRowsPerPage() . ', ' . $this->getRowsPerPage()); // offset, number of rows to return
-	}
-    
-	function getPaging() { return $this->paging; }
-	function getPageNumber() { return $this->pageNumber; }
-	function getRowsPerPage() {	return $this->rowsPerPage; }
-	function setNumberOfPages($val) { $this->numberOfPages = $val; }
-	function getNumberOfPages() { return $this->numberOfPages; }
-    
 	// clear	
 	protected function clearBindings()
 	{
@@ -368,15 +315,27 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		
 		return $conditionalSQL;
 	}
-    
-    /* below are functions that are slowly being phased out */
-    
-    // used to do custom queries, uses the same get select clause that the query() method 
-	function find($clause = "")
+	
+	// used to do completely custom queries but bit have to write the select query
+	function findObjectsWhere($whereClause)
 	{
-		$this->setSQL($this->getSelectClause() . " " . $this->getFromClause() . " ". $clause);
+		if(count($this->conditional->items) > 0)
+		{
+			throw new SQLiciousErrorException("Bindings have been added to the factory but are not respected by the findObjectsWhere method. Use getObjects, getArray, etc.");
+		}
+		
+		$this->setSQL($this->getSelectClause() . " " . $this->getFromClause() . " ". $whereClause);
+		
 		return $this->getObjects();
 	}
+	
+    /* below are functions that are slowly being phased out */
+	
+    function find($clause = "")
+	{
+		return $this->findObjectsWhere($clause);
+	}
+   
     
     function deleteWhere($whereClause)
 	{
@@ -402,7 +361,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 				$array[] = $row["fdf"];
 			}
 			
-			$result->free();
+			$this->freeResult($result);
 		}
 		
 		return $array;
@@ -421,7 +380,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 				$array[] = $row["ff"];
 			}
 			
-			$result->free();
+			$this->freeResult($result);
 		}
 		
 		return $array;
@@ -479,7 +438,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 				$data[] = $row;
 			}
 			
-			$result->free();
+			$this->freeResult($result);
 		}
 		
 		return $data;

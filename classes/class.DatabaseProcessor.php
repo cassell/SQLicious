@@ -4,9 +4,7 @@ class DatabaseProcessor
 {
 	var $connection;
 	var $databaseNode;
-	var $result = null;
 	
-	protected $numberOfRows = null;
 	protected $sql = null;
 	
 	function __construct($databaseNodeOrConfigurationName)
@@ -33,12 +31,10 @@ class DatabaseProcessor
 		}
 	}
 	
+	// escape a string to prevent mysql injection
 	function escapeString($string)
 	{
-		if($this->connection == null)
-		{
-			$this->connectToMySQLDatabase();
-		}
+		$this->connectToMySQLDatabase();
 		
 		return $this->connection->real_escape_string($string);
 	}
@@ -56,6 +52,7 @@ class DatabaseProcessor
 		return $data;
 	}
 	
+	// return a single column from a database as an non-associative array	
 	function getSingleColumnArray($column)
 	{
 		$data = array();
@@ -82,6 +79,7 @@ class DatabaseProcessor
 		return $data;
 	}
 	
+	// return a single value from the database
 	function getFirstField($columnName)
 	{
 		$a = $this->getArray();
@@ -103,60 +101,71 @@ class DatabaseProcessor
 		return $this->sql;
 	}
 	
+	// build a data object from the row data
 	function loadDataObject($row)
 	{
 		return new DataAccessArray($row);
 	}
 	
+	// loop through rows return from database calling closure function provided
 	function process($function)
 	{
-		$this->query();
+		$result = $this->query();
 		
-		if($this->result != null)
+		if($result != null)
 		{
-			if($this->numberOfRows > 0)
+			if($this->getNumberOfRowsFromResult($result) > 0)
 			{
-				$this->result->data_seek(0);
+				$result->data_seek(0);
 				
-				while ($row = $this->result->fetch_assoc())
+				while ($row = $result->fetch_assoc())
 				{
 					call_user_func($function,$this->loadDataObject($row));
 				}
 			}
 		}
 	
-		$this->freeResult();
+		$this->freeResult($result);
 	}
 	
-	// using unbuffered mysql queries
+	// same as process but uses unbuffered connection
 	function unbufferedProcess($function)
 	{
-		$connection = new mysqli($this->databaseNode->serverHost, $this->databaseNode->serverUsername, $this->databaseNode->serverPassword, $this->databaseNode->serverDatabaseName, $this->databaseNode->serverPort ? $this->databaseNode->serverPort : null, $this->databaseNode->serverSocket);
+		$this->connectToMySQLDatabase();
 		
-		if($connection != null)
+		$this->connection->real_query($this->getSQL());
+		
+		$result = $this->connection->use_result();
+		
+		while ($row = $result->fetch_assoc())
 		{
-			$connection->set_charset($this->databaseNode->serverCharset);
-			
-			$connection->real_query($this->getSQL());
-			$result = $connection->use_result();
-			
-			while ($row = $result->fetch_assoc())
-			{
-				call_user_func($function,$this->loadDataObject($row));
-			}
-			
-			$result->free();
+			call_user_func($function,$this->loadDataObject($row));
 		}
 		
+		$this->freeResult($result);
+
 		return true;
+	}
+	
+	function getNumberOfRowsFromResult($result)
+	{
+		return (int)$result->num_rows;
 	}
 	
 	function query()
 	{
-		$this->getMySQLResult($this->getSQL());
-		$this->numberOfRows = (int)$this->result->num_rows;
-		
-		return $this->result;
+		if(count(func_get_args()) > 0)
+		{
+			throw new SQLiciousErrorException("SQLicious DatabaseProcessor query does not accept any parameters");
+		}
+		$result = $this->getMySQLResult($this->getSQL());
+		return $result;
+	}
+	
+	function update($sql)
+	{
+		$result = $this->getMySQLResult($sql);
+		$this->freeResult($result);
 	}
 	
 	function executeMultiQuery()
@@ -166,10 +175,7 @@ class DatabaseProcessor
 	
 	private function __multiQuery()
 	{
-		if($this->connection == null)
-		{
-			$this->connectToMySQLDatabase();
-		}
+		$this->connectToMySQLDatabase();
 		
 		$this->connection->multi_query($this->getSQL());
 		
@@ -190,84 +196,76 @@ class DatabaseProcessor
 		$this->connection->close();
 	}
 	
-	function update($sql)
-	{
-		$this->result = $this->getMySQLResult($sql);
-		$this->freeResult();
-	}
+	
 	
 	function getMySQLResult($sql)
 	{
+		$this->connectToMySQLDatabase();
+		
 		try 
 		{
-			if($this->connection == null)
-			{
-				$this->connectToMySQLDatabase();
-			}
-			
-			$this->result = $this->connection->query($sql);
-			
-			return $this->result;
+			return $this->connection->query($sql);
 		}
 		catch(ErrorException $e)
 		{
-			throw new SQLiciousErrorException("SQLicious DatabaseProcessor SQL Error. MySQL Query Failed: " . htmlentities($sql) . '\n\nReason given ' . $e . '\n\n');
+			throw new SQLiciousErrorException("SQLicious DatabaseProcessor SQL Error. MySQL Query Failed: " . htmlentities($sql) . '. Reason given ' . $e);
 		}
 	}
 	
-	
-	
-	// convert timezones
-//	function convertTimezone($dateTime,$sourceTimezone,$destTimezone)
-//	{
-//		if(!is_integer($dateTime))
-//		{
-//			if(strtotime($dateTime) !== false)
-//			{
-//				return $this->convertTimezone(strtotime($dateTime),$sourceTimezone,$destTimezone);
-//			}
-//		}
-//		else
-//		{
-//			$result = $this->getMySQLResult("SELECT CONVERT_TZ('2004-01-01 12:00:00','" . $this->escapeString($sourceTimezone) . "','" . $this->escapeString($destTimezone) . "');");
-//			if($result != null)
-//			{
-//				$row = mysql_fetch_row($result);
-//	
-//				mysql_free_result($result);
-//	
-//				return strtotime(reset($row));
-//			}
-//				
-//		}
-//	
-//		// failed
-//		return false;
-//	}
-	
-	function getNumberOfRows()
+	// convert timezones, use "US/Eastern" mysql format (mysql.time_zone_name)
+	function convertTimezone($dateTime,$sourceTimezone,$destTimezone)
 	{
-		return $this->numberOfRows;
+		if(!is_integer($dateTime))
+		{
+			if(strtotime($dateTime) !== false)
+			{
+				return $this->convertTimezone(strtotime($dateTime),$sourceTimezone,$destTimezone);
+			}
+		}
+		else
+		{
+			$this->connectToMySQLDatabase();
+			
+			$sql = "SELECT CONVERT_TZ('" . date(SQLICIOUS_MYSQL_DATETIME_FORMAT,$dateTime) . "','" . $this->escapeString($sourceTimezone) . "','" . $this->escapeString($destTimezone) . "');";
+			
+			try 
+			{
+				$result = $this->connection->query($sql);
+				
+				$destDateTime = reset($result->fetch_row());
+				
+				if($destDateTime != null)
+				{
+					return $destDateTime;
+				}
+				else
+				{
+					throw new SQLiciousErrorException("SQLicious DatabaseProcessor SQL Error. convertTimezone Failed: " . htmlentities($sql));
+				}
+			}
+			catch(ErrorException $e)
+			{
+				throw new SQLiciousErrorException("SQLicious DatabaseProcessor SQL Error. convertTimezone Failed: " . htmlentities($sql) . '. Reason given ' . $e);
+			}
+		}
 	}
 	
-	function freeResult()
+	function freeResult($result)
 	{
-		if($this->result != null)
+		if($result != null)
 		{
 			try
 			{
-				if($this->result instanceof mysqli_result)
+				if($result instanceof mysqli_result)
 				{
-					$this->result->free();
+					$result->free();
 				}
 				
 			}
 			catch(ErrorException $e)
 			{
-				// Do nothing. My eyes! The goggles do nothing!
+				// Do nothing. (My eyes! The goggles do nothing!)
 			}
-			
-			unset($this->result);
 		}
 	}
 	
@@ -294,56 +292,12 @@ class DatabaseProcessor
 		echo "]";
 	}
 	
-//	function outputCSV()
-//	{
-//		$this->unbufferedProcess(function($obj)
-//		{
-//			echo $obj->toCSV();
-//			echo "\n";
-//		});
-//	}
-	
-//	function explain()
-//	{
-//		$explain = $this->getMySQLResult('EXPLAIN ' . $this->getSQL());
-//	
-//		$params = mysql_fetch_assoc($explain);
-//	
-//		@mysql_free_result($explain);
-//	
-//		return $params;
-//	}
-	
-//	function queryTest()
-//	{
-//		echo '<pre>';
-//	
-//		echo 'SQL: ' . htmlentities($this->getSQL());
-//	
-//		echo "\n\n";
-//	
-//		echo 'EXPLAIN: ' . htmlentities(print_r($this->explain(),true));
-//	
-//		echo "\n\n";
-//	
-//		$result = $this->query();
-//	
-//		echo 'ROW COUNT: '  . htmlentities($this->getNumberOfRows(),true);
-//	
-//		echo "\n\n";
-//	
-//		echo 'FIRST ROW: ' . htmlentities(print_r(reset($this->getArray()),true));
-//	
-//		$this->freeResult();
-//	
-//		echo '</pre>';
-//	
-//	}
-	
-	
-	function connectToMySQLDatabase()
+	function connectToMySQLDatabase($forceReconnect = false)
 	{
-		$this->connection = new mysqli($this->databaseNode->serverHost, $this->databaseNode->serverUsername, $this->databaseNode->serverPassword, $this->databaseNode->serverDatabaseName, $this->databaseNode->serverPort ? $this->databaseNode->serverPort : null, $this->databaseNode->serverSocket);
+		if($this->connection == null || $forceReconnect)
+		{
+			$this->connection = new mysqli($this->databaseNode->serverHost, $this->databaseNode->serverUsername, $this->databaseNode->serverPassword, $this->databaseNode->serverDatabaseName, $this->databaseNode->serverPort ? $this->databaseNode->serverPort : null, $this->databaseNode->serverSocket);
+		}
 		
 		if($this->connection == null || $this->connection->connect_errno)
 		{
@@ -375,7 +329,7 @@ class DatabaseProcessor
 		return html_entity_decode($text);
 	}
 	
-	// deprecate
+	// useful for replacing mysql_real_escape_string in old code with DatabaseProcessor::mysql_real_escape_string()
 	static function mysql_real_escape_string($string)
 	{
 		if(defined('SQLICIOUS_CONFIG_GLOBAL') && array_key_exists(SQLICIOUS_CONFIG_GLOBAL, $GLOBALS))

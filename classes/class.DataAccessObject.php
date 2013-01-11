@@ -60,6 +60,7 @@ abstract class DataAccessObject extends DataAccessArray
 	{
 		$f = static::getFactory();
 		
+		
 		if(!empty($this->modifiedColumns))
 		{
 			foreach(array_keys($this->modifiedColumns) as $field)
@@ -93,7 +94,7 @@ abstract class DataAccessObject extends DataAccessArray
 					$sql = 'INSERT INTO ' . $this->getTableName() . " VALUES()";
 				}
 				
-				$result = $f->getMySQLResult($sql);
+				$f->update($sql);
 				
 				$this->data[$this->getIdField()] = $f->connection->insert_id;
 			}
