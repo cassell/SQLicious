@@ -80,8 +80,8 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
 		$this->conditional->addConditional($conditional);
 	}
-    
-    function getSQL()
+	
+	function getSQL()
 	{
 		if($this->sql == null)
 		{
@@ -116,8 +116,8 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
 		return 'SELECT ' . implode(",",$this->fields);
 	}
-    
-    function getFromClause()
+	
+	function getFromClause()
     {
         return 'FROM ' . $this->getTableName();
     }
