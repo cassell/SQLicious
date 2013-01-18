@@ -96,7 +96,14 @@ abstract class DataAccessObject extends DataAccessArray
 				
 				$f->update($sql);
 				
-				$this->data[$this->getIdField()] = $f->connection->insert_id;
+				if($f->connection->insert_id > 0)
+				{
+					$this->data[$this->getIdField()] = $f->connection->insert_id;
+				}
+				else
+				{
+					throw new SQLiciousErrorException("Insert failed");
+				}
 			}
 			
 			unset($this->modifiedColumns);

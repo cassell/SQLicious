@@ -95,7 +95,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	
 	function delete()
 	{
-		return "DELETE " . implode(" ",array($this->getFromClause(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause()));
+		$this->update("DELETE " . implode(" ",array($this->getFromClause(),$this->getJoinClause(),$this->getConditionalSql(),$this->getGroupByClause(),$this->getOrderByClause(),$this->getLimitClause())));
 	}
 	
 	// find an object or data by primary key
