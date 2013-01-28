@@ -12,7 +12,7 @@ class DataAccessArray implements ArrayAccess
 
 	public function offsetSet($offset, $value)
 	{
-		if (is_null($offset))
+		if(is_null($offset))
 		{
 			$this->data[] = $value;
 		}
@@ -40,7 +40,7 @@ class DataAccessArray implements ArrayAccess
 	// return something
 	function getFieldValue($fieldName)
 	{
-		if (array_key_exists($fieldName, $this->data))
+		if(array_key_exists($fieldName, $this->data))
 		{
 			return $this->data[$fieldName];
 		}
@@ -60,9 +60,9 @@ class DataAccessArray implements ArrayAccess
 	function toJSON()
 	{
 		$json = array();
-		if ($this->data != null)
+		if($this->data != null)
 		{
-			foreach ($this->data as $field => $value)
+			foreach($this->data as $field => $value)
 			{
 				$json[self::toFieldCase($field)] = $value;
 			}
@@ -83,10 +83,10 @@ class DataAccessArray implements ArrayAccess
 		$result = '';
 
 		$segments = explode("_", $val);
-		for ($i = 0; $i < count($segments); $i++)
+		for($i = 0; $i < count($segments); $i++)
 		{
 			$segment = $segments[$i];
-			if ($i == 0)
+			if($i == 0)
 				$result .= $segment;
 			else
 				$result .= strtoupper(substr($segment, 0, 1)) . substr($segment, 1);
@@ -101,9 +101,9 @@ class DataAccessArray implements ArrayAccess
 
 	static function utf8EncodeArray($array)
 	{
-		foreach ($array as $key => $value)
+		foreach($array as $key => $value)
 		{
-			if (is_array($value))
+			if(is_array($value))
 			{
 				$array[$key] = self::utf8EncodeArray($value);
 			}
