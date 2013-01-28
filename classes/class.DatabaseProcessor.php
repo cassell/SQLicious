@@ -186,7 +186,7 @@ class DatabaseProcessor
 				throw new SQLiciousErrorException("SQLicious DatabaseProcessor multiQuery SQL Error. Reason given " . $this->connection->error);
 			}
 			
-			if(!$this->connection->next_result() && $this->connection->error == null)
+			if(!$this->connection->more_results() || (!$this->connection->next_result() && $this->connection->error == null))
 			{
 				break;
 			}
@@ -260,11 +260,10 @@ class DatabaseProcessor
 				{
 					$result->free();
 				}
-				
 			}
 			catch(ErrorException $e)
 			{
-				// Do nothing. (My eyes! The goggles do nothing!)
+				// Do nothing
 			}
 		}
 	}
