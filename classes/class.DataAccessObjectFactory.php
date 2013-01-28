@@ -39,7 +39,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 
 		$this->process(function($obj) use (&$data)
 				{
-					if ($obj->getIdField() != null)
+					if($obj->getIdField() != null)
 					{
 						$data[$obj->getId()] = $obj;
 					}
@@ -56,7 +56,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
 		$f = new static();
 
-		if ($f->getIdField())
+		if($f->getIdField())
 		{
 			$f->addBinding(new EqualsBinding($f->getIdField(), intval($id)));
 			return $f->getFirstObject();
@@ -69,7 +69,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
 		$this->limit(1);
 		$array = $this->getObjects();
-		if ($array != null && is_array($array))
+		if($array != null && is_array($array))
 		{
 			return reset($array);
 		}
@@ -87,7 +87,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 
 	function getSQL()
 	{
-		if ($this->sql == null)
+		if($this->sql == null)
 		{
 			return implode(" ", array($this->getSelectClause(), $this->getFromClause(), $this->getJoinClause(), $this->getConditionalSql(), $this->getGroupByClause(), $this->getOrderByClause(), $this->getLimitClause()));
 		}
@@ -128,19 +128,19 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 
 	function setSelectFields($arrayOfFields)
 	{
-		if (func_num_args() == 1 && is_array($arrayOfFields))
+		if(func_num_args() == 1 && is_array($arrayOfFields))
 		{
 			// empty the fields array
 			$this->fields = array();
 
-			if ($this->getIdField() != null)
+			if($this->getIdField() != null)
 			{
 				$this->addSelectField($this->getIdField());
 			}
 
-			foreach ($arrayOfFields as $field)
+			foreach($arrayOfFields as $field)
 			{
-				if ($field != $this->getIdField())
+				if($field != $this->getIdField())
 				{
 					$this->addSelectField($field);
 				}
@@ -154,7 +154,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 
 	function addSelectField($field)
 	{
-		if (strpos($field, ".") !== false)
+		if(strpos($field, ".") !== false)
 		{
 			$this->fields[] = $field;
 		}
@@ -189,23 +189,23 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	// group by
 	function groupBy($fieldOrArray)
 	{
-		if (func_num_args() > 1)
+		if(func_num_args() > 1)
 		{
 			// passed multiple fields $f->addGroupBy("first_name","last_name")
 			$this->groupBy(func_get_args());
 		}
-		else if (func_num_args() == 1 && is_array($fieldOrArray) && count($fieldOrArray) > 0)
+		else if(func_num_args() == 1 && is_array($fieldOrArray) && count($fieldOrArray) > 0)
 		{
 			// passed an array of fields $f->addGroupBy(["first_name","last_name"])
-			foreach ($fieldOrArray as $field)
+			foreach($fieldOrArray as $field)
 			{
 				$this->groupBy($field);
 			}
 		}
-		else if (func_num_args() == 1 && is_string($fieldOrArray))
+		else if(func_num_args() == 1 && is_string($fieldOrArray))
 		{
 			// passed a single field $f->addGroupBy("last_name")
-			if ($this->getGroupByClause() == "")
+			if($this->getGroupByClause() == "")
 			{
 				$this->setGroupByClause("GROUP BY " . $this->escapeString($fieldOrArray));
 			}
@@ -229,7 +229,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	// order by
 	function orderBy($field, $direction = 'asc')
 	{
-		if ($this->getOrderByClause() == "")
+		if($this->getOrderByClause() == "")
 		{
 			$this->setOrderByClause("ORDER BY ");
 		}
@@ -253,9 +253,9 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 
 	function orderByAsc($arrayOfFields)
 	{
-		if (func_num_args() == 1 && is_array($arrayOfFields) && count($arrayOfFields) > 0)
+		if(func_num_args() == 1 && is_array($arrayOfFields) && count($arrayOfFields) > 0)
 		{
-			foreach ($arrayOfFields as $field)
+			foreach($arrayOfFields as $field)
 			{
 				$this->orderByField($field);
 			}
@@ -269,7 +269,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	// limits
 	function limit($number, $offset = 0)
 	{
-		if ((int) $offset > 0)
+		if((int) $offset > 0)
 		{
 			$this->setLimitClause("LIMIT " . (int) $offset . "," . (int) $number);
 		}
@@ -296,7 +296,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 
 	function count()
 	{
-		if ($this->getIdField())
+		if($this->getIdField())
 		{
 			return $this->getSingleFieldFunctionValue('COUNT', $this->getTableName() . '.' . $this->getIdField());
 		}
@@ -315,7 +315,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
 		$result = $this->getMySQLResult(implode(" ", array("SELECT " . $function . "(" . $field . ") as val", $this->getFromClause(), $this->getJoinClause(), $this->getConditionalSql())));
 
-		if ($result != null)
+		if($result != null)
 		{
 			$row = $result->fetch_row();
 			$this->freeResult($result);
@@ -342,7 +342,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
 		$conditionalSQL = $this->conditional->getSql($this);
 
-		if ($conditionalSQL != "")
+		if($conditionalSQL != "")
 		{
 			$conditionalSQL = " WHERE " . $conditionalSQL;
 		}
@@ -353,7 +353,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	// used to do completely custom queries but bit have to write the select query
 	function findObjectsWhere($whereClause)
 	{
-		if (count($this->conditional->items) > 0)
+		if(count($this->conditional->items) > 0)
 		{
 			throw new SQLiciousErrorException("Bindings have been added to the factory but are not respected by the findObjectsWhere method. Use getObjects, getArray, etc.");
 		}
@@ -387,9 +387,9 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 
 		$result = $this->getMySQLResult('SELECT DISTINCT(' . $this->escapeString($field) . ") as fdf FROM " . $this->getTableName() . " " . $clause);
 
-		if ($result != null && $result->num_rows > 0)
+		if($result != null && $result->num_rows > 0)
 		{
-			while ($row = $result->fetch_assoc())
+			while($row = $result->fetch_assoc())
 			{
 				$array[] = $row["fdf"];
 			}
@@ -406,9 +406,9 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 
 		$result = $this->getMySQLResult('SELECT ' . $this->escapeString($field) . " as ff FROM " . $this->getTableName() . " " . $clause);
 
-		if ($result != null && $result->num_rows > 0)
+		if($result != null && $result->num_rows > 0)
 		{
-			while ($row = $result->fetch_assoc())
+			while($row = $result->fetch_assoc())
 			{
 				$array[] = $row["ff"];
 			}
@@ -426,7 +426,7 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 
 	function getCount($clause = "")
 	{
-		if ($this->getIdField() != '')
+		if($this->getIdField() != '')
 		{
 			return (int) ($this->sqlFunctionFieldQuery('COUNT', $this->getTableName() . "." . $this->getIdField(), $clause));
 		}
@@ -464,9 +464,9 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 
 		$result = $this->getMySQLResult($sql);
 
-		if ($result != null && $result->num_rows > 0)
+		if($result != null && $result->num_rows > 0)
 		{
-			while ($row = $result->fetch_assoc())
+			while($row = $result->fetch_assoc())
 			{
 				$data[] = $row;
 			}
@@ -506,7 +506,7 @@ class Conditional extends SQLString
 
 	function addBinding($binding)
 	{
-		if (is_string($binding))
+		if(is_string($binding))
 		{
 			$this->addItem(new StringBinding($binding));
 		}
@@ -528,11 +528,11 @@ class Conditional extends SQLString
 
 	function getSQL($factory)
 	{
-		if ($this->items != null && count($this->items) > 0)
+		if($this->items != null && count($this->items) > 0)
 		{
 			$sql = array();
 
-			foreach ($this->items as $item)
+			foreach($this->items as $item)
 			{
 				$sql[] = $item->getSQL($factory);
 			}
@@ -557,11 +557,11 @@ class OrConditional extends Conditional
 
 	function getSQL($factory)
 	{
-		if ($this->items != null && count($this->items) > 0)
+		if($this->items != null && count($this->items) > 0)
 		{
 			$sql = array();
 
-			foreach ($this->items as $item)
+			foreach($this->items as $item)
 			{
 				$sql[] = $item->getSQL($factory);
 			}
@@ -585,11 +585,11 @@ class FactoryConditional extends Conditional
 
 	function getSQL($factory)
 	{
-		if ($this->items != null && count($this->items) > 0)
+		if($this->items != null && count($this->items) > 0)
 		{
 			$sql = array();
 
-			foreach ($this->items as $item)
+			foreach($this->items as $item)
 			{
 				$sql[] = $item->getSQL($factory);
 			}
@@ -697,7 +697,7 @@ class ContainsBinding extends SQLString
 
 	function getSQL($factory)
 	{
-		return $factory->escapeString($this->field) . " LIKE '%" . $factory->escapeString($this->query) . "%'";
+		return $factory->escapeString($this->field) . " LIKE '%" . $factory->escapeString(str_replace("_", "\_", str_replace("%", "\%", $this->query))) . "%'";
 	}
 
 }
@@ -714,15 +714,15 @@ class InBinding extends SQLString
 
 	function getSQL($factory)
 	{
-		if (count($this->array) == 1)
+		if(count($this->array) == 1)
 		{
 			return $factory->escapeString($this->field) . " = " . reset($this->array);
 		}
-		else if (count($this->array) > 0)
+		else if(count($this->array) > 0)
 		{
-			foreach ($this->array as $key => $item)
+			foreach($this->array as $key => $item)
 			{
-				if (is_numeric($item))
+				if(is_numeric($item))
 				{
 					$this->array[$key] = (int) $item;
 				}
@@ -754,9 +754,9 @@ class NotInBinding extends SQLString
 
 	function getSQL($factory)
 	{
-		if (count($this->array > 0))
+		if(count($this->array > 0))
 		{
-			foreach ($this->array as $key => $item)
+			foreach($this->array as $key => $item)
 			{
 				$this->array[$key] = $factory->escapeString($item);
 			}
