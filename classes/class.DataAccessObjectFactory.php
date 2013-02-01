@@ -62,7 +62,9 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 			return $f->getFirstObject();
 		}
 		else
+		{
 			return null;
+		}
 	}
 
 	function getFirstObject()
