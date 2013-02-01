@@ -39,6 +39,81 @@ class DatabaseProcessor
 		return $this->connection->real_escape_string($string);
 	}
 	
+	function getArray()
+	{
+		$data = array();
+		
+		$result = $this->query();
+		
+		if($result != null)
+		{
+			if($this->getNumberOfRowsFromResult($result) > 0)
+			{
+				$result->data_seek(0);
+				
+				while ($row = $result->fetch_assoc())
+				{
+					$obj = $this->loadDataObject($row);
+					
+					$data[] = $obj->toArray();
+				}
+			}
+		}
+		
+		return $data;
+		
+	}
+	
+	function getJSON()
+	{
+		$data = array();
+		
+		$result = $this->query();
+		
+		if($result != null)
+		{
+			if($this->getNumberOfRowsFromResult($result) > 0)
+			{
+				$result->data_seek(0);
+				
+				while ($row = $result->fetch_assoc())
+				{
+					$obj = $this->loadDataObject($row);
+					
+					$data[] = $obj->toJSON();
+				}
+			}
+		}
+		
+		return $data;
+		
+	}
+	
+	function getSingleColumnArray($column)
+	{
+		$data = array();
+		
+		$result = $this->query();
+		
+		if($result != null)
+		{
+			if($this->getNumberOfRowsFromResult($result) > 0)
+			{
+				$result->data_seek(0);
+				
+				while ($row = $result->fetch_assoc())
+				{
+					$obj = $this->loadDataObject($row);
+					$t = $obj->toArray();
+					$data[] = $t[$column];
+				}
+			}
+		}
+		
+		return $data;
+	}
+	
+	/*  For PHP Version 5.3:
 	// returns an array of rows from the database
 	function getArray()
 	{
@@ -78,6 +153,7 @@ class DatabaseProcessor
 	
 		return $data;
 	}
+	 */
 	
 	// return a single value from the database
 	function getFirstField($columnName)
@@ -204,7 +280,15 @@ class DatabaseProcessor
 		
 		try 
 		{
-			return $this->connection->query($sql);
+			$c = $this->connection->query($sql);
+			if($this->connection->error != null)
+			{
+				throw new ErrorException($this->connection->error);
+			}
+			else
+			{
+				return $c;
+			}
 		}
 		catch(ErrorException $e)
 		{
@@ -260,14 +344,50 @@ class DatabaseProcessor
 				{
 					$result->free();
 				}
+				
 			}
 			catch(ErrorException $e)
 			{
-				// Do nothing
+				// Do nothing. (My eyes! The goggles do nothing!)
 			}
 		}
 	}
 	
+	function outputJSONString()
+	{
+		echo "[";
+		
+			$firstRecord = true;
+		
+			$this->connectToMySQLDatabase();
+
+			$this->connection->real_query($this->getSQL());
+
+			$result = $this->connection->use_result();
+
+			while ($row = $result->fetch_assoc())
+			{
+				if(!$firstRecord)
+				{
+					echo ",";
+				}
+				else
+				{
+					$firstRecord = false;
+				}
+				
+				$obj = $this->loadDataObject($row);
+				
+			}
+
+			$this->freeResult($result);
+		
+		echo "]";
+
+		return true;
+	}
+	
+	/*
 	function outputJSONString()
 	{
 		echo "[";
@@ -290,6 +410,7 @@ class DatabaseProcessor
 	
 		echo "]";
 	}
+	 */
 	
 	function connectToMySQLDatabase($forceReconnect = false)
 	{
