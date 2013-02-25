@@ -465,26 +465,6 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		$this->orderBy($field, $direction);
 	}
 
-	// depecate
-	function executeQuery($sql)
-	{
-		$data = array();
-
-		$result = $this->getMySQLResult($sql);
-
-		if($result != null && $result->num_rows > 0)
-		{
-			while($row = $result->fetch_assoc())
-			{
-				$data[] = $row;
-			}
-
-			$this->freeResult($result);
-		}
-
-		return $data;
-	}
-
 }
 
 /* abstract sql string class, bindings and conditionals extend this class */
