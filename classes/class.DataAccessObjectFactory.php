@@ -4,7 +4,6 @@ require_once('class.DatabaseProcessor.php');
 
 abstract class DataAccessObjectFactory extends DatabaseProcessor
 {
-
 	// generated classes create these
 	abstract function getTableName();
 
@@ -36,19 +35,26 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	function getObjects()
 	{
 		$data = array();
-
-		$this->process(function($obj) use (&$data)
+		
+		$conn = $this->databaseNode->getConnection();
+		
+		$result = $this->getMySQLResult($this->getSQL(),$conn);
+		
+		if($result != null)
+		{
+			if($this->getNumberOfRowsFromResult($result) > 0)
+			{
+				$result->data_seek(0);
+				
+				while ($row = $result->fetch_assoc())
 				{
-					if($obj->getIdField() != null)
-					{
-						$data[$obj->getId()] = $obj;
-					}
-					else
-					{
-						$data[] = $obj;
-					}
-				});
-
+					$obj = $this->loadDataObject($row);
+					
+					$data[$obj->getId()] = $obj;
+				}
+			}
+		}
+		
 		return $data;
 	}
 
