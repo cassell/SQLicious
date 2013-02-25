@@ -60,6 +60,7 @@ class DatabaseNode
 	var $serverPort;
 	var $serverSocket;
 	var $serverCharset;
+	var $connection;
 	
 	function __construct($serverDatabaseName, $serverHost, $serverUsername, $serverPassword, $serverPort = null, $serverSocket = null, $serverCharset = 'utf8')
 	{
@@ -71,6 +72,29 @@ class DatabaseNode
 		$this->serverSocket = $serverSocket;
 		$this->serverCharset = $serverCharset;
 	}
+	
+	function getConnection()
+	{
+		if($this->connection == null)
+		{
+			$this->connection = new mysqli($this->serverHost, $this->serverUsername, $this->serverPassword, $this->serverDatabaseName, $this->serverPort ? $this->serverPort : null, $this->serverSocket);
+			$this->connection->set_charset($this->serverCharset);
+
+			if($this->connection == null || $this->connection->connect_errno)
+			{
+				throw new SQLiciousConnectionErrorException("SQLicioius Connection Error");
+			}
+		}
+		
+		return $this->connection;
+	}
+	
+	function closeConnection($conn)
+	{
+		$this->connection->close();
+	}
+	
+	
 }
 
 
