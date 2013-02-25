@@ -29,21 +29,16 @@ class DatabaseProcessor
 		{
 			throw new SQLiciousErrorException("A DatabaseNode must be passed to DatabaseProcessor or SQLICIOUS_CONFIG_GLOBAL must be defined.");
 		}
-	}
-	
-	// escape a string to prevent mysql injection
-	function escapeString($string)
-	{
-		$this->connectToMySQLDatabase();
 		
-		return $this->connection->real_escape_string($string);
 	}
 	
 	function getArray()
 	{
 		$data = array();
 		
-		$result = $this->query();
+		$conn = $this->databaseNode->getConnection();
+		
+		$result = $this->getMySQLResult($this->getSQL(),$conn);
 		
 		if($result != null)
 		{
@@ -53,22 +48,21 @@ class DatabaseProcessor
 				
 				while ($row = $result->fetch_assoc())
 				{
-					$obj = $this->loadDataObject($row);
-					
-					$data[] = $obj->toArray();
+					$data[] = $row;
 				}
 			}
 		}
 		
 		return $data;
-		
 	}
 	
 	function getJSON()
 	{
 		$data = array();
 		
-		$result = $this->query();
+		$conn = $this->databaseNode->getConnection();
+		
+		$result = $this->getMySQLResult($this->getSQL(),$conn);
 		
 		if($result != null)
 		{
@@ -86,14 +80,15 @@ class DatabaseProcessor
 		}
 		
 		return $data;
-		
 	}
 	
 	function getSingleColumnArray($column)
 	{
 		$data = array();
 		
-		$result = $this->query();
+		$conn = $this->databaseNode->getConnection();
+		
+		$result = $this->getMySQLResult($this->getSQL(),$conn);
 		
 		if($result != null)
 		{
@@ -112,48 +107,6 @@ class DatabaseProcessor
 		
 		return $data;
 	}
-	
-	/*  For PHP Version 5.3:
-	// returns an array of rows from the database
-	function getArray()
-	{
-		$data = array();
-	
-		$this->process(function($obj) use (&$data)
-		{
-			$data[] = $obj->toArray();
-		});
-	
-		return $data;
-	}
-	
-	// return a single column from a database as an non-associative array	
-	function getSingleColumnArray($column)
-	{
-		$data = array();
-	
-		$this->process(function($obj) use (&$data,$column)
-		{
-			$t = $obj->toArray();
-			$data[] = $t[$column];
-		});
-	
-		return $data;
-	}
-	
-	// returns an array of rows from the database
-	function getJSON()
-	{
-		$data = array();
-	
-		$this->process(function($obj) use (&$data)
-		{
-			$data[] = $obj->toJSON();
-		});
-	
-		return $data;
-	}
-	 */
 	
 	// return a single value from the database
 	function getFirstField($columnName)
@@ -186,7 +139,9 @@ class DatabaseProcessor
 	// loop through rows return from database calling closure function provided
 	function process($function)
 	{
-		$result = $this->query();
+		$conn = $this->databaseNode->getConnection();
+		
+		$result = $this->getMySQLResult($this->getSQL(),$conn);
 		
 		if($result != null)
 		{
@@ -202,16 +157,17 @@ class DatabaseProcessor
 		}
 	
 		$this->freeResult($result);
+		
 	}
 	
 	// same as process but uses unbuffered connection
 	function unbufferedProcess($function)
 	{
-		$this->connectToMySQLDatabase();
+		$conn = $this->databaseNode->getConnection();
 		
-		$this->connection->real_query($this->getSQL());
+		$conn->real_query($this->getSQL());
 		
-		$result = $this->connection->use_result();
+		$result = $conn->use_result();
 		
 		while ($row = $result->fetch_assoc())
 		{
@@ -219,8 +175,7 @@ class DatabaseProcessor
 		}
 		
 		$this->freeResult($result);
-
-		return true;
+		
 	}
 	
 	function getNumberOfRowsFromResult($result)
@@ -234,6 +189,7 @@ class DatabaseProcessor
 		{
 			throw new SQLiciousErrorException("SQLicious DatabaseProcessor query does not accept any parameters");
 		}
+		
 		$result = $this->getMySQLResult($this->getSQL());
 		return $result;
 	}
@@ -251,43 +207,40 @@ class DatabaseProcessor
 	
 	private function __multiQuery()
 	{
-		$this->connectToMySQLDatabase();
+		$conn = $this->databaseNode->getConnection();
 		
-		$this->connection->multi_query($this->getSQL());
+		$conn->multi_query($this->getSQL());
 		
 		do
 		{
-			if($this->connection->error)
+			if($conn->error)
 			{
 				throw new SQLiciousErrorException("SQLicious DatabaseProcessor multiQuery SQL Error. Reason given " . $this->connection->error);
 			}
 			
-			if(!$this->connection->more_results() || (!$this->connection->next_result() && $this->connection->error == null))
+			if(!$conn->more_results() || (!$conn->next_result() && $conn->error == null))
 			{
 				break;
 			}
 			
 		} while (true);
 		
-		$this->connection->close();
 	}
-	
-	
 	
 	function getMySQLResult($sql)
 	{
-		$this->connectToMySQLDatabase();
+		$conn = $this->databaseNode->getConnection();
 		
 		try 
 		{
-			$c = $this->connection->query($sql);
-			if($this->connection->error != null)
+			$result = $conn->query($sql);
+			if($conn->error != null)
 			{
-				throw new ErrorException($this->connection->error);
+				throw new ErrorException($conn->error);
 			}
 			else
 			{
-				return $c;
+				return $result;
 			}
 		}
 		catch(ErrorException $e)
@@ -308,13 +261,15 @@ class DatabaseProcessor
 		}
 		else
 		{
-			$this->connectToMySQLDatabase();
+			$this->createPersistentConnectionToMySQLDatabase();
 			
 			$sql = "SELECT CONVERT_TZ('" . date(SQLICIOUS_MYSQL_DATETIME_FORMAT,$dateTime) . "','" . $this->escapeString($sourceTimezone) . "','" . $this->escapeString($destTimezone) . "');";
 			
 			try 
 			{
-				$result = $this->connection->query($sql);
+				$conn = $this->databaseNode->getConnection();
+				
+				$result = $conn->query($sql);
 				
 				$destDateTime = reset($result->fetch_row());
 				
@@ -358,12 +313,12 @@ class DatabaseProcessor
 		echo "[";
 		
 			$firstRecord = true;
-		
-			$this->connectToMySQLDatabase();
+			
+			$conn = $this->databaseNode->getConnection();
+			
+			$conn->real_query($this->getSQL());
 
-			$this->connection->real_query($this->getSQL());
-
-			$result = $this->connection->use_result();
+			$result = $conn->use_result();
 
 			while ($row = $result->fetch_assoc())
 			{
@@ -378,6 +333,7 @@ class DatabaseProcessor
 				
 				$obj = $this->loadDataObject($row);
 				
+				echo $obj->toJSONString();
 			}
 
 			$this->freeResult($result);
@@ -387,45 +343,12 @@ class DatabaseProcessor
 		return true;
 	}
 	
-	/*
-	function outputJSONString()
+	// escape a string to prevent mysql injection
+	function escapeString($string)
 	{
-		echo "[";
-	
-		$firstRecord = true;
-	
-		$this->unbufferedProcess(function($obj) use (&$firstRecord)
-		{
-			if(!$firstRecord)
-			{
-				echo ",";
-			}
-			else
-			{
-				$firstRecord = false;
-			}
-				
-			echo $obj->toJSONString();
-		});
-	
-		echo "]";
-	}
-	 */
-	
-	function connectToMySQLDatabase($forceReconnect = false)
-	{
-		if($this->connection == null || $forceReconnect)
-		{
-			$this->connection = new mysqli($this->databaseNode->serverHost, $this->databaseNode->serverUsername, $this->databaseNode->serverPassword, $this->databaseNode->serverDatabaseName, $this->databaseNode->serverPort ? $this->databaseNode->serverPort : null, $this->databaseNode->serverSocket);
-		}
-		
-		if($this->connection == null || $this->connection->connect_errno)
-		{
-			throw new SQLiciousErrorException("SQLicioius Connection Error");
-		}
-		
-		$this->connection->set_charset($this->databaseNode->serverCharset);
-		
+		$conn = $this->databaseNode->getConnection();
+
+		return $conn->real_escape_string($string);
 	}
 	
 	// util
