@@ -24,10 +24,10 @@ abstract class DataAccessObject extends DataAccessArray
 		parent::__construct($row);
 
 		// if data is null setup with defaults from table
-		if($this->data == null)
+		if ($this->data == null)
 		{
 			$this->data = static::getDefaultRow();
-			if(static::getIdField() != null)
+			if (static::getIdField() != null)
 			{
 				$this->data[static::getIdField()] = self::NEW_OBJECT_ID;
 				$this->modifiedColumns[static::getIdField()] = 1;
@@ -58,7 +58,7 @@ abstract class DataAccessObject extends DataAccessArray
 
 		// set all modified colums to 1
 		$obj->modifiedColumns = static::getDefaultRow();
-		array_walk($obj->modifiedColumns, function(&$v, $k) { $v = 1; });
+		array_walk($obj->modifiedColumns, function(&$v, $k){ $v = 1; });
 
 		return $obj;
 	}
@@ -67,14 +67,13 @@ abstract class DataAccessObject extends DataAccessArray
 	{
 		$f = static::getFactory();
 
-
-		if(!empty($this->modifiedColumns))
+		if (!empty($this->modifiedColumns))
 		{
-			foreach(array_keys($this->modifiedColumns) as $field)
+			foreach (array_keys($this->modifiedColumns) as $field)
 			{
-				if($field != $this->getIdField())
+				if ($field != $this->getIdField())
 				{
-					if($this->data[$field] !== null)
+					if ($this->data[$field] !== null)
 					{
 						$sql[] = $this->getTableName() . "." . $field . ' = "' . $f->escapeString($this->data[$field]) . '"';
 					}
@@ -85,7 +84,7 @@ abstract class DataAccessObject extends DataAccessArray
 				}
 			}
 
-			if($this->getId() != static::NEW_OBJECT_ID)
+			if ($this->getId() != static::NEW_OBJECT_ID)
 			{
 				$f->update('UPDATE ' . $this->getTableName() . " SET " . implode(",", $sql) . " WHERE " . $this->getTableName() . "." . $this->getIdField() . ' = ' . $this->getId());
 			}
@@ -103,13 +102,13 @@ abstract class DataAccessObject extends DataAccessArray
 
 				$f->update($sql);
 
-				if($f->connection->insert_id > 0)
+				if($f->databaseNode && $f->databaseNode->connection && $f->databaseNode->connection->insert_id > 0)
 				{
-					$this->data[$this->getIdField()] = $f->connection->insert_id;
+					$this->data[$this->getIdField()] = $f->databaseNode->connection->insert_id;
 				}
 				else
 				{
-					throw new SQLiciousErrorException("Insert failed");
+					throw new SQLiciousErrorException("Insert failed: " . $sql);
 				}
 			}
 
@@ -119,7 +118,7 @@ abstract class DataAccessObject extends DataAccessArray
 
 	function delete()
 	{
-		if(intval($this->getId()) > 0)
+		if (intval($this->getId()) > 0)
 		{
 			$f = static::getFactory();
 			$f->update("DELETE FROM " . $this->getTableName() . " WHERE " . $this->getIdField() . " = " . $this->getId());
@@ -140,11 +139,11 @@ abstract class DataAccessObject extends DataAccessArray
 	function toJSON()
 	{
 		$j = array();
-		if($this->data != null)
+		if ($this->data != null)
 		{
-			foreach($this->data as $field => $value)
+			foreach ($this->data as $field => $value)
 			{
-				if($field == $this->getIdField())
+				if ($field == $this->getIdField())
 				{
 					$j['id'] = $value;
 				}
@@ -160,7 +159,7 @@ abstract class DataAccessObject extends DataAccessArray
 
 	function setFieldValue($fieldName, $val)
 	{
-		if(strcmp($this->data[$fieldName], $val) !== 0)
+		if (strcmp($this->data[$fieldName], $val) !== 0)
 		{
 			$this->modifiedColumns[$fieldName] = 1;
 		}
@@ -169,9 +168,9 @@ abstract class DataAccessObject extends DataAccessArray
 
 	function setDatetimeFieldValue($fieldName, $val)
 	{
-		if($val != "" && $val != '')
+		if ($val != "" && $val != '')
 		{
-			if(is_integer($val))
+			if (is_integer($val))
 			{
 				$this->setFieldValue($fieldName, date(SQLICIOUS_MYSQL_DATETIME_FORMAT, $val));
 			}
@@ -188,7 +187,7 @@ abstract class DataAccessObject extends DataAccessArray
 
 	function getDatetimeFieldValue($fieldName, $format = null)
 	{
-		if($format == null)
+		if ($format == null)
 		{
 			return $this->getFieldValue($fieldName);
 		}
