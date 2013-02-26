@@ -26,6 +26,26 @@
 			}
 			
 		});
+		
+		App.DatabaseController = Ember.Controller.extend();
+		App.DatabaseView = Ember.View.extend({
+				templateName: 'database-template'
+		});
+		App.DatabaseRoute = Ember.Route.extend({
+			setupController: function(controller) {
+				alert('here');
+			},
+			renderTemplate: function() {
+				this.render('database-template');
+			}
+			
+		});
+		
+		App.Router.map(function() {
+			this.route("database", {
+				path: "/database/:name"
+			});
+		});
 
 	});
 

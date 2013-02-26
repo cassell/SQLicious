@@ -19,6 +19,8 @@ class SQLiciousPage
 		$this->insertScript('/js/sqlicious.js');
 		
 		$this->insertStyleSheet('/css/bootstrap.css');
+		$this->insertStyleSheet('/css/bootstrap-responsive.css');
+		$this->insertStyleSheet('/css/font-awesome.css');
 		$this->insertStyleSheet('/css/sqlicious.css');
 		
 		$this->insertJavascriptData($this->getConfigData(),'config');

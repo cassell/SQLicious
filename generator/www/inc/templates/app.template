@@ -2,23 +2,36 @@
 <script type="text/x-handlebars" data-template-name="sqlicious-app-template">
 	<div id="pageTop">
 		<div class="container">
-					<img src="/img/logo/sqlicious-logo.png">
+			<img src="/img/logo/sqlicious-logo.png">
 		</div>
 	</div>
 	<br>
 	<div class="container">
 		{{outlet}}
 	</div>
+	<div id="pageFooter">
+		<div class="container">
+			<div>Maintained by <a href="http://www.andrewcassell.com">Andrew&nbsp;Cassell</a>. View this project on <a href="https://github.com/cassell/SQLicious">Github</a>. Built with <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>, <a href="http://emberjs.com/">Ember.js</a>, and <a href="http://jquery.com/">jQuery</a>. Icons from <a href="http://glyphicons.com/">Glyphicons</a> and <a href="http://fortawesome.github.com/Font-Awesome/">Font&nbsp;Awesome</a></div>
+		</div>
+	</div>
 </script>
 
 <script type="text/x-handlebars" data-template-name="dashboard-template">
 	<h1>Databases</h1>
 	
-	{{log databases}}
-	
-	<ul class="nav nav-tabs nav-stacked larger-nav-stacked" style="background: #fff;">
-		{{#each database in databases}}
-			<li><a href="#"><i class="icon-list-alt"></i> {{database.name}}</a></li>
+	<ul class="nav nav-tabs nav-stacked larger-nav-stacked white">
+		{{#each db in databases}}
+			<li>{{#linkTo database db.name}}<img src="/img/icons/db_32.png"> {{db.name}}{{/linkTo}}</li>
 		{{/each}}
+	</ul>
+</script>
+
+<script type="text/x-handlebars" data-template-name="database-template">
+	<h1>{{#linkTo index}}Databases{{/linkTo}}&raquo;{{name}}</h1>
+	
+	<ul class="nav nav-tabs nav-stacked white">
+		<li><img src="img/align_just_16.png"><span>asset</span></li>
+		<li><img src="img/align_just_16.png"><span>asset_telephone</span></li>
+		<li><img src="img/align_just_16.png"><span>cache</span></li>
 	</ul>
 </script>
