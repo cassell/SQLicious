@@ -13,11 +13,17 @@ class SQLiciousPage
 	{
 		$this->sqlicious = $sqlicious;
 		
-		$this->insertScript('js/jquery.js');
-		$this->insertScript('js/handlebars.js');
-		$this->insertScript('js/ember.js');
+		$this->insertScript('/js/jquery.js');
+		$this->insertScript('/js/handlebars.js');
+		$this->insertScript('/js/ember.js');
+		$this->insertScript('/js/sqlicious.js');
+		
+		$this->insertStyleSheet('/css/bootstrap.css');
+		$this->insertStyleSheet('/css/sqlicious.css');
 		
 		$this->insertJavascriptData($this->getConfigData(),'config');
+		
+		$this->insertHandlebarsTemplate('/app.template');
 		
 	}
 	
@@ -44,33 +50,37 @@ class SQLiciousPage
 	{
 		$this->printHtmlHeader();
 		
-		echo '<div id="pageTop"></div>';
-		echo '<div id="content"></div>';
+		echo '<div id="pageTop">';
+			echo '<div class="container">';
+				echo '<img src="/img/logo/sqlicious-logo.png">';
+			echo '</div>';
+		echo '</div>';
+		
+		echo '<br>';
+		
+		echo '<div class="container">';
+			echo '<div id="content"></div>';
+		echo '</div>';
+		
 		echo '<div id="pageBottom"></div>';
 		
 		$this->printHtmlFooter();
 		
 	}
 	
-	
 	function insertScript($scriptName)
 	{
-		$this->scripts[] =  self::formatScript($scriptName);
+		$this->scripts[] =  '<script src="' . $scriptName . '"></script>';
 	}
 	
 	function insertStyleSheet($styleSheet)
 	{
-		$this->styleSheets[] = self::formatStyleSheet($styleSheet);
-	}
-	
-	function insertPrintMediaStyleSheet($styleSheet)
-	{
-		$this->styleSheets[] = self::formatPrintStyleSheet($styleSheet);
+		$this->styleSheets[] = '<link rel="stylesheet" href="' . $styleSheet . '" type="text/css" />';
 	}
 	
 	function insertJavaScriptBlock($block)
 	{
-		$this->scripts[] = '<script language="Javascript" type="text/javascript">' . $block . '</script>';
+		$this->scripts[] = '<script>' . $block . '</script>';
 	}
 	
 	function insertJavascriptData($array,$variableName = 'data')
@@ -83,27 +93,20 @@ class SQLiciousPage
 		{
 			$this->insertJavaScriptBlock('var ' . $variableName . ' = [];');
 		}
+	}
+	
+	function insertHandlebarsTemplate($templateFile)
+	{
+		$templateFile = rtrim(SQLICIOUS_INCLUDE_PATH,"/") . "/generator/www/inc/templates/" . $templateFile;
 		
-	}
-	
-	function insertStyleBlock($block)
-	{
-		$this->styleSheets[] = '<style type="text/css">' . $block . '</style>';
-	}
-	
-	function formatScript($scriptName)
-	{
-		return '<script language="Javascript" type="text/javascript" src="' . $scriptName . '"></script>';
-	}
-	
-	function formatStyleSheet($styleSheet)
-	{
-		return '<link rel="stylesheet" href="' . $styleSheet . '" type="text/css" />';
-	}
-	
-	function formatPrintStyleSheet($styleSheet)
-	{
-		return '<link rel="stylesheet" href="' . $styleSheet . '" type="text/css" media="print" />';
+		if(file_exists($templateFile))
+		{
+			$this->scripts[] = file_get_contents($templateFile);
+		}
+		else
+		{
+			throw new Exception($templateFile . ' does not exist');
+		}
 	}
 	
 	function getScripts()
@@ -121,8 +124,7 @@ class SQLiciousPage
 	
 	function printHtmlHeader()
 	{
-		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
-			 '<html xmlns="http://www.w3.org/1999/xhtml">',
+		echo '<html>',
 		 	 '<head>',
 		  	 '<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />',
 			 '<meta http-equiv="Pragma" content="no-cache" />',

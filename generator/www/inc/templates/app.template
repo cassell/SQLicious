@@ -1,0 +1,11 @@
+
+<script type="text/x-handlebars" data-template-name="sqlicious-app-template">
+{{breadCrumbTitle}}
+{{contentOutlet}}
+</script>
+
+<script type="text/x-handlebars" data-template-name="dashboard">
+<ul class="nav nav-tabs nav-stacked" style="background: #fff;">
+	<li><a href="#">Home</a></li>
+</ul>
+</script>
