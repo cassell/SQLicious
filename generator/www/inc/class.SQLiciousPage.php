@@ -49,23 +49,8 @@ class SQLiciousPage
 	function display()
 	{
 		$this->printHtmlHeader();
-		
-		echo '<div id="pageTop">';
-			echo '<div class="container">';
-				echo '<img src="/img/logo/sqlicious-logo.png">';
-			echo '</div>';
-		echo '</div>';
-		
-		echo '<br>';
-		
-		echo '<div class="container">';
-			echo '<div id="content"></div>';
-		echo '</div>';
-		
-		echo '<div id="pageBottom"></div>';
-		
+		echo '<div id="content"></div>';
 		$this->printHtmlFooter();
-		
 	}
 	
 	function insertScript($scriptName)

@@ -1,11 +1,24 @@
 
 <script type="text/x-handlebars" data-template-name="sqlicious-app-template">
-{{breadCrumbTitle}}
-{{contentOutlet}}
+	<div id="pageTop">
+		<div class="container">
+					<img src="/img/logo/sqlicious-logo.png">
+		</div>
+	</div>
+	<br>
+	<div class="container">
+		{{outlet}}
+	</div>
 </script>
 
-<script type="text/x-handlebars" data-template-name="dashboard">
-<ul class="nav nav-tabs nav-stacked" style="background: #fff;">
-	<li><a href="#">Home</a></li>
-</ul>
+<script type="text/x-handlebars" data-template-name="dashboard-template">
+	<h1>Databases</h1>
+	
+	{{log databases}}
+	
+	<ul class="nav nav-tabs nav-stacked larger-nav-stacked" style="background: #fff;">
+		{{#each database in databases}}
+			<li><a href="#"><i class="icon-list-alt"></i> {{database.name}}</a></li>
+		{{/each}}
+	</ul>
 </script>

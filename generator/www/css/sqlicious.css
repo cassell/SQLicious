@@ -22,3 +22,10 @@ body
 	{
 		height: 40px;
 	}
+	
+
+.larger-nav-stacked li a
+{
+	font-size: 1.5em;
+	padding: 20px;
+}
