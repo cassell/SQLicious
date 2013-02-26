@@ -13,16 +13,9 @@ class SQLiciousPage
 	{
 		$this->sqlicious = $sqlicious;
 		
-		$this->insertScript('js/mootools_core.js');
-		$this->insertScript('js/mootools_more.js');
-		$this->insertScript('js/mootools_sqlicious.js');
-		
-		$this->insertScript('js/onhashchange.js');
-		
-		$this->insertScript('js/page.js');
-		
-		$this->insertStyleSheet('css/reset.css');
-		$this->insertStyleSheet('css/sqlicious.css');
+		$this->insertScript('js/jquery.js');
+		$this->insertScript('js/handlebars.js');
+		$this->insertScript('js/ember.js');
 		
 		$this->insertJavascriptData($this->getConfigData(),'config');
 		
