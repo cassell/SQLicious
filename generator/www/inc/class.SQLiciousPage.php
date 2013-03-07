@@ -16,6 +16,7 @@ class SQLiciousPage
 		$this->insertScript('/js/jquery.js');
 		$this->insertScript('/js/handlebars.js');
 		$this->insertScript('/js/ember.js');
+		$this->insertScript('/js/ember-data.js');
 		$this->insertScript('/js/sqlicious.js');
 		
 		$this->insertStyleSheet('/css/bootstrap.css');

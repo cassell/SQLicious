@@ -16,22 +16,24 @@
 	</div>
 </script>
 
-<script type="text/x-handlebars" data-template-name="dashboard-template">
+<script type="text/x-handlebars" data-template-name="index">
 	<h1>Databases</h1>
-	
 	<ul class="nav nav-tabs nav-stacked larger-nav-stacked white">
-		{{#each db in databases}}
-			<li>{{#linkTo database db.name}}<img src="/img/icons/db_32.png"> {{db.name}}{{/linkTo}}</li>
+		{{#each db in dbs}}
+			<li>{{#linkTo database db}}<img src="/img/icons/db_32.png"> {{db.name}}{{/linkTo}}</li>
 		{{/each}}
+	</ul>
 	</ul>
 </script>
 
-<script type="text/x-handlebars" data-template-name="database-template">
-	<h1>{{#linkTo index}}Databases{{/linkTo}}&raquo;{{name}}</h1>
+<script type="text/x-handlebars" data-template-name="databases">
+	{{outlet}}
+</script>
+
+
+<script type="text/x-handlebars" data-template-name="database">
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{name}}</h1>
 	
 	<ul class="nav nav-tabs nav-stacked white">
-		<li><img src="img/align_just_16.png"><span>asset</span></li>
-		<li><img src="img/align_just_16.png"><span>asset_telephone</span></li>
-		<li><img src="img/align_just_16.png"><span>cache</span></li>
 	</ul>
 </script>
