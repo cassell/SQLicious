@@ -26,7 +26,12 @@
 //			}
 //		});
 
-		SQLicious.Model =  Ember.Object.extend({});
+		SQLicious.Model =  Ember.Object.extend({
+			
+			name : '',
+			tables : new Array()
+			
+		});
 		
 		SQLicious.Database = SQLicious.Model.extend({});
 		
@@ -38,7 +43,7 @@
 				
 				$.each(config.db,function(index,db)
 				{
-					dbs.push(SQLicious.Database.create({id: db.name, 'name': db.name}));
+					dbs.push(SQLicious.Database.create({'name': db.name}));
 				});
 					
 				return dbs;
@@ -46,8 +51,22 @@
 			
 			find: function(databaseName) {
 				
-				database = SQLicious.Database.create({id: databaseName, 'name':databaseName});
+				var database;
+				
+				$.each(config.db,function(index,db)
+				{
+					if(db.name == databaseName)
+					{
+						database = SQLicious.Database.create({'name': db.name});
+					}
+				});
+				
 				return database;
+			},
+			
+			loadTables: function()
+			{
+				console.log('loadTables');
 			}
 			
 		});
@@ -58,11 +77,14 @@
 		SQLicious.IndexRoute = Ember.Route.extend({
 			setupController: function(controller) {
 				controller.set('dbs',SQLicious.Database.findAll());
-				//controller.set('dbs',config.db);
 			},
 			showDatabase: function(databaseName)
 			{
-				this.transitionTo('database',SQLicious.Database.find(databaseName));
+				var database = SQLicious.Database.find(databaseName);
+				
+				database.loadTables();
+				
+				this.transitionTo('database',database);
 			}
 		});
 		
@@ -70,14 +92,15 @@
 			this.route('database', {path: '/databases/:name'});
 		});
 		
-		
 		SQLicious.DatabaseView = Ember.View.extend();
 		SQLicious.DatabaseController = Ember.ObjectController.extend({});
 		SQLicious.DatabaseRoute = Ember.Route.extend({
 			
 			model: function(params)
 			{
-				return SQLicious.Database.find(params.name);
+				var db = SQLicious.Database.find(params.name);
+				
+				return db;
 			},
 			
 			serialize: function(model,params)
