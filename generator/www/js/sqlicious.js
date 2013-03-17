@@ -27,34 +27,22 @@
 			});
 		}
 		
-		
-		
 		// app controller
 		SQLicious.ApplicationController = Ember.Controller.extend();
 		SQLicious.ApplicationView = Ember.View.extend({
 				templateName: 'sqlicious-app-template'
 		});
 		
-//		SQLicious.Model =  Ember.Object.extend({
-//			ajax: function(url, args) {
-//				var oldError = args.error;
-//				args.error = function(xhr) {
-//					return oldError($.parseJSON(xhr.responseText).errors);
-//				};
-//				return $.ajax(url, args);
-//			}
-//		});
-
 		SQLicious.Model =  Ember.Object.extend();
 		
 		SQLicious.Database = SQLicious.Model.extend({
 			
 			name: '',
-			tables: new Ember.A(),
-			
-			loadTables: function()
+			loadTables: function(afterLoadTables)
 			{
 				this.tables = new Ember.A();
+				this.afterLoadTables = afterLoadTables;
+				
 				
 				SQLicious.ajaxWithErrorHandling({ 
 					url : '/api/tables/list.php',
@@ -64,9 +52,16 @@
 						{
 							this.tables.push({"name":table});
 						}.bind(this));
+						
+						this.afterLoadTables(this.tables);
+						
 					}.bind(this)
 				});
+				
+				
 			}
+			
+			
 			
 		});
 		SQLicious.DatabaseTable = SQLicious.Model.extend({
@@ -127,10 +122,22 @@
 		SQLicious.DatabaseController = Ember.ObjectController.extend({});
 		SQLicious.DatabaseRoute = Ember.Route.extend({
 			
+			setupController: function()
+			{
+				this.databaseTablesController = this.controllerFor('databaseTables');
+				this.databaseTablesController.set('content',[]);
+			},
+			
 			activate: function()
 			{
-				//this.setControllerFor()
-				//this.context.loadTables();
+				SQLicious.ajaxWithErrorHandling({ 
+					url : '/api/tables/list.php',
+					data : { 'database' : this.context.name },
+					success : function(resp)
+					{
+						this.databaseTablesController.set('content',resp.tables);
+					}.bind(this)
+				});
 			},
 			
 			model: function(params)
@@ -147,15 +154,7 @@
 		});
 		
 		SQLicious.DatabaseTablesView = Ember.View.extend();
-		SQLicious.DatabaseTablesController = Ember.ArrayController.extend({
-			
-			tables: [{'name':'peeps'},{'name':'bizes'}],
-			
-			addTable: function(name){
-				var table = SQLicious.DatabaseTable.create({ name: name });
-				this.pushObject(table);    
-			}
-		});
+		SQLicious.DatabaseTablesController = Ember.ArrayController.extend();
 		
 		
 		
