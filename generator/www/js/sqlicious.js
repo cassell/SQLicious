@@ -2,7 +2,6 @@
 
 	$(function() {
 		
-		
 		// drop a {{debug}} in your template and get a nice output to your console
 		Handlebars.registerHelper("debug", function(optionalValue) {console.log("Current Context");console.log("====================");console.log(this);if (optionalValue) {console.log("Value");console.log("====================");console.log(optionalValue);}});
 
@@ -89,8 +88,14 @@
 			this.route('database', {path: '/databases/:name'});
 		});
 		
+		// database page is a list of tables
 		SQLicious.DatabaseView = Ember.View.extend();
 		SQLicious.DatabaseController = Ember.ObjectController.extend({});
+		
+		// sub-template controller and view for database page
+		SQLicious.DatabaseTablesView = Ember.View.extend();
+		SQLicious.DatabaseTablesController = Ember.ArrayController.extend();
+		
 		SQLicious.DatabaseRoute = Ember.Route.extend({
 			
 			setupController: function()
@@ -124,8 +129,7 @@
 			
 		});
 		
-		SQLicious.DatabaseTablesView = Ember.View.extend();
-		SQLicious.DatabaseTablesController = Ember.ArrayController.extend();
+		
 		
 		
 		
