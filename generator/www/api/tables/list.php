@@ -10,7 +10,7 @@ if($db != null)
 	//$resp['tables'] = $db->getTableNames();
 	foreach($db->getTableNames() as $name)
 	{
-		$resp['tables'][] = array("name" => $name);
+		$resp['tables'][] = array("tableName" => $name, "databaseName" => $_GET['database']);
 	}
 	returnResponse($resp);
 }

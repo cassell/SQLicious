@@ -42,9 +42,13 @@
 
 <script type="text/x-handlebars" data-template-name="databaseTables">
 	<ul class="nav nav-tabs nav-stacked white">
-	{{#each content}}
-		<li>{{#linkTo index}}{{name}}{{/linkTo}}</li>
+	{{#each tableObject in content}}
+		<li>{{#linkTo table tableObject}}{{tableObject.tableName}}{{/linkTo}}</li>
 	{{/each}}
 	</ul>
 </script>
-	
+
+<script type="text/x-handlebars" data-template-name="table">
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{databaseName}}</h1>
+	Here we actions for tables
+</script>

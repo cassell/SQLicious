@@ -85,7 +85,14 @@
 		});
 		
 		SQLicious.Router.map(function() {
-			this.route('database', {path: '/databases/:name'});
+			this.resource('database', {path: '/database/:name'},
+				function() {
+					this.resource('table', {path: '/table/:tableName'}, function() {
+						
+						this.route('index');
+					});
+
+				});
 		});
 		
 		// database page is a list of tables
@@ -129,6 +136,38 @@
 			
 		});
 		
+		
+		SQLicious.TableView = Ember.View.extend();
+		SQLicious.TableController = Ember.ObjectController.extend({});
+		
+		SQLicious.TableRoute = Ember.Route.extend({
+			
+			serialize: function(model,params)
+			{
+				return {name: model.databaseName, tableName : model.tableName};
+			}
+			
+		});
+		
+		SQLicious.TableIndexRoute = Ember.Route.extend({
+			
+			
+			
+		});
+		
+		
+		
+//		SQLicious.TableIndexView = Ember.View.extend();
+//		SQLicious.TableIndexController = Ember.ObjectController.extend({});
+//		
+//		SQLicious.TableIndexRoute = Ember.Route.extend({
+//			
+//			serialize: function(model,params)
+//			{
+//				return {name: model.databaseName, tableName : model.tableName};
+//			}
+//			
+//		});
 		
 		
 		
