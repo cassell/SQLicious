@@ -2,6 +2,7 @@
 
 	$(function() {
 		
+		
 		// drop a {{debug}} in your template and get a nice output to your console
 		Handlebars.registerHelper("debug", function(optionalValue) {console.log("Current Context");console.log("====================");console.log(this);if (optionalValue) {console.log("Value");console.log("====================");console.log(optionalValue);}});
 
@@ -9,6 +10,24 @@
 			rootElement: '#content',
 			LOG_TRANSITIONS: true
 		});
+		
+		SQLicious.getAPIUrl = function(url)
+		{
+			return window.location.href.replace(window.location.hash,"").replace("index.php","") + url.substring(1);
+		}
+		
+		SQLicious.ajaxWithErrorHandling = function(options)
+		{
+			options.dataType = 'json';
+			
+			$.ajax(SQLicious.getAPIUrl(options.url),{
+				success : options.success,
+				data : options.data,
+				dataType: options.dataType
+			});
+		}
+		
+		
 		
 		// app controller
 		SQLicious.ApplicationController = Ember.Controller.extend();
@@ -26,14 +45,33 @@
 //			}
 //		});
 
-		SQLicious.Model =  Ember.Object.extend({
+		SQLicious.Model =  Ember.Object.extend();
+		
+		SQLicious.Database = SQLicious.Model.extend({
 			
-			name : '',
-			tables : new Array()
+			name: '',
+			tables: new Ember.A(),
+			
+			loadTables: function()
+			{
+				this.tables = new Ember.A();
+				
+				SQLicious.ajaxWithErrorHandling({ 
+					url : '/api/tables/list.php',
+					data : { 'database' : this.name },
+					success : function(resp){
+						$.each(resp.tables,function(index,table)
+						{
+							this.tables.push({"name":table});
+						}.bind(this));
+					}.bind(this)
+				});
+			}
 			
 		});
-		
-		SQLicious.Database = SQLicious.Model.extend({});
+		SQLicious.DatabaseTable = SQLicious.Model.extend({
+			 name: null
+		});
 		
 		SQLicious.Database.reopenClass({
 			
@@ -43,31 +81,32 @@
 				
 				$.each(config.db,function(index,db)
 				{
-					dbs.push(SQLicious.Database.create({'name': db.name}));
+					dbs.push(SQLicious.Database.create({
+							'name': db.name
+						}));
 				});
 					
 				return dbs;
 			},
 			
-			find: function(databaseName) {
-				
+			find: function(databaseName)
+			{
 				var database;
 				
 				$.each(config.db,function(index,db)
 				{
 					if(db.name == databaseName)
 					{
-						database = SQLicious.Database.create({'name': db.name});
+						database = SQLicious.Database.create({
+							'name': db.name
+							});
 					}
 				});
 				
 				return database;
-			},
-			
-			loadTables: function()
-			{
-				console.log('loadTables');
 			}
+			
+			
 			
 		});
 		
@@ -77,14 +116,6 @@
 		SQLicious.IndexRoute = Ember.Route.extend({
 			setupController: function(controller) {
 				controller.set('dbs',SQLicious.Database.findAll());
-			},
-			showDatabase: function(databaseName)
-			{
-				var database = SQLicious.Database.find(databaseName);
-				
-				database.loadTables();
-				
-				this.transitionTo('database',database);
 			}
 		});
 		
@@ -96,19 +127,39 @@
 		SQLicious.DatabaseController = Ember.ObjectController.extend({});
 		SQLicious.DatabaseRoute = Ember.Route.extend({
 			
+			activate: function()
+			{
+				//this.setControllerFor()
+				//this.context.loadTables();
+			},
+			
 			model: function(params)
 			{
 				var db = SQLicious.Database.find(params.name);
-				
 				return db;
 			},
 			
 			serialize: function(model,params)
 			{
-				return { name: model.name };
+				return {name: model.name};
 			}
 			
 		});
+		
+		SQLicious.DatabaseTablesView = Ember.View.extend();
+		SQLicious.DatabaseTablesController = Ember.ArrayController.extend({
+			
+			tables: [{'name':'peeps'},{'name':'bizes'}],
+			
+			addTable: function(name){
+				var table = SQLicious.DatabaseTable.create({ name: name });
+				this.pushObject(table);    
+			}
+		});
+		
+		
+		
+		
 		
 		/*
 		

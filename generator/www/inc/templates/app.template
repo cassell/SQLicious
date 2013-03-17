@@ -26,14 +26,25 @@
 	</ul>
 </script>
 
-<script type="text/x-handlebars" data-template-name="databases">
-	{{outlet}}
+<script type="text/x-handlebars" data-template-name="database-old">
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{name}}</h1>
+	<ul class="nav nav-tabs nav-stacked white">
+		{{#each table in tables}}
+		<li><a href="">{{table.name}}</a<</li>
+		{{/each}}
+	</ul>
 </script>
-
 
 <script type="text/x-handlebars" data-template-name="database">
 	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{name}}</h1>
-	
+	{{render databaseTables tables}}
+</script>
+
+<script type="text/x-handlebars" data-template-name="databaseTables">
 	<ul class="nav nav-tabs nav-stacked white">
+	{{#each table in tables}}
+		<li><a href="">{{table.name}}</a<</li>
+	{{/each}}
 	</ul>
 </script>
+	
