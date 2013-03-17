@@ -30,42 +30,16 @@
 		// app controller
 		SQLicious.ApplicationController = Ember.Controller.extend();
 		SQLicious.ApplicationView = Ember.View.extend({
-				templateName: 'sqlicious-app-template'
+			templateName: 'sqlicious-app-template'
 		});
 		
 		SQLicious.Model =  Ember.Object.extend();
 		
 		SQLicious.Database = SQLicious.Model.extend({
-			
-			name: '',
-			loadTables: function(afterLoadTables)
-			{
-				this.tables = new Ember.A();
-				this.afterLoadTables = afterLoadTables;
-				
-				
-				SQLicious.ajaxWithErrorHandling({ 
-					url : '/api/tables/list.php',
-					data : { 'database' : this.name },
-					success : function(resp){
-						$.each(resp.tables,function(index,table)
-						{
-							this.tables.push({"name":table});
-						}.bind(this));
-						
-						this.afterLoadTables(this.tables);
-						
-					}.bind(this)
-				});
-				
-				
-			}
-			
-			
-			
+			name: null
 		});
 		SQLicious.DatabaseTable = SQLicious.Model.extend({
-			 name: null
+			name: null
 		});
 		
 		SQLicious.Database.reopenClass({
@@ -77,8 +51,8 @@
 				$.each(config.db,function(index,db)
 				{
 					dbs.push(SQLicious.Database.create({
-							'name': db.name
-						}));
+						'name': db.name
+					}));
 				});
 					
 				return dbs;
@@ -94,15 +68,12 @@
 					{
 						database = SQLicious.Database.create({
 							'name': db.name
-							});
+						});
 					}
 				});
 				
 				return database;
 			}
-			
-			
-			
 		});
 		
 		// dashboard (index)
@@ -132,7 +103,7 @@
 			{
 				SQLicious.ajaxWithErrorHandling({ 
 					url : '/api/tables/list.php',
-					data : { 'database' : this.context.name },
+					data : {'database' : this.context.name},
 					success : function(resp)
 					{
 						this.databaseTablesController.set('content',resp.tables);
@@ -155,6 +126,8 @@
 		
 		SQLicious.DatabaseTablesView = Ember.View.extend();
 		SQLicious.DatabaseTablesController = Ember.ArrayController.extend();
+		
+		
 		
 		
 		
