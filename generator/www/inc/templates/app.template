@@ -2,7 +2,7 @@
 <script type="text/x-handlebars" data-template-name="sqlicious-app-template">
 	<div id="pageTop">
 		<div class="container">
-			<img src="/img/logo/sqlicious-logo.png">
+			{{#linkTo index}}<img src="/img/logo/sqlicious-logo.png">{{/linkTo}}
 		</div>
 	</div>
 	<br>
@@ -49,6 +49,10 @@
 </script>
 
 <script type="text/x-handlebars" data-template-name="table">
-	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{databaseName}}</h1>
 	Here we actions for tables
+</script>
+
+<script type="text/x-handlebars" data-template-name="tableStructure">
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{databaseName}}</h1>
+	Here we structure for table
 </script>

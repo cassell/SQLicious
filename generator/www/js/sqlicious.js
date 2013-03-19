@@ -85,14 +85,14 @@
 		});
 		
 		SQLicious.Router.map(function() {
-			this.resource('database', {path: '/database/:name'},
-				function() {
-					this.resource('table', {path: '/table/:tableName'}, function() {
-						
-						this.route('index');
-					});
-
-				});
+			
+			this.route('database', {path: '/database/:name'});
+			this.route('table', {path: '/database/:name/table/:tableName'});
+			this.route('objectCreation', {path: '/database/:name/table/:tableName/objectCreation'});
+			this.route('structure', {path: '/database/:name/table/:tableName/structure'});
+			this.route('extendedObjectStubs', {path: '/database/:name/table/:tableName/extendedObjectStubs'});
+			this.route('api', {path: '/database/:name/table/:tableName/api'});
+			
 		});
 		
 		// database page is a list of tables
@@ -118,6 +118,7 @@
 					data : {'database' : this.context.name},
 					success : function(resp)
 					{
+						this.databaseTablesController.set('database',resp.databaseName);
 						this.databaseTablesController.set('content',resp.tables);
 					}.bind(this)
 				});
@@ -142,6 +143,30 @@
 		
 		SQLicious.TableRoute = Ember.Route.extend({
 			
+			templateName: 'table',
+			
+			activate: function()
+			{
+				console.log('SQLicious.TableRoute -> activate');
+			},
+			
+//			setupController: function(controller, model) {
+//				controller.set('content', model);
+//			},
+//
+//			
+//			redirect: function()
+//			{
+//				//this.transitionTo('table.options');
+//			},
+//			
+//			model: function(params)
+//			{
+//				console.log(params);
+////				var db = SQLicious.Database.find(params.name);
+////				return new DatabaseTable()/
+//			},
+//			
 			serialize: function(model,params)
 			{
 				return {name: model.databaseName, tableName : model.tableName};
@@ -149,11 +174,20 @@
 			
 		});
 		
-		SQLicious.TableIndexRoute = Ember.Route.extend({
+		SQLicious.TableStructureRoute = Ember.Route.extend({
 			
-			
-			
+			activate: function()
+			{
+				console.log('SQLicious.TableStructureRoute -> activate');
+			}
 		});
+		
+//		
+//		SQLicious.TableOptionsRoute = Ember.Route.extend({
+//			
+//			templateName: 'table-options'
+//			
+//		});
 		
 		
 		
