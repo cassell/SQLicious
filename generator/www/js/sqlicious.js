@@ -35,10 +35,11 @@
 		SQLicious.Model =  Ember.Object.extend();
 		
 		SQLicious.Database = SQLicious.Model.extend({
-			name: null
+			databaseName: null
 		});
 		SQLicious.DatabaseTable = SQLicious.Model.extend({
-			name: null
+			tableName: null,
+			database: new SQLicious.Database()
 		});
 		
 		SQLicious.Database.reopenClass({
@@ -50,7 +51,7 @@
 				$.each(config.db,function(index,db)
 				{
 					dbs.push(SQLicious.Database.create({
-						'name': db.name
+						'databaseName': db.databaseName
 					}));
 				});
 					
@@ -66,7 +67,7 @@
 					if(db.name == databaseName)
 					{
 						database = SQLicious.Database.create({
-							'name': db.name
+							'databaseName': db.databaseName
 						});
 					}
 				});
@@ -86,12 +87,12 @@
 		
 		SQLicious.Router.map(function() {
 			
-			this.route('database', {path: '/database/:name'});
-			this.route('table', {path: '/database/:name/table/:tableName'});
-			this.route('objectCreation', {path: '/database/:name/table/:tableName/objectCreation'});
-			this.route('structure', {path: '/database/:name/table/:tableName/structure'});
-			this.route('extendedObjectStubs', {path: '/database/:name/table/:tableName/extendedObjectStubs'});
-			this.route('api', {path: '/database/:name/table/:tableName/api'});
+			this.route('database', {path: '/database/:databaseName'});
+			this.route('table', {path: '/database/:databaseName/table/:tableName'});
+			this.route('objectCreation', {path: '/database/:databaseName/table/:tableName/objectCreation'});
+			this.route('structure', {path: '/database/:databaseName/table/:tableName/structure'});
+			this.route('extendedObjectStubs', {path: '/database/:databaseName/table/:tableName/extendedObjectStubs'});
+			this.route('api', {path: '/database/:databaseName/table/:tableName/api'});
 			
 		});
 		
@@ -115,10 +116,10 @@
 			{
 				SQLicious.ajaxWithErrorHandling({ 
 					url : '/api/tables/list.php',
-					data : {'database' : this.context.name},
+					data : {'database' : this.context.databaseName},
 					success : function(resp)
 					{
-						this.databaseTablesController.set('database',resp.databaseName);
+						this.databaseTablesController.set('database',SQLicious.Database.find(resp.databaseName));
 						this.databaseTablesController.set('content',resp.tables);
 					}.bind(this)
 				});
@@ -126,13 +127,15 @@
 			
 			model: function(params)
 			{
-				var db = SQLicious.Database.find(params.name);
+				var db = SQLicious.Database.find(params.databaseName);
 				return db;
 			},
 			
 			serialize: function(model,params)
 			{
-				return {name: model.name};
+				console.log({'model':model,'params' : params});
+				
+				return {databaseName: model.databaseName};
 			}
 			
 		});
@@ -145,42 +148,51 @@
 			
 			templateName: 'table',
 			
+			setupController: function(controller) {
+				
+				console.log(controller.content);
+				//controller.set('table',{'tableName' : 'testTable'});
+				//controller.set('db',SQLicious.Database.find('intranet'));
+			},
+			
+			model: function(params)
+			{
+				var table = new SQLicious.DatabaseTable(
+				{
+					tableName : params.tableName,
+					database : SQLicious.Database.find(params.databaseName),
+					databaseName: params.databaseName
+				});
+				
+				return table;
+				
+				
+//				console.log('SQLicious.TableRoute -> model');
+//				console.log(params);
+//				var db = SQLicious.Database.find(params.databaseName);
+//				return db;
+			},
+			
 			activate: function()
 			{
 				console.log('SQLicious.TableRoute -> activate');
+				console.log(this.context);
 			},
 			
-//			setupController: function(controller, model) {
-//				controller.set('content', model);
-//			},
-//
-//			
-//			redirect: function()
-//			{
-//				//this.transitionTo('table.options');
-//			},
-//			
-//			model: function(params)
-//			{
-//				console.log(params);
-////				var db = SQLicious.Database.find(params.name);
-////				return new DatabaseTable()/
-//			},
-//			
 			serialize: function(model,params)
 			{
-				return {name: model.databaseName, tableName : model.tableName};
+				return {databaseName: model.databaseName, tableName : model.tableName};
 			}
 			
 		});
 		
-		SQLicious.TableStructureRoute = Ember.Route.extend({
-			
-			activate: function()
-			{
-				console.log('SQLicious.TableStructureRoute -> activate');
-			}
-		});
+//		SQLicious.TableStructureRoute = Ember.Route.extend({
+//			
+//			activate: function()
+//			{
+//				console.log('SQLicious.TableStructureRoute -> activate');
+//			}
+//		});
 		
 //		
 //		SQLicious.TableOptionsRoute = Ember.Route.extend({
@@ -202,12 +214,6 @@
 //			}
 //			
 //		});
-		
-		
-		
-		
-		
-		
 		
 		
 		/*

@@ -20,23 +20,14 @@
 	<h1>Databases</h1>
 	<ul class="nav nav-tabs nav-stacked larger-nav-stacked white">
 		{{#each db in dbs}}
-			<li>{{#linkTo database db}}<img src="/img/icons/db_32.png"> {{db.name}}{{/linkTo}}</li>
+			<li>{{#linkTo database db}}<img src="/img/icons/db_32.png"> {{db.databaseName}}{{/linkTo}}</li>
 		{{/each}}
 	</ul>
-	</ul>
-</script>
-
-<script type="text/x-handlebars" data-template-name="database-old">
-	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{name}}</h1>
-	<ul class="nav nav-tabs nav-stacked white">
-		{{#each table in tables}}
-		<li><a href="">{{table.name}}</a<</li>
-		{{/each}}
 	</ul>
 </script>
 
 <script type="text/x-handlebars" data-template-name="database">
-	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{name}}</h1>
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{databaseName}}</h1>
 	{{render databaseTables tables}}
 </script>
 
@@ -49,6 +40,7 @@
 </script>
 
 <script type="text/x-handlebars" data-template-name="table">
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{#linkTo database db}}{{databaseName}}{{/linkTo}} &raquo; {{tableName}}</h1>
 	Here we actions for tables
 </script>
 

@@ -41,7 +41,7 @@ class SQLiciousPage
 			foreach($this->sqlicious->databases as $db)
 			{
 				$d = array();
-				$d['name'] = $db->getDatabaseName();	
+				$d['databaseName'] = $db->getDatabaseName();	
 				$data['db'][] = $d;
 			}
 		}
