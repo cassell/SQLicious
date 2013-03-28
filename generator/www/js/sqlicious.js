@@ -133,7 +133,6 @@
 			
 			serialize: function(model,params)
 			{
-				console.log({'model':model,'params' : params});
 				if(model)
 				{
 					return {databaseName: model.databaseName};
@@ -171,7 +170,58 @@
 			
 			serialize: function(model,params)
 			{
+				if(model)
+				{
+					return {databaseName: model.databaseName, tableName : model.tableName};
+				}
+				else
+				{
+					return {};
+				}
+			}
+			
+		});
+		
+		SQLicious.ObjectCreationView = Ember.View.extend();
+		SQLicious.ObjectCreationController = Ember.ObjectController.extend({});
+		
+		SQLicious.ObjectCreationRoute = Ember.Route.extend({
+			
+			templateName: 'table',
+			
+			setupController: function(controller) {
+				controller.set('database',SQLicious.Database.find(this.context.databaseName));
+				controller.set('table',this.model({'databaseName':this.context.databaseName,'tableName':this.context.tableName}));
+			},
+			
+			model: function(params)
+			{
+				return SQLicious.DatabaseTable.create(
+				{
+					tableName : params.tableName,
+					database : SQLicious.Database.find(params.databaseName),
+					databaseName: params.databaseName
+				});
+				
+			},
+			
+			serialize: function(model,params)
+			{
 				return {databaseName: model.databaseName, tableName : model.tableName};
+			},
+			
+			activate: function()
+			{
+				SQLicious.ajaxWithErrorHandling({ 
+					url : '/api/table/object_creation.php',
+					data : {'database' : this.context.databaseName, 'table' : this.context.tableName},
+					success : function(resp)
+					{
+						this.controller.set('responseTemplate',resp.html);
+						// responseTemplate
+						console.log(resp);
+					}.bind(this)
+				});
 			}
 			
 		});

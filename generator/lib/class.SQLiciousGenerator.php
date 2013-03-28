@@ -72,6 +72,25 @@ class SQLiciousGeneratorDatabase
 		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/extended_stub.template'),$this->getTemplatingDataFromTableName($tableName));
 	}
 	
+	function getObjectCreationCode($tableName)
+	{
+		$details = $this->getTemplatingDataFromTableName($tableName);
+		
+		$html = "$" . $details['jsonArrayName'] . " = new ". $details['className'] . "();\n";
+		
+		foreach($details['columns'] as $column)
+		{
+			$html .= "$" . $details['jsonArrayName'] . "->set".$column['FieldCase']."();\n";
+		}
+		
+		$html .= "\n";
+		$html .= "// non extened object\n";
+		$html .= "$" . $details['jsonArrayName'] . " = new ". $details['className'] . "DaoObject();\n";
+		
+		return $html;
+		
+	}
+	
 	function getApiListCode($tableName)
 	{
 		$m = new Mustache_Engine();

@@ -53,6 +53,7 @@
 </script>
 
 <script type="text/x-handlebars" data-template-name="objectCreation">
-		<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{#linkTo database database}}{{databaseName}}{{/linkTo}} &raquo; {{#linkTo table}}{{tableName}}{{/linkTo}}</h1>
-	Here we structure for table
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{#linkTo database database}}{{databaseName}}{{/linkTo}} &raquo; {{#linkTo table content}}{{tableName}}{{/linkTo}}</h1>
+	<h2>Object Creation</h2>
+	<pre>{{responseTemplate}}</pre>
 </script>
