@@ -39,20 +39,20 @@
 </script>
 
 <script type="text/x-handlebars" data-template-name="table">
-	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{#linkTo database database}}{{databaseName}}{{/linkTo}} &raquo; {{tableName}}</h1>
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{#linkTo database content.database}}{{databaseName}}{{/linkTo}} &raquo; {{tableName}}</h1>
 	<h3>Objects</h3>
 	<ul class="nav nav-tabs nav-stacked larger-nav-stacked white">
-		<li>{{#linkTo objectCreation context}}Object Creation{{/linkTo}}</li>
-		<li>{{#linkTo extendedObjectStubs tableObject}}Extended Object Stubs{{/linkTo}}</li>
+		<li>{{#linkTo objectCreation content}}Object Creation{{/linkTo}}</li>
+		<li>{{#linkTo extendedObjectStubs content}}Extended Object Stubs{{/linkTo}}</li>
 	</ul>
 	<h3>API</h3>
 	<h3>Table Structure</h3>
 	<ul class="nav nav-tabs nav-stacked larger-nav-stacked white">
-		<li>{{#linkTo structure tableObject}}Table Structure{{/linkTo}}</li>
+		<li>{{#linkTo structure content}}Table Structure{{/linkTo}}</li>
 	</ul>
 </script>
 
-<script type="text/x-handlebars" data-template-name="tableStructure">
-	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{databaseName}}</h1>
+<script type="text/x-handlebars" data-template-name="objectCreation">
+		<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{#linkTo database database}}{{databaseName}}{{/linkTo}} &raquo; {{#linkTo table}}{{tableName}}{{/linkTo}}</h1>
 	Here we structure for table
 </script>
