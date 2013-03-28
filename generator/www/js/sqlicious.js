@@ -64,7 +64,7 @@
 				
 				$.each(config.db,function(index,db)
 				{
-					if(db.name == databaseName)
+					if(db.databaseName == databaseName)
 					{
 						database = SQLicious.Database.create({
 							'databaseName': db.databaseName
@@ -128,14 +128,22 @@
 			model: function(params)
 			{
 				var db = SQLicious.Database.find(params.databaseName);
+//				console.log(db);
 				return db;
 			},
 			
 			serialize: function(model,params)
 			{
-				console.log({'model':model,'params' : params});
+//				console.log({'model':model,'params' : params});
+				if(model)
+				{
+					return {databaseName: model.databaseName};
+				}
+				else
+				{
+					return {};
+				}
 				
-				return {databaseName: model.databaseName};
 			}
 			
 		});
@@ -148,21 +156,23 @@
 			
 			templateName: 'table',
 			
-			setupController: function(controller) {
-				
-				console.log(controller.content);
-				//controller.set('table',{'tableName' : 'testTable'});
-				//controller.set('db',SQLicious.Database.find('intranet'));
-			},
+//			setupController: function(controller) {
+//				
+//				console.log(controller.content);
+//				//controller.set('table',{'tableName' : 'testTable'});
+//				//controller.set('db',SQLicious.Database.find('intranet'));
+//			},
 			
 			model: function(params)
 			{
-				var table = new SQLicious.DatabaseTable(
+				var table = SQLicious.DatabaseTable.create(
 				{
 					tableName : params.tableName,
 					database : SQLicious.Database.find(params.databaseName),
 					databaseName: params.databaseName
 				});
+				
+				console.log(table.databaseName);
 				
 				return table;
 				
@@ -175,6 +185,7 @@
 			
 			activate: function()
 			{
+				console.log(this.model);
 				console.log('SQLicious.TableRoute -> activate');
 				console.log(this.context);
 			},

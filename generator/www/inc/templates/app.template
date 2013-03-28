@@ -23,7 +23,6 @@
 			<li>{{#linkTo database db}}<img src="/img/icons/db_32.png"> {{db.databaseName}}{{/linkTo}}</li>
 		{{/each}}
 	</ul>
-	</ul>
 </script>
 
 <script type="text/x-handlebars" data-template-name="database">
@@ -40,8 +39,17 @@
 </script>
 
 <script type="text/x-handlebars" data-template-name="table">
-	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{#linkTo database db}}{{databaseName}}{{/linkTo}} &raquo; {{tableName}}</h1>
-	Here we actions for tables
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{#linkTo database database}}{{databaseName}}{{/linkTo}} &raquo; {{tableName}}</h1>
+	<h3>Objects</h3>
+	<ul class="nav nav-tabs nav-stacked larger-nav-stacked white">
+		<li>{{#linkTo objectCreation context}}Object Creation{{/linkTo}}</li>
+		<li>{{#linkTo extendedObjectStubs tableObject}}Extended Object Stubs{{/linkTo}}</li>
+	</ul>
+	<h3>API</h3>
+	<h3>Table Structure</h3>
+	<ul class="nav nav-tabs nav-stacked larger-nav-stacked white">
+		<li>{{#linkTo structure tableObject}}Table Structure{{/linkTo}}</li>
+	</ul>
 </script>
 
 <script type="text/x-handlebars" data-template-name="tableStructure">
