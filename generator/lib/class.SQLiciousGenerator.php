@@ -76,11 +76,17 @@ class SQLiciousGeneratorDatabase
 	{
 		$details = $this->getTemplatingDataFromTableName($tableName);
 		
+//		return print_r($details,true);
+		
 		$html = "$" . $details['jsonArrayName'] . " = new ". $details['className'] . "();\n";
 		
 		foreach($details['columns'] as $column)
 		{
-			$html .= "$" . $details['jsonArrayName'] . "->set".$column['FieldCase']."();\n";
+			if($column['Key'] != "PRI")
+			{
+				$html .= "$" . $details['jsonArrayName'] . "->set".$column['FieldCase']."();\n";
+			}
+			
 		}
 		
 		$html .= "\n";
