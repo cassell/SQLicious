@@ -74,6 +74,9 @@ class SQLiciousGeneratorDatabase
 	
 	function getObjectCreationCode($tableName)
 	{
+		$m = new Mustache_Engine();
+		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/object_creation.template'),$this->getTemplatingDataFromTableName($tableName));
+		
 		$details = $this->getTemplatingDataFromTableName($tableName);
 		
 //		return print_r($details,true);

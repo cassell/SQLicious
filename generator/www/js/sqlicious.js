@@ -15,7 +15,7 @@
 			return window.location.href.replace(window.location.hash,"").replace("index.php","") + url.substring(1);
 		}
 		
-		SQLicious.ajaxWithErrorHandling = function(options)
+		SQLicious.ajax = function(options)
 		{
 			options.dataType = 'json';
 			
@@ -115,7 +115,7 @@
 			
 			activate: function()
 			{
-				SQLicious.ajaxWithErrorHandling({ 
+				SQLicious.ajax({ 
 					url : '/api/tables/list.php',
 					data : {'database' : this.context.databaseName},
 					success : function(resp)
@@ -212,7 +212,7 @@
 			
 			activate: function()
 			{
-				SQLicious.ajaxWithErrorHandling({ 
+				SQLicious.ajax({ 
 					url : '/api/table/object_creation.php',
 					data : {'database' : this.context.databaseName, 'table' : this.context.tableName},
 					success : function(resp)

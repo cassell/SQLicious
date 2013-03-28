@@ -1,0 +1,7 @@
+$asset = new Asset();
+{{#columns}}
+$asset->setLocationId();
+{{/columns}}
+
+// non extened object
+$asset = new AssetDaoObject();
