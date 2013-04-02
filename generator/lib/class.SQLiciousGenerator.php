@@ -77,27 +77,7 @@ class SQLiciousGeneratorDatabase
 		$m = new Mustache_Engine();
 		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/object_creation.template'),$this->getTemplatingDataFromTableName($tableName));
 		
-		$details = $this->getTemplatingDataFromTableName($tableName);
-		
-//		return print_r($details,true);
-		
-		$html = "$" . $details['jsonArrayName'] . " = new ". $details['className'] . "();\n";
-		
-		foreach($details['columns'] as $column)
-		{
-			if($column['Key'] != "PRI")
-			{
-				$html .= "$" . $details['jsonArrayName'] . "->set".$column['FieldCase']."();\n";
-			}
-			
-		}
-		
-		$html .= "\n";
-		$html .= "// non extened object\n";
-		$html .= "$" . $details['jsonArrayName'] . " = new ". $details['className'] . "DaoObject();\n";
-		
-		return $html;
-		
+		//return print_r($this->getTemplatingDataFromTableName($tableName),true);
 	}
 	
 	function getApiListCode($tableName)

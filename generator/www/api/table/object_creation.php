@@ -4,7 +4,6 @@ include('../api.inc.php');
 
 $db = $generator->databases[$_GET['database']];
 $table = $_GET['table'];
-$columns = $db->getColumns($table);
 
 if($db != null)
 {

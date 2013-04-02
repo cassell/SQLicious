@@ -218,8 +218,6 @@
 					success : function(resp)
 					{
 						this.controller.set('responseTemplate',resp.html);
-						// responseTemplate
-						console.log(resp);
 					}.bind(this)
 				});
 			}

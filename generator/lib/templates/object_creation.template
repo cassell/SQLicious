@@ -1,7 +1,12 @@
-$asset = new Asset();
+// non extened object
+${{jsonArrayName}} = new {{className}}DaoObject();
+
+// extened object
+${{jsonArrayName}} = new {{className}}();
+
+// fields
 {{#columns}}
-$asset->setLocationId();
+${{jsonArrayName}}->set{{FieldCase}}($val)
 {{/columns}}
 
-// non extened object
-$asset = new AssetDaoObject();
+${{jsonArrayName}}->set{{FieldCase}}($val)
