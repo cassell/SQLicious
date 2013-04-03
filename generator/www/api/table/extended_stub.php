@@ -9,7 +9,7 @@ if($db != null)
 {
 	if($table != null)
 	{
-		$resp['code'] = $db->getObjectCreationCode($table);
+		$resp['code'] = $db->getExtendedObjectStub($table);
 		returnResponse($resp);
 	}
 	else

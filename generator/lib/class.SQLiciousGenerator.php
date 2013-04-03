@@ -74,17 +74,29 @@ class SQLiciousGeneratorDatabase
 	
 	function getObjectCreationCode($tableName)
 	{
+//		return print_r($this->getTemplatingDataFromTableName($tableName),true);
 		$m = new Mustache_Engine();
 		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/object_creation.template'),$this->getTemplatingDataFromTableName($tableName));
-		
-		//return print_r($this->getTemplatingDataFromTableName($tableName),true);
 	}
 	
-	function getApiListCode($tableName)
+	function getTableStructureHTML($tableName)
 	{
 		$m = new Mustache_Engine();
-		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/api_list.template'),$this->getTemplatingDataFromTableName($tableName));
+		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/table_structure_html.template'),$this->getTemplatingDataFromTableName($tableName));
 	}
+	
+	function getTableStructureCLI($tableName)
+	{
+		die("getTableStructureCLI");
+		//$m = new Mustache_Engine();
+		//return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/table_structure_cli.template'),$this->getTemplatingDataFromTableName($tableName));
+	}
+	
+//	function getApiListCode($tableName)
+//	{
+//		$m = new Mustache_Engine();
+//		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/api_list.template'),$this->getTemplatingDataFromTableName($tableName));
+//	}
 	
 	function getTemplatingDataFromTableName($tableName)
 	{

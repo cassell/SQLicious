@@ -92,7 +92,7 @@
 			this.route('table', {path: '/database/:databaseName/table/:tableName'});
 			this.route('objectCreation', {path: '/database/:databaseName/table/:tableName/objectCreation'});
 			this.route('structure', {path: '/database/:databaseName/table/:tableName/structure'});
-			this.route('extendedObjectStubs', {path: '/database/:databaseName/table/:tableName/extendedObjectStubs'});
+			this.route('extendedStub', {path: '/database/:databaseName/table/:tableName/extendedStub'});
 			this.route('api', {path: '/database/:databaseName/table/:tableName/api'});
 			
 		});
@@ -187,7 +187,7 @@
 		
 		SQLicious.ObjectCreationRoute = Ember.Route.extend({
 			
-			templateName: 'table',
+			templateName: 'objectCreation',
 			
 			setupController: function(controller) {
 				controller.set('database',SQLicious.Database.find(this.context.databaseName));
@@ -217,12 +217,103 @@
 					data : {'database' : this.context.databaseName, 'table' : this.context.tableName},
 					success : function(resp)
 					{
+						this.controller.set('responseTemplate',resp.code);
+					}.bind(this)
+				});
+			}
+			
+		});
+		
+		SQLicious.ExtendedStubView = Ember.View.extend();
+		SQLicious.ExtendedStubController = Ember.ObjectController.extend({});
+		
+		SQLicious.ExtendedStubRoute = Ember.Route.extend({
+			
+			templateName: 'extendedStub',
+			
+			setupController: function(controller) {
+				controller.set('database',SQLicious.Database.find(this.context.databaseName));
+				controller.set('table',this.model({'databaseName':this.context.databaseName,'tableName':this.context.tableName}));
+			},
+			
+			model: function(params)
+			{
+				return SQLicious.DatabaseTable.create(
+				{
+					tableName : params.tableName,
+					database : SQLicious.Database.find(params.databaseName),
+					databaseName: params.databaseName
+				});
+				
+			},
+			
+			serialize: function(model,params)
+			{
+				return {databaseName: model.databaseName, tableName : model.tableName};
+			},
+			
+			activate: function()
+			{
+				SQLicious.ajax({ 
+					url : '/api/table/extended_stub.php',
+					data : {'database' : this.context.databaseName, 'table' : this.context.tableName},
+					success : function(resp)
+					{
+						this.controller.set('responseTemplate',resp.code);
+					}.bind(this)
+				});
+			}
+			
+		});
+		
+		
+		SQLicious.StructureView = Ember.View.extend();
+		SQLicious.StructureController = Ember.ObjectController.extend({});
+		
+		SQLicious.StructureRoute = Ember.Route.extend({
+			
+			templateName: 'structure',
+			
+			setupController: function(controller) {
+				controller.set('database',SQLicious.Database.find(this.context.databaseName));
+				controller.set('table',this.model({'databaseName':this.context.databaseName,'tableName':this.context.tableName}));
+			},
+			
+			model: function(params)
+			{
+				return SQLicious.DatabaseTable.create(
+				{
+					tableName : params.tableName,
+					database : SQLicious.Database.find(params.databaseName),
+					databaseName: params.databaseName
+				});
+				
+			},
+			
+			serialize: function(model,params)
+			{
+				return {databaseName: model.databaseName, tableName : model.tableName};
+			},
+			
+			activate: function()
+			{
+				SQLicious.ajax({ 
+					url : '/api/table/table_structure.php',
+					data : {'database' : this.context.databaseName, 'table' : this.context.tableName},
+					success : function(resp)
+					{
 						this.controller.set('responseTemplate',resp.html);
 					}.bind(this)
 				});
 			}
 			
 		});
+		
+		
+		
+		
+		
+		
 		
 
 	});

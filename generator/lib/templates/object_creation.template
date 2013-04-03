@@ -6,7 +6,7 @@ ${{jsonArrayName}} = new {{className}}();
 
 // fields
 {{#columns}}
-${{jsonArrayName}}->set{{FieldCase}}($val)
+${{jsonArrayName}}->set{{FieldCase}}($val);
 {{/columns}}
 
-${{jsonArrayName}}->set{{FieldCase}}($val)
+${{jsonArrayName}}->save();

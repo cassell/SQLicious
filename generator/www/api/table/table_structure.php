@@ -9,7 +9,7 @@ if($db != null)
 {
 	if($table != null)
 	{
-		$resp['code'] = $db->getObjectCreationCode($table);
+		$resp['html'] = $db->getTableStructureHTML($table);
 		returnResponse($resp);
 	}
 	else

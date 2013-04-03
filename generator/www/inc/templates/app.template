@@ -43,7 +43,7 @@
 	<h3>Objects</h3>
 	<ul class="nav nav-tabs nav-stacked larger-nav-stacked white">
 		<li>{{#linkTo objectCreation content}}Object Creation{{/linkTo}}</li>
-		<li>{{#linkTo extendedObjectStubs content}}Extended Object Stubs{{/linkTo}}</li>
+		<li>{{#linkTo extendedStub content}}Extended Object Stubs{{/linkTo}}</li>
 	</ul>
 	<h3>API</h3>
 	<h3>Table Structure</h3>
@@ -57,3 +57,17 @@
 	<h2>Object Creation</h2>
 	<pre>{{responseTemplate}}</pre>
 </script>
+
+<script type="text/x-handlebars" data-template-name="extendedStub">
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{#linkTo database database}}{{databaseName}}{{/linkTo}} &raquo; {{#linkTo table content}}{{tableName}}{{/linkTo}}</h1>
+	<h2>Extended Object Stubs</h2>
+	<pre>{{responseTemplate}}</pre>
+</script>
+
+<script type="text/x-handlebars" data-template-name="structure">
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{#linkTo database database}}{{databaseName}}{{/linkTo}} &raquo; {{#linkTo table content}}{{tableName}}{{/linkTo}}</h1>
+	<h2>Table Structure</h2>
+	{{{responseTemplate}}}
+</script>
+
+
