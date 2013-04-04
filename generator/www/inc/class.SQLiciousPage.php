@@ -84,7 +84,7 @@ class SQLiciousPage
 	
 	function insertHandlebarsTemplate($templateFile)
 	{
-		$templateFile = rtrim(SQLICIOUS_INCLUDE_PATH,"/") . "/generator/www/inc/templates/" . $templateFile;
+		$templateFile = rtrim(SQLICIOUS_INCLUDE_PATH,"/") . "/generator/www/inc/" . $templateFile;
 		
 		if(file_exists($templateFile))
 		{
