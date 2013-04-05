@@ -8,6 +8,14 @@ class SQLiciousErrorException extends ErrorException
 	}
 }
 
+class SQLiciousGetFieldValueException extends SQLiciousErrorException
+{
+	function __construct($message)
+	{
+		parent::__construct($message, null, E_USER_ERROR);
+	}
+}
+
 class SQLiciousConnectionErrorException extends SQLiciousErrorException
 {
 	function __construct($message)

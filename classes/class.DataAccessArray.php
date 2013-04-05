@@ -2,7 +2,6 @@
 
 class DataAccessArray implements ArrayAccess
 {
-
 	var $data = array();
 
 	function __construct($row)
@@ -46,7 +45,7 @@ class DataAccessArray implements ArrayAccess
 		}
 		else
 		{
-			trigger_error($fieldName . ' not initilized for get method in ' . get_class($this));
+			throw new SQLiciousGetFieldValueException($fieldName . ' not initilized for get method in ' . get_class($this));
 		}
 	}
 
