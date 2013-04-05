@@ -1,3 +1,5 @@
+
+
 (function($, window, document) {
 
 	$(function() {
@@ -24,6 +26,11 @@
 				data : options.data,
 				dataType: options.dataType
 			});
+		}
+		
+		SQLicious.filterList = function(listId)
+		{
+			console.log(listId);
 		}
 		
 		// app controller
@@ -102,7 +109,37 @@
 		SQLicious.DatabaseController = Ember.ObjectController.extend({});
 		
 		// sub-template controller and view for database page
-		SQLicious.DatabaseTablesView = Ember.View.extend();
+		SQLicious.DatabaseTablesView = Ember.View.extend({
+			
+			keyUp: function(event){
+				
+				var search = this.$('input').val();
+
+				this.$('#list-of-tables li').each(function(index,item)
+				{
+					var i = $(item);
+
+					if(search != "")
+					{
+						if(i.text().indexOf(search) !== -1)
+						{
+							i.show();
+						}
+						else
+						{
+							i.hide();
+						}
+					}
+					else
+					{
+						i.show();
+					}
+
+				});
+			}
+				
+		});
+		
 		SQLicious.DatabaseTablesController = Ember.ArrayController.extend();
 		
 		SQLicious.DatabaseRoute = Ember.Route.extend({

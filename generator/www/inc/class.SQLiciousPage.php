@@ -111,9 +111,7 @@ class SQLiciousPage
 	
 	function printHtmlHeader()
 	{
-		echo '<html>',
-		 	 '<head>',
-		  	 '<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />',
+		echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="Pragma" content="no-cache" />',
 			 '<meta http-equiv="Pragma" content="no-cache" />',
 		 	 '<meta http-equiv="content-script-type" content="text/javascript" />',
 			 '<title>' , $this->getHtmlTitle() , '</title>',

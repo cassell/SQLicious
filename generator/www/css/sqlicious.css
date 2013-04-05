@@ -16,6 +16,7 @@ body
 h1
 {
 	font-weight: 200;
+	font-size: 32.5px;
 }
 
 .white
@@ -63,4 +64,10 @@ h1
 .nav > li > a:hover, .nav > li > a:focus {
 	text-decoration: none;
 	background-color: #E7F4DD;
+}
+
+#list-of-tables li.active a
+{
+	background: #0088cc;
+	color: #fff;
 }

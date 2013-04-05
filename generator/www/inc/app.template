@@ -31,7 +31,16 @@
 </script>
 
 <script type="text/x-handlebars" data-template-name="databaseTables">
-	<ul class="nav nav-tabs nav-stacked white">
+	
+	<div class="navbar">
+		<div class="navbar-inner">
+			<form class="navbar-search pull-left" onsubmit="return false;">
+				<input type="text" class="search-query" placeholder="Search for Table">
+			</form>
+		</div>
+	</div>
+
+	<ul class="nav nav-tabs nav-stacked white" id="list-of-tables">
 	{{#each tableObject in content}}
 		<li>{{#linkTo table tableObject}}{{tableObject.tableName}}{{/linkTo}}</li>
 	{{/each}}
@@ -45,7 +54,6 @@
 		<li>{{#linkTo objectCreation content}}Object Creation{{/linkTo}}</li>
 		<li>{{#linkTo extendedStub content}}Extended Object Stubs{{/linkTo}}</li>
 	</ul>
-	<h3>API</h3>
 	<h3>Table Structure</h3>
 	<ul class="nav nav-tabs nav-stacked larger-nav-stacked white">
 		<li>{{#linkTo structure content}}Table Structure{{/linkTo}}</li>
