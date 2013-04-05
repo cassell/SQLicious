@@ -32,57 +32,36 @@ class DatabaseProcessor
 		
 	}
 	
+	
+	// returns an array of rows from the database
 	function getArray()
 	{
 		$data = array();
-		
-		$conn = $this->databaseNode->getConnection();
-		
-		$result = $this->getMySQLResult($this->getSQL(),$conn);
-		
-		if($result != null)
+
+		$this->process(function($obj) use (&$data)
 		{
-			if($this->getNumberOfRowsFromResult($result) > 0)
-			{
-				$result->data_seek(0);
-				
-				while ($row = $result->fetch_assoc())
-				{
-					$data[] = $row;
-				}
-			}
-		}
-		
+			$data[] = $obj->toArray();
+		});
+
 		return $data;
 	}
 	
+	
+	// returns an array of rows from the database
 	function getJSON()
 	{
 		$data = array();
-		
-		$conn = $this->databaseNode->getConnection();
-		
-		$result = $this->getMySQLResult($this->getSQL(),$conn);
-		
-		if($result != null)
+
+		$this->process(function($obj) use (&$data)
 		{
-			if($this->getNumberOfRowsFromResult($result) > 0)
-			{
-				$result->data_seek(0);
-				
-				while ($row = $result->fetch_assoc())
-				{
-					$obj = $this->loadDataObject($row);
-					
-					$data[] = $obj->toJSON();
-				}
-			}
-		}
-		
+			$data[] = $obj->toJSON();
+		});
+
 		return $data;
 	}
+
 	
-	function getSingleColumnArray($column)
+	function getSingleColumnArray()
 	{
 		$data = array();
 		
@@ -96,11 +75,9 @@ class DatabaseProcessor
 			{
 				$result->data_seek(0);
 				
-				while ($row = $result->fetch_assoc())
+				while($row = $result->fetch_array(MYSQLI_NUM))
 				{
-					$obj = $this->loadDataObject($row);
-					$t = $obj->toArray();
-					$data[] = $t[$column];
+					$data[] = $row[0];
 				}
 			}
 		}
@@ -137,7 +114,7 @@ class DatabaseProcessor
 	}
 	
 	// loop through rows return from database calling closure function provided
-	function process($function)
+	function process($closure)
 	{
 		$conn = $this->databaseNode->getConnection();
 		
@@ -151,17 +128,16 @@ class DatabaseProcessor
 				
 				while ($row = $result->fetch_assoc())
 				{
-					call_user_func($function,$this->loadDataObject($row));
+					$closure($this->loadDataObject($row));
 				}
 			}
 		}
 	
 		$this->freeResult($result);
-		
 	}
 	
 	// same as process but uses unbuffered connection
-	function unbufferedProcess($function)
+	function unbufferedProcess($closure)
 	{
 		$conn = $this->databaseNode->getConnection();
 		
@@ -171,7 +147,7 @@ class DatabaseProcessor
 		
 		while ($row = $result->fetch_assoc())
 		{
-			call_user_func($function,$this->loadDataObject($row));
+			$closure($this->loadDataObject($row));
 		}
 		
 		$this->freeResult($result);
@@ -213,9 +189,9 @@ class DatabaseProcessor
 		
 		do
 		{
-			if($conn->error)
+			if($conn->errno != 0)
 			{
-				throw new SQLiciousErrorException("SQLicious DatabaseProcessor multiQuery SQL Error. Reason given " . $this->connection->error);
+				throw new SQLiciousErrorException("SQLicious DatabaseProcessor multiQuery SQL Error. Reason given " . $conn->error);
 			}
 			
 			if(!$conn->more_results() || (!$conn->next_result() && $conn->error == null))

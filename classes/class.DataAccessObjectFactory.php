@@ -31,30 +31,23 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		// conditional used in building the WHERE clause
 		$this->conditional = new FactoryConditional();
 	}
-
+	
 	function getObjects()
 	{
 		$data = array();
-		
-		$conn = $this->databaseNode->getConnection();
-		
-		$result = $this->getMySQLResult($this->getSQL(),$conn);
-		
-		if($result != null)
+
+		$this->process(function($obj) use (&$data)
 		{
-			if($this->getNumberOfRowsFromResult($result) > 0)
+			if($obj->getIdField() != null)
 			{
-				$result->data_seek(0);
-				
-				while ($row = $result->fetch_assoc())
-				{
-					$obj = $this->loadDataObject($row);
-					
-					$data[$obj->getId()] = $obj;
-				}
+				$data[$obj->getId()] = $obj;
 			}
-		}
-		
+			else
+			{
+				$data[] = $obj;
+			}
+		});
+
 		return $data;
 	}
 
@@ -386,7 +379,15 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	// find the first object matching the clause
 	function findFirst($clause = "")
 	{
-		return reset($this->find($clause . " LIMIT 1"));
+		$a = $this->find($clause . " LIMIT 1");
+		if($a != null)
+		{
+			return reset($a);
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	function findDistinctField($field, $clause = "")
@@ -429,18 +430,27 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 
 	function findFirstField($field, $clause = "")
 	{
-		return reset($this->findField($field, $clause . " LIMIT 1"));
+		$a = $this->findField($field, $clause . " LIMIT 1");
+		
+		if($a)
+		{
+			return reset($a);
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	function getCount($clause = "")
 	{
 		if($this->getIdField() != '')
 		{
-			return (int) ($this->sqlFunctionFieldQuery('COUNT', $this->getTableName() . "." . $this->getIdField(), $clause));
+			return (int)($this->sqlFunctionFieldQuery('COUNT', $this->getTableName() . "." . $this->getIdField(), $clause));
 		}
 		else
 		{
-			return (int) ($this->sqlFunctionFieldQuery('COUNT', '*', $clause));
+			return (int)($this->sqlFunctionFieldQuery('COUNT', '*', $clause));
 		}
 	}
 
@@ -463,6 +473,26 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	function orderByField($field, $direction = 'asc')
 	{
 		$this->orderBy($field, $direction);
+	}
+
+	// depecate
+	function executeQuery($sql)
+	{
+		$data = array();
+
+		$result = $this->getMySQLResult($sql);
+
+		if($result != null && $result->num_rows > 0)
+		{
+			while($row = $result->fetch_assoc())
+			{
+				$data[] = $row;
+			}
+
+			$this->freeResult($result);
+		}
+
+		return $data;
 	}
 
 }
@@ -640,6 +670,20 @@ class EqualsBinding extends Binding
 
 }
 
+class CaseSensitiveEqualsBinding extends EqualsBinding
+{
+	function __construct($field, $value)
+	{
+		parent::__construct($field, $value);
+	}
+
+	function getSQL($factory)
+	{
+		return $factory->escapeString($this->field) . " COLLATE " . $factory->databaseNode->serverCaseSensitiveCollation . " LIKE '" . $factory->escapeString(str_replace("_", "\_", str_replace("%", "\%", $this->value))) . "'";
+	}
+	
+}
+
 class NotEqualsBinding extends Binding
 {
 
@@ -687,8 +731,9 @@ class ContainsBinding extends SQLString
 	{
 		return $factory->escapeString($this->field) . " LIKE '%" . $factory->escapeString(str_replace("_", "\_", str_replace("%", "\%", $this->query))) . "%'";
 	}
-
 }
+
+
 
 class InBinding extends SQLString
 {

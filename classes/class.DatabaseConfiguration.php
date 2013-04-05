@@ -59,10 +59,11 @@ class DatabaseNode
 	var $serverPassword;
 	var $serverPort;
 	var $serverSocket;
-	var $serverCharset;
+	var $serverCharset; // default utf8
+	var $serverCaseSensitiveCollation;  // default utf8_bin
 	var $connection;
 	
-	function __construct($serverDatabaseName, $serverHost, $serverUsername, $serverPassword, $serverPort = null, $serverSocket = null, $serverCharset = 'utf8')
+	function __construct($serverDatabaseName, $serverHost, $serverUsername, $serverPassword, $serverPort = null, $serverSocket = null, $serverCharset = 'utf8', $serverCaseSensitiveCollation = 'utf8_bin')
 	{
 		$this->serverDatabaseName = $serverDatabaseName;
 		$this->serverHost = $serverHost;
@@ -71,6 +72,7 @@ class DatabaseNode
 		$this->serverPort = $serverPort;
 		$this->serverSocket = $serverSocket;
 		$this->serverCharset = $serverCharset;
+		$this->serverCaseSensitiveCollation = $serverCaseSensitiveCollation;
 	}
 	
 	function getConnection()
