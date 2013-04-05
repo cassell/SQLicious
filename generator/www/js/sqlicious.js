@@ -28,11 +28,6 @@
 			});
 		}
 		
-		SQLicious.filterList = function(listId)
-		{
-			console.log(listId);
-		}
-		
 		// app controller
 		SQLicious.ApplicationController = Ember.Controller.extend();
 		SQLicious.ApplicationView = Ember.View.extend({
@@ -96,6 +91,7 @@
 			
 			this.route('generate', {path: '/generate'});
 			this.route('database', {path: '/database/:databaseName'});
+			this.route('databaseGenerate', {path: '/database/:databaseName/generate'});
 			this.route('table', {path: '/database/:databaseName/table/:tableName'});
 			this.route('objectCreation', {path: '/database/:databaseName/table/:tableName/objectCreation'});
 			this.route('structure', {path: '/database/:databaseName/table/:tableName/structure'});
@@ -105,11 +101,7 @@
 		});
 		
 		// database page is a list of tables
-		SQLicious.DatabaseView = Ember.View.extend();
-		SQLicious.DatabaseController = Ember.ObjectController.extend({});
-		
-		// sub-template controller and view for database page
-		SQLicious.DatabaseTablesView = Ember.View.extend({
+		SQLicious.DatabaseView = Ember.View.extend({
 			
 			keyUp: function(event){
 				
@@ -137,9 +129,12 @@
 
 				});
 			}
-				
+			
 		});
+		SQLicious.DatabaseController = Ember.ObjectController.extend({});
 		
+		// sub-template controller and view for database page
+		SQLicious.DatabaseTablesView = Ember.View.extend();
 		SQLicious.DatabaseTablesController = Ember.ArrayController.extend();
 		
 		SQLicious.DatabaseRoute = Ember.Route.extend({
@@ -179,6 +174,58 @@
 					return {};
 				}
 				
+			}
+			
+		});
+	
+		SQLicious.DatabaseGenerateView = Ember.View.extend({
+			
+			didInsertElement: function()
+			{
+				this.$('.modal').modal();
+			}
+			
+		});
+		
+		SQLicious.DatabaseGenerateRoute = Ember.Route.extend({
+			
+			activate: function()
+			{
+				SQLicious.ajax({ 
+					url : '/api/generator/generate.php',
+					data : {'database' : this.context.databaseName},
+					success : function(resp)
+					{
+						if(resp.errors != null && resp.errors.length > 0)
+						{
+							alert(resp.errors);
+							window.location.hash = '#';
+							window.location.reload(false);
+						}
+						else
+						{
+							window.location.hash = '#/database/' + resp.databaseName + '/';
+							window.location.reload(false);
+						}
+					}.bind(this)
+				});
+			},
+			
+			model: function(params)
+			{
+				return SQLicious.Database.find(params.databaseName);
+			},
+			
+			serialize: function(model,params)
+			{
+				if(model)
+				{
+					return {databaseName: model.databaseName};
+				}
+				else
+				{
+					return {};
+				}
 			}
 			
 		});

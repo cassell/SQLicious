@@ -27,18 +27,34 @@
 
 <script type="text/x-handlebars" data-template-name="database">
 	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{databaseName}}</h1>
-	{{render databaseTables tables}}
-</script>
-
-<script type="text/x-handlebars" data-template-name="databaseTables">
-	
-	<div class="navbar">
+	<div class="navbar" id="list-of-tables-navbar">
 		<div class="navbar-inner">
 			<form class="navbar-search pull-left" onsubmit="return false;">
 				<input type="text" class="search-query" placeholder="Search for Table">
 			</form>
+			{{#linkTo databaseGenerate content}}<i class="icon-refresh"></i> Regenerate Code{{/linkTo}}
 		</div>
 	</div>
+	{{render databaseTables tables}}
+</script>
+
+
+<script type="text/x-handlebars" data-template-name="databaseGenerate">
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; {{databaseName}}</h1>
+	<div class="modal hide fade">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h3>Regenerating Code</h3>
+		</div>
+		<div class="modal-body">
+			<p>Reticulating Splines...</p>
+		</div>
+	</div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="databaseTables">
+	
+	
 
 	<ul class="nav nav-tabs nav-stacked white" id="list-of-tables">
 	{{#each tableObject in content}}
