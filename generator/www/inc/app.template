@@ -3,6 +3,9 @@
 	<div id="pageTop">
 		<div class="container">
 			{{#linkTo index}}<img src="/img/logo/sqlicious-logo.png">{{/linkTo}}
+			<div id="util-links" class="pull-right">
+				{{#linkTo generate class="btn"}}<i class="icon-refresh"></i> Regenerate All{{/linkTo}}
+			</div>
 		</div>
 	</div>
 	<br>
@@ -32,10 +35,24 @@
 			<form class="navbar-search pull-left" onsubmit="return false;">
 				<input type="text" class="search-query" placeholder="Search for Table">
 			</form>
-			{{#linkTo databaseGenerate content}}<i class="icon-refresh"></i> Regenerate Code{{/linkTo}}
+			{{#linkTo databaseGenerate content class="btn"}}<i class="icon-refresh"></i> Regenerate{{/linkTo}}
 		</div>
 	</div>
 	{{render databaseTables tables}}
+</script>
+
+<script type="text/x-handlebars" data-template-name="generate">
+	<h1>{{#linkTo index}}Databases{{/linkTo}} &raquo; Regenerating...</h1>
+	<div class="modal hide fade">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h3>Regenerating Code</h3>
+		</div>
+		<div class="modal-body">
+			<p style="text-align: center;"></p>
+			<p style="text-align: center;"><img src="/img/pacman.gif">&nbsp;&nbsp;&bull;&nbsp;&bull;&nbsp;&bull;</p>
+		</div>
+	</div>
 </script>
 
 
@@ -47,15 +64,13 @@
 			<h3>Regenerating Code</h3>
 		</div>
 		<div class="modal-body">
-			<p>Reticulating Splines...</p>
+			<p style="text-align: center;"></p>
+			<p style="text-align: center;"><img src="/img/pacman.gif">&nbsp;&nbsp;&bull;&nbsp;&bull;&nbsp;&bull;</p>
 		</div>
 	</div>
 </script>
 
 <script type="text/x-handlebars" data-template-name="databaseTables">
-	
-	
-
 	<ul class="nav nav-tabs nav-stacked white" id="list-of-tables">
 	{{#each tableObject in content}}
 		<li>{{#linkTo table tableObject}}{{tableObject.tableName}}{{/linkTo}}</li>

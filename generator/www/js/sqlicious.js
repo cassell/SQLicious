@@ -177,6 +177,36 @@
 			}
 			
 		});
+		
+		SQLicious.GenerateView = Ember.View.extend({
+			
+			didInsertElement: function()
+			{
+				this.$('.modal').modal();
+			}
+			
+		});
+		
+		SQLicious.GenerateRoute = Ember.Route.extend({
+			
+			activate: function()
+			{
+				SQLicious.ajax({ 
+					url : '/api/generator/generate.php',
+					success : function(resp)
+					{
+						if(resp.errors != null && resp.errors.length > 0)
+						{
+							alert(resp.errors);
+						}
+						
+						window.location.hash = '#';
+						window.location.reload(false);
+						
+					}.bind(this)
+				});
+			}
+		});
 	
 		SQLicious.DatabaseGenerateView = Ember.View.extend({
 			
