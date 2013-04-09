@@ -5,10 +5,10 @@ require_once(TESTS_CONFIG_PATH."../dao/class.ZipcodesDaoFactory.php");
 
 class DaoObjectTests extends \Enhance\TestFixture
 {
-	function getDatabaseName()
-	{
-		\Enhance\Assert::inconclusive();
-	}
+//	function getDatabaseName()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
 
 	static function findId()
 	{
@@ -28,30 +28,30 @@ class DaoObjectTests extends \Enhance\TestFixture
 		\Enhance\Assert::areIdentical('90210',$notBeverlyHills->getZipcode());
 	}
 	
-	function save()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	function delete()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	function toJSON()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	function setFieldValue()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	function setDatetimeFieldValue()
-	{
-		\Enhance\Assert::inconclusive();
-	}
+//	function save()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//	function delete()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//	function toJSON()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//	function setFieldValue()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//	function setDatetimeFieldValue()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
 	
 }
 		

@@ -58,13 +58,13 @@ class DaoFactoryTests extends \Enhance\TestFixture
 		\Enhance\Assert::areIdentical('FROM zipcodes',$f->getFromClause());
     }
 	
-	static function clearPeopleTestData()
+	private static function clearPeopleTestData()
 	{
 		$dp = new DatabaseProcessor('sqlicious_test');
 		$dp->update("TRUNCATE TABLE `people`;");
 	}
 	
-	static function insertPeopleTestData()
+	private static function insertPeopleTestData()
 	{
 		self::clearPeopleTestData();
 		
@@ -122,115 +122,6 @@ VALUES
 		
 	}
 	
-//	function orderByAsc()
-//	{
-//		\Enhance\Assert::inconclusive();
-//	}
-	
-	// limits
-	function limit()
-	{
-		$f = new ZipcodesDaoFactory();
-		$f->orderBy("zipcode");
-		$f->addBinding(new EqualsBinding("zipcodes.state", "VA"));
-		$f->limit(10,5);
-		print_r($f->getFirstObject());
-		
-		$herndon = $f->getFirstObject();
-		
-		\Enhance\Assert::areIdentical('20171',$herndon->getZipcode());
-		
-		
-		\Enhance\Assert::inconclusive();
-	}
-	
-	function delete()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	function count()
-	{
-       $f = new ZipcodesDaoFactory();
-	   \Enhance\Assert::areIdentical($f->count(), 33178);
-	   
-	   
-	   $f = new ZipcodesDaoFactory();
-	   $f->addBinding("state LIKE 'PA'");
-	   \Enhance\Assert::areIdentical($f->count(), 1776);
-	}
-		
-    function sum()
-    {
-         \Enhance\Assert::inconclusive();
-    }
-    
-	function paging()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-    
-    public function truncateTable()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-    /* below are functions that are slowly being phased out */
-    // used to do custom queries, uses the same get select clause that the query() method 
-	function find()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-    
-    function deleteWhere()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	// find the first object matching the clause
-	function findFirst()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	function findDistinctField()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	function findField()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	function findFirstField()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	function getCount()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	function getMaxField()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	function getSumField()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-    // deprecate old naming convetion
-	function orderByField()
-	{
-		\Enhance\Assert::inconclusive();
-	}
-	
-	
-	
 	public function equalsBinding()
 	{
 		$f = new ZipcodesDaoFactory();
@@ -258,6 +149,118 @@ VALUES
 		\Enhance\Assert::areIdentical($herndon->getCity(), "Herndon");
 		\Enhance\Assert::areIdentical($herndon->getStateName(), "Virginia");
 	}
+	
+	
+//	function orderByAsc()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+	
+	// limits
+//	function limit()
+//	{
+//		$f = new ZipcodesDaoFactory();
+//		$f->orderBy("zipcode");
+//		$f->addBinding(new EqualsBinding("zipcodes.state", "VA"));
+//		$f->limit(10,5);
+//		print_r($f->getFirstObject());
+//		
+//		$herndon = $f->getFirstObject();
+//		
+//		\Enhance\Assert::areIdentical('20171',$herndon->getZipcode());
+//		
+//		
+//		\Enhance\Assert::inconclusive();
+//	}
+	
+//	function delete()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+	
+	function count()
+	{
+       $f = new ZipcodesDaoFactory();
+	   \Enhance\Assert::areIdentical($f->count(), 33178);
+	   
+	   
+	   $f = new ZipcodesDaoFactory();
+	   $f->addBinding("state LIKE 'PA'");
+	   \Enhance\Assert::areIdentical($f->count(), 1776);
+	}
+		
+//    function sum()
+//    {
+//         \Enhance\Assert::inconclusive();
+//    }
+//    
+//	function paging()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//    
+//    public function truncateTable()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//    /* below are functions that are slowly being phased out */
+//    // used to do custom queries, uses the same get select clause that the query() method 
+//	function find()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//    
+//    function deleteWhere()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//	// find the first object matching the clause
+//	function findFirst()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//	function findDistinctField()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//	function findField()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//	function findFirstField()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//	function getCount()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//	function getMaxField()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//	function getSumField()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+//	
+//    // deprecate old naming convetion
+//	function orderByField()
+//	{
+//		\Enhance\Assert::inconclusive();
+//	}
+	
+	
+	
+	
 	
 	
 	
