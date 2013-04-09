@@ -4,45 +4,4 @@
 
 require_once('class.ZipcodesDaoObject.php');
 
-class ZipcodesDaoFactory extends DataAccessObjectFactory
-{
-	function __construct()
-	{
-		parent::__construct();
-	}
-
-	function ZipcodesDaoFactory()
-	{
-		self::__construct();
-	}
-
-	function getDatabaseName()
-	{
-		return 'sqlicious_test';
-	}
-
-	function getTableName()
-	{
-		return 'zipcodes';
-	}
-
-	function getIdField()
-	{
-		return 'zipcode_id';
-	}
-
-	function loadDataObject($row)
-	{
-		return new ZipcodesDaoObject($row);
-	}
-
-	function getFields()
-	{
-		return array('zipcode_id', 'zipcode', 'state', 'longitude', 'latitude', 'city', 'state_name');
-	}
-	
-
-
-}
-
 ?>

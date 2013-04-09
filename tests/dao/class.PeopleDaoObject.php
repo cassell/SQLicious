@@ -57,11 +57,57 @@ class PeopleDaoObject extends DataAccessObject
 	final function setCreateDatetime($val) { $this->setDatetimeFieldValue('create_datetime',$val); }
 	final function getCreateDatetime($format = null) { return $this->getDatetimeFieldValue('create_datetime',$format); }
 	
-
 	function getDefaultRow()
 	{
 		return array('people_id' => null, 'first_name' => null, 'last_name' => null, 'zipcode_id' => null, 'archived' => null, 'create_date' => null, 'create_datetime' => null);
 	}
 
 }
+
+
+class PeopleDaoFactory extends DataAccessObjectFactory
+{
+	function __construct()
+	{
+		parent::__construct();
+	}
+
+	function PeopleDaoFactory()
+	{
+		self::__construct();
+	}
+
+	function getDatabaseName()
+	{
+		return 'sqlicious_test';
+	}
+
+	function getTableName()
+	{
+		return 'people';
+	}
+
+	function getIdField()
+	{
+		return 'people_id';
+	}
+
+	function loadDataObject($row)
+	{
+		return new PeopleDaoObject($row);
+	}
+
+	function getFields()
+	{
+		return array('people_id', 'first_name', 'last_name', 'zipcode_id', 'archived', 'create_date', 'create_datetime');
+	}
+	
+	final function addArchivedTrueBinding(){ $this->addBinding(new TrueBooleanBinding('people.archived')); }
+	final function addArchivedFalseBinding(){ $this->addBinding(new FalseBooleanBinding('people.archived')); }
+	final function addArchivedNotTrueBinding(){ $this->addBinding(new NotEqualsBinding('people.archived',1)); }
+	final function addArchivedNotFalseBinding(){ $this->addBinding(new NotEqualsBinding('people.archived',0));  }
+
+
+}
+
 ?>
