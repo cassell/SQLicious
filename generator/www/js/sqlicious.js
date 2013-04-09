@@ -131,22 +131,9 @@
 				this.$('#list-of-tables li').each(function(index,item)
 				{
 					var li = $(item);
+					
+					search == "" || li.text().toUpperCase().indexOf(search.toUpperCase()) >= 0 ? li.show() : li.hide();
 
-					if(search != "")
-					{
-						if(li.text().indexOf(search) !== -1)
-						{
-							li.show();
-						}
-						else
-						{
-							li.hide();
-						}
-					}
-					else
-					{
-						li.show();
-					}
 				});
 			}
 		});
@@ -280,8 +267,6 @@
 		SQLicious.TableView = Ember.View.extend();
 		SQLicious.TableController = Ember.ObjectController.extend({});
 		SQLicious.TableRoute = Ember.Route.extend({
-			
-			templateName: 'table',
 			
 			setupController: function(controller) {
 				controller.set('database',SQLicious.Database.find(this.context.databaseName));
