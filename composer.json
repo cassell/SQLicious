@@ -1,9 +1,9 @@
 {
-    "name": "cassell/SQLicious",
+    "name": "cassell/sqlicious",
     "type": "library",
     "description": "Active Record ORM with closures and web interface",
     "keywords": ["active record","activerecord","orm","closures","dao","database","mysql"],
-    "homepage": "http://github.com/cassell/SQLicious",
+    "homepage": "http://github.com/cassell/sqlicious",
     "license": "BSD-2-Clause",
     "authors": [
         {
