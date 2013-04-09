@@ -20,27 +20,3 @@ Redistribution and use in source and binary forms, with or without modification,
 	* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
------------------------------------------------
-
-SQLicious uses Glyphicons images in the web-based code generator. You should not need never include the web interface as part of your distributed app. But if you do, then you will need to comply with the following license:
-
-THANK YOU FOR USING GLYPHICONS!
-
-If you would like to be among the first ones to hear about all the news, follow @glyphicons on Twitter.
-
-LICENSE:
-GLYPHICONS FREE are released under the Creative Commons Attribution 3.0 Unported (CC BY 3.0). The Glyphicons FREE can be used both commercially and for personal use, but you must always add a link to www.glyphicons.com in a prominent place (e.g. the footer of a website), include the CC-BY license and the reference to www.glyphicons.com on every page using Glyphicons.
-
-Glyphicons Halflings are also a part of Bootstrap by Twitter, and are released under the same Apache 2.0 license as Bootstrap. While you are not required to include attribution on your Bootstrap-based projects, I'd certainly appreciate a visibile link back to glyphicons.com in any place you find appropriate (footer, docs, etc).
-
-All logos and trademarks in social icons are the property of the respective trademark owners.®
-
-CONTACT:
-Web: http://glyphicons.com/
-Email: glyphicons@gmail.com
-Twitter: http://twitter.com/glyphicons
-
-If you want to use the icons without restrictions, please buy any version on www.glyphicons.com, thank you.
-
-Jan Kovařík
