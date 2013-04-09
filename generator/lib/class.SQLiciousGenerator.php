@@ -85,19 +85,6 @@ class SQLiciousGeneratorDatabase
 		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/table_structure_html.template'),$this->getTemplatingDataFromTableName($tableName));
 	}
 	
-	function getTableStructureCLI($tableName)
-	{
-		die("getTableStructureCLI");
-		//$m = new Mustache_Engine();
-		//return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/table_structure_cli.template'),$this->getTemplatingDataFromTableName($tableName));
-	}
-	
-//	function getApiListCode($tableName)
-//	{
-//		$m = new Mustache_Engine();
-//		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/api_list.template'),$this->getTemplatingDataFromTableName($tableName));
-//	}
-	
 	function getTemplatingDataFromTableName($tableName)
 	{
 		$idFieldName = '';
@@ -150,13 +137,11 @@ class SQLiciousGeneratorDatabase
 					$bindingsPack[] = "\tfinal function add" . ucfirst(SQLiciousGenerator::toFieldCase($column['Field'])) . "NotFalseBinding(){ \$this->addBinding(new NotEqualsBinding('" . $tableName . "." . $column['Field'] . "',0));  }";
 					$bindingsPack[] = "\n";
 				}
-				
-				
 			}
 		}
 		
 		return array( 'tableName' => $tableName,
-					   'jsonArrayName' => SQLiciousGenerator::toFieldCase($tableName),
+					   'variableName' => SQLiciousGenerator::toFieldCase($tableName),
 					   'className' => $className,
 					   'databaseName' => $this->getDatabaseName(),
 					   'idFieldName' => $idFieldName,

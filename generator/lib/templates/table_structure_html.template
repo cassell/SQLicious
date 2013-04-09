@@ -16,8 +16,8 @@
 			<td>{{Type}}</td>
 			<td>{{Null}}</td>
 			<td>{{Default}}</td>
-			<td style="font-family: Courier New;" nowrap="nowrap">${{jsonArrayName}}-&gt;set{{FieldCase}}($val)</td>
-			<td style="font-family: Courier New;" nowrap="nowrap">${{jsonArrayName}}-&gt;get{{FieldCase}}()</td>
+			<td style="font-family: Courier New;" nowrap="nowrap">${{variableName}}-&gt;set{{FieldCase}}($val)</td>
+			<td style="font-family: Courier New;" nowrap="nowrap">${{variableName}}-&gt;get{{FieldCase}}()</td>
 		</tr>
 {{/columns}}
 	</tbody>

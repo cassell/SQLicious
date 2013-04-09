@@ -1,12 +1,12 @@
 // non extened object
-${{jsonArrayName}} = new {{className}}DaoObject();
+${{variableName}} = new {{className}}DaoObject();
 
 // extened object
-${{jsonArrayName}} = new {{className}}();
+${{variableName}} = new {{className}}();
 
 // fields
 {{#columns}}
-${{jsonArrayName}}->set{{FieldCase}}($val);
+${{variableName}}->set{{FieldCase}}($val);
 {{/columns}}
 
-${{jsonArrayName}}->save();
+${{variableName}}->save();

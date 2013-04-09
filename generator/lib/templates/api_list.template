@@ -16,7 +16,7 @@ echo json_encode($f->getJSON());
 <h2>REST/Rails/Ember Style</h2>
 <pre>
 $f = new {{className}}Factory();
-echo '{ {{jsonArrayName}}s: '; 
+echo '{ {{variableName}}s: '; 
 echo json_encode($f->getJSON());
 echo '}';
 </pre>
@@ -34,7 +34,7 @@ echo json_encode($f->getJSON());
 <h2>REST/Rails/Ember Style</h2>
 <pre>
 $f = new {{className}}DaoFactory();
-echo '{ {{jsonArrayName}}s: '; 
+echo '{ {{variableName}}s: '; 
 echo json_encode($f->getJSON());
 echo '}';
 </pre>
