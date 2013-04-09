@@ -78,14 +78,37 @@
 		
 		SQLicious.Router.map(function() {
 			
-			this.route('generate', {path: '/generate'});
-			this.route('database', {path: '/database/:databaseName'});
-			this.route('databaseGenerate', {path: '/database/:databaseName/generate'});
-			this.route('table', {path: '/database/:databaseName/table/:tableName'});
-			this.route('objectCreation', {path: '/database/:databaseName/table/:tableName/objectCreation'});
-			this.route('structure', {path: '/database/:databaseName/table/:tableName/structure'});
-			this.route('extendedStub', {path: '/database/:databaseName/table/:tableName/extendedStub'});
-			this.route('api', {path: '/database/:databaseName/table/:tableName/api'});
+			this.route('generate', {
+				path: '/generate'
+			});
+			
+			this.route('database', {
+				path: '/database/:databaseName'
+			});
+			
+			this.route('databaseGenerate', {
+				path: '/database/:databaseName/generate'
+			});
+			
+			this.route('table', {
+				path: '/database/:databaseName/table/:tableName'
+			});
+			
+			this.route('objectCreation', {
+				path: '/database/:databaseName/table/:tableName/objectCreation'
+			});
+			
+			this.route('structure', {
+				path: '/database/:databaseName/table/:tableName/structure'
+			});
+			
+			this.route('extendedStub', {
+				path: '/database/:databaseName/table/:tableName/extendedStub'
+			});
+			
+			this.route('api', {
+				path: '/database/:databaseName/table/:tableName/api'
+			});
 			
 		});
 		
@@ -98,9 +121,6 @@
 			}
 		});
 		
-		
-		
-		
 		// database page is a list of tables
 		SQLicious.DatabaseView = Ember.View.extend({
 			
@@ -110,27 +130,25 @@
 
 				this.$('#list-of-tables li').each(function(index,item)
 				{
-					var i = $(item);
+					var li = $(item);
 
 					if(search != "")
 					{
-						if(i.text().indexOf(search) !== -1)
+						if(li.text().indexOf(search) !== -1)
 						{
-							i.show();
+							li.show();
 						}
 						else
 						{
-							i.hide();
+							li.hide();
 						}
 					}
 					else
 					{
-						i.show();
+						li.show();
 					}
-
 				});
 			}
-			
 		});
 		
 		SQLicious.DatabaseController = Ember.ObjectController.extend({});
@@ -146,7 +164,9 @@
 			{
 				SQLicious.ajax({ 
 					url : '/api/tables/list.php',
-					data : {'database' : this.context.databaseName},
+					data : {
+						'database' : this.context.databaseName
+						},
 					success : function(resp)
 					{
 						this.databaseTablesController.set('database',SQLicious.Database.find(resp.databaseName));
@@ -164,7 +184,7 @@
 			{
 				if(model)
 				{
-					return {databaseName: model.databaseName};
+					return { databaseName: model.databaseName };
 				}
 				else
 				{
@@ -172,7 +192,6 @@
 				}
 				
 			}
-			
 		});
 		
 		// sub-template controller and view for database page
@@ -214,16 +233,14 @@
 			{
 				this.$('.modal').modal();
 			}
-			
 		});
-		
 		SQLicious.DatabaseGenerateRoute = Ember.Route.extend({
 			
 			activate: function()
 			{
 				SQLicious.ajax({ 
 					url : '/api/generator/generate.php',
-					data : {'database' : this.context.databaseName},
+					data : { 'database' : this.context.databaseName },
 					success : function(resp)
 					{
 						if(resp.errors != null && resp.errors.length > 0)
@@ -250,7 +267,7 @@
 			{
 				if(model)
 				{
-					return {databaseName: model.databaseName};
+					return { databaseName: model.databaseName };
 				}
 				else
 				{
@@ -285,7 +302,7 @@
 			{
 				if(model)
 				{
-					return {databaseName: model.databaseName, tableName : model.tableName};
+					return { databaseName: model.databaseName, tableName : model.tableName };
 				}
 				else
 				{
@@ -303,7 +320,7 @@
 			
 			setupController: function(controller) {
 				controller.set('database',SQLicious.Database.find(this.context.databaseName));
-				controller.set('table',this.model({'databaseName':this.context.databaseName,'tableName':this.context.tableName}));
+				controller.set('table',this.model({ 'databaseName':this.context.databaseName,'tableName':this.context.tableName }));
 			},
 			
 			model: function(params)
@@ -319,14 +336,17 @@
 			
 			serialize: function(model,params)
 			{
-				return {databaseName: model.databaseName, tableName : model.tableName};
+				return { databaseName: model.databaseName, tableName : model.tableName };
 			},
 			
 			activate: function()
 			{
 				SQLicious.ajax({ 
 					url : '/api/table/object_creation.php',
-					data : {'database' : this.context.databaseName, 'table' : this.context.tableName},
+					data : {
+						'database' : this.context.databaseName, 
+						'table' : this.context.tableName
+						},
 					success : function(resp)
 					{
 						this.controller.set('responseTemplate',resp.code);
@@ -344,7 +364,10 @@
 			
 			setupController: function(controller) {
 				controller.set('database',SQLicious.Database.find(this.context.databaseName));
-				controller.set('table',this.model({'databaseName':this.context.databaseName,'tableName':this.context.tableName}));
+				controller.set('table',this.model({
+					'databaseName':this.context.databaseName,
+					'tableName':this.context.tableName
+				}));
 			},
 			
 			model: function(params)
@@ -355,19 +378,21 @@
 					database : SQLicious.Database.find(params.databaseName),
 					databaseName: params.databaseName
 				});
-				
 			},
 			
 			serialize: function(model,params)
 			{
-				return {databaseName: model.databaseName, tableName : model.tableName};
+				return { databaseName: model.databaseName, tableName : model.tableName };
 			},
 			
 			activate: function()
 			{
 				SQLicious.ajax({ 
 					url : '/api/table/extended_stub.php',
-					data : {'database' : this.context.databaseName, 'table' : this.context.tableName},
+					data : {
+						'database' : this.context.databaseName, 
+						'table' : this.context.tableName
+						},
 					success : function(resp)
 					{
 						this.controller.set('responseTemplate',resp.code);
@@ -386,7 +411,10 @@
 			
 			setupController: function(controller) {
 				controller.set('database',SQLicious.Database.find(this.context.databaseName));
-				controller.set('table',this.model({'databaseName':this.context.databaseName,'tableName':this.context.tableName}));
+				controller.set('table',this.model({
+					'databaseName':this.context.databaseName,
+					'tableName':this.context.tableName
+					}));
 			},
 			
 			model: function(params)
@@ -402,14 +430,17 @@
 			
 			serialize: function(model,params)
 			{
-				return {databaseName: model.databaseName, tableName : model.tableName};
+				return { databaseName: model.databaseName, tableName : model.tableName };
 			},
 			
 			activate: function()
 			{
 				SQLicious.ajax({ 
 					url : '/api/table/table_structure.php',
-					data : {'database' : this.context.databaseName, 'table' : this.context.tableName},
+					data : {
+						'database' : this.context.databaseName, 
+						'table' : this.context.tableName
+						},
 					success : function(resp)
 					{
 						this.controller.set('responseTemplate',resp.html);
