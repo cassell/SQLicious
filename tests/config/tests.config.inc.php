@@ -19,9 +19,9 @@ require_once(SQLICIOUS_INCLUDE_PATH.'/classes/class.DatabaseProcessor.php');
 require_once(SQLICIOUS_INCLUDE_PATH.'/classes/class.DataAccessObject.php');
 require_once(SQLICIOUS_INCLUDE_PATH.'/classes/class.DataAccessObjectFactory.php');
 
-$GLOBALS[SQLICIOUS_CONFIG_GLOBAL] = new DAOConfig();
+$GLOBALS[SQLICIOUS_CONFIG_GLOBAL] = new SQLiciousConfig();
 
-$GLOBALS[SQLICIOUS_CONFIG_GLOBAL]->sqlicious_test = new DatabaseConfiguration('sqlicious_test');
-$GLOBALS[SQLICIOUS_CONFIG_GLOBAL]->sqlicious_test->setMaster(new DatabaseNode($_SERVER['MYSQL_DB_NAME'], $_SERVER['MYSQL_DB_HOST'], $_SERVER['MYSQL_USERNAME'], $_SERVER['MYSQL_PASSWORD']));
+$GLOBALS[SQLICIOUS_CONFIG_GLOBAL]['sqlicious_test'] = new DatabaseConfiguration('sqlicious_test');
+$GLOBALS[SQLICIOUS_CONFIG_GLOBAL]['sqlicious_test']->setMaster(new DatabaseNode($_SERVER['MYSQL_DB_NAME'], $_SERVER['MYSQL_DB_HOST'], $_SERVER['MYSQL_USERNAME'], $_SERVER['MYSQL_PASSWORD']));
 
 ?>
