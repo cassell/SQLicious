@@ -1,12 +1,8 @@
 
-
 (function($, window, document) {
 
 	$(function() {
 		
-		// drop a {{debug}} in your template and get a nice output to your console
-		Handlebars.registerHelper("debug", function(optionalValue) {console.log("Current Context");console.log("====================");console.log(this);if (optionalValue) {console.log("Value");console.log("====================");console.log(optionalValue);}});
-
 		var SQLicious = Ember.Application.create({
 			rootElement: '#content',
 			LOG_TRANSITIONS: true
@@ -14,6 +10,8 @@
 		
 		SQLicious.getAPIUrl = function(url)
 		{
+			console.log(window.location.href.replace(window.location.hash,""));
+			
 			return window.location.href.replace(window.location.hash,"").replace("index.php","") + url.substring(1);
 		}
 		
@@ -78,15 +76,6 @@
 			}
 		});
 		
-		// dashboard (index)
-		SQLicious.IndexController = Ember.Controller.extend();
-		SQLicious.IndexView = Ember.View.extend();
-		SQLicious.IndexRoute = Ember.Route.extend({
-			setupController: function(controller) {
-				controller.set('dbs',SQLicious.Database.findAll());
-			}
-		});
-		
 		SQLicious.Router.map(function() {
 			
 			this.route('generate', {path: '/generate'});
@@ -99,6 +88,18 @@
 			this.route('api', {path: '/database/:databaseName/table/:tableName/api'});
 			
 		});
+		
+		// dashboard (index)
+		SQLicious.IndexController = Ember.Controller.extend();
+		SQLicious.IndexView = Ember.View.extend();
+		SQLicious.IndexRoute = Ember.Route.extend({
+			setupController: function(controller) {
+				controller.set('dbs',SQLicious.Database.findAll());
+			}
+		});
+		
+		
+		
 		
 		// database page is a list of tables
 		SQLicious.DatabaseView = Ember.View.extend({
@@ -131,12 +132,8 @@
 			}
 			
 		});
+		
 		SQLicious.DatabaseController = Ember.ObjectController.extend({});
-		
-		// sub-template controller and view for database page
-		SQLicious.DatabaseTablesView = Ember.View.extend();
-		SQLicious.DatabaseTablesController = Ember.ArrayController.extend();
-		
 		SQLicious.DatabaseRoute = Ember.Route.extend({
 			
 			setupController: function()
@@ -178,6 +175,10 @@
 			
 		});
 		
+		// sub-template controller and view for database page
+		SQLicious.DatabaseTablesView = Ember.View.extend();
+		SQLicious.DatabaseTablesController = Ember.ArrayController.extend();
+		
 		SQLicious.GenerateView = Ember.View.extend({
 			
 			didInsertElement: function()
@@ -186,7 +187,6 @@
 			}
 			
 		});
-		
 		SQLicious.GenerateRoute = Ember.Route.extend({
 			
 			activate: function()
@@ -262,7 +262,6 @@
 		
 		SQLicious.TableView = Ember.View.extend();
 		SQLicious.TableController = Ember.ObjectController.extend({});
-		
 		SQLicious.TableRoute = Ember.Route.extend({
 			
 			templateName: 'table',
@@ -298,7 +297,6 @@
 		
 		SQLicious.ObjectCreationView = Ember.View.extend();
 		SQLicious.ObjectCreationController = Ember.ObjectController.extend({});
-		
 		SQLicious.ObjectCreationRoute = Ember.Route.extend({
 			
 			templateName: 'objectCreation',
@@ -340,7 +338,6 @@
 		
 		SQLicious.ExtendedStubView = Ember.View.extend();
 		SQLicious.ExtendedStubController = Ember.ObjectController.extend({});
-		
 		SQLicious.ExtendedStubRoute = Ember.Route.extend({
 			
 			templateName: 'extendedStub',
@@ -383,7 +380,6 @@
 		
 		SQLicious.StructureView = Ember.View.extend();
 		SQLicious.StructureController = Ember.ObjectController.extend({});
-		
 		SQLicious.StructureRoute = Ember.Route.extend({
 			
 			templateName: 'structure',
@@ -423,17 +419,9 @@
 			
 		});
 		
-		
-		
-		
-		
-		
-		
-
 	});
 
 }(window.jQuery, window, document));
- 
- 
 
-
+// drop a {{debug}} in your template and get a nice output to your console
+//Handlebars.registerHelper("debug", function(optionalValue) {console.log("Current Context");console.log("====================");console.log(this);if (optionalValue) {console.log("Value");console.log("====================");console.log(optionalValue);}});
