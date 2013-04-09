@@ -1,7 +1,7 @@
 <?php
 
-require_once(TESTS_CONFIG_PATH."../dao/class.PeopleDaoFactory.php");
-require_once(TESTS_CONFIG_PATH."../dao/class.ZipcodesDaoFactory.php");
+require_once(TESTS_CONFIG_PATH."../dao/class.PeopleDaoObject.php");
+require_once(TESTS_CONFIG_PATH."../dao/class.ZipcodesDaoObject.php");
 
 class DaoFactoryTests extends \Enhance\TestFixture
 {

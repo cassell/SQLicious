@@ -167,9 +167,11 @@ class SQLiciousGeneratorDatabase
 
 class SQLiciousGenerator
 {
+	var $databases = array();
+	
 	function __construct()
 	{
-		$this->databases = array();
+		
 	}
 	
 	function addDatabase($sqliciousDatabase)
@@ -204,6 +206,7 @@ class SQLiciousGenerator
 	function cleanDatabaseDestinationDirectory($database)
 	{
 		$files = glob($database->getGeneratorDestinationDirectory().'/*.php'); 
+		
 		if($files != null)
 		{
 			foreach($files as $file)
@@ -225,10 +228,6 @@ class SQLiciousGenerator
 			{
 				$className = ucfirst($this->toFieldCase($tableName));
 				
-				if(!$this->writeContents($database->getGeneratorDestinationDirectory().'/class.' . $className . 'DaoFactory.php',$database->getDaoFactoryClassContents($tableName)))
-				{
-					return false;
-				}
 				if(!$this->writeContents($database->getGeneratorDestinationDirectory().'/class.' . $className . 'DaoObject.php',$database->getDaoObjectClassContents($tableName)))
 				{
 					return false;
