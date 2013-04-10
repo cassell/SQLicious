@@ -6,7 +6,9 @@ ${{variableName}} = new {{className}}();
 
 // fields
 {{#columns}}
+{{#notPrimaryKey}}
 ${{variableName}}->set{{FieldCase}}($val);
+{{/notPrimaryKey}}
 {{/columns}}
 
 ${{variableName}}->save();

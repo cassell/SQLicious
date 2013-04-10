@@ -74,7 +74,7 @@ class SQLiciousGeneratorDatabase
 	
 	function getObjectCreationCode($tableName)
 	{
-//		return print_r($this->getTemplatingDataFromTableName($tableName),true);
+		//return print_r($this->getTemplatingDataFromTableName($tableName),true);
 		$m = new Mustache_Engine();
 		return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/object_creation.template'),$this->getTemplatingDataFromTableName($tableName));
 	}
@@ -104,7 +104,14 @@ class SQLiciousGeneratorDatabase
 			{
 				if($column['Key'] == "PRI")
 				{
+					$columns[$key]['primaryKey'] = 1;
+					$columns[$key]['notPrimaryKey'] = 0;
 					$idFieldName = $column['Field'];
+				}
+				else
+				{
+					$columns[$key]['primaryKey'] = 0;
+					$columns[$key]['notPrimaryKey'] = 1;
 				}
 				
 				$fieldsPack[] = "'" . $column['Field'] . "'";
