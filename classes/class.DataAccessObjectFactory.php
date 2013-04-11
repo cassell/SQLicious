@@ -681,7 +681,6 @@ class CaseSensitiveEqualsBinding extends EqualsBinding
 	{
 		return $factory->escapeString($this->field) . " COLLATE " . $factory->databaseNode->serverCaseSensitiveCollation . " LIKE '" . $factory->escapeString(str_replace("_", "\_", str_replace("%", "\%", $this->value))) . "'";
 	}
-	
 }
 
 class NotEqualsBinding extends Binding
@@ -802,6 +801,15 @@ class NotInBinding extends SQLString
 		}
 	}
 
+}
+
+/* Use of this requires the both the foreign key ID and the local Id be named the same */
+class ForeignKeyBinding extends EqualsBinding
+{
+	function __construct($object)
+	{
+		parent::__construct($object->getIdField(), $object->getId());
+	}
 }
 
 ?>
