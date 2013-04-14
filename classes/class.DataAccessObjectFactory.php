@@ -80,6 +80,11 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 	{
 		$this->conditional->addBinding($binding);
 	}
+	
+	function addForeignKeyBinding($object, $localField = null, $remoteField = null)
+	{
+		$this->addBinding(new ForeignKeyBinding($object, $localField = null, $remoteField = null));
+	}
 
 	function addConditional($conditional)
 	{
@@ -803,12 +808,25 @@ class NotInBinding extends SQLString
 
 }
 
-/* Use of this requires the both the foreign key ID and the local Id be named the same */
 class ForeignKeyBinding extends EqualsBinding
 {
-	function __construct($object)
+	function __construct($object, $localField = null, $remoteField = null)
 	{
-		parent::__construct($object->getIdField(), $object->getId());
+		if($localField == null)
+		{
+			$localField = $object->getIdField();
+		}
+		
+		if($remoteField == null)
+		{
+			$value = $object->getId();
+		}
+		else
+		{
+			$value = $object->getFieldValue($remoteField);
+		}
+		
+		parent::__construct($localField, $value);
 	}
 }
 
