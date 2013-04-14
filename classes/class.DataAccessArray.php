@@ -11,7 +11,7 @@ class DataAccessArray implements ArrayAccess
 
 	public function offsetSet($offset, $value)
 	{
-		if (is_null($offset))
+		if(is_null($offset))
 		{
 			$this->data[] = $value;
 		}
@@ -36,7 +36,6 @@ class DataAccessArray implements ArrayAccess
 		return isset($this->data[$offset]) ? $this->data[$offset] : null;
 	}
 
-	// return something
 	function getFieldValue($fieldName)
 	{
 		if (array_key_exists($fieldName, $this->data))
