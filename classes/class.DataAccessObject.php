@@ -4,12 +4,9 @@ require_once('class.DataAccessArray.php');
 
 abstract class DataAccessObject extends DataAccessArray
 {
-
+	const NEW_OBJECT_ID = -1;
 	var $modifiedColumns;
 
-	const NEW_OBJECT_ID = -1;
-
-	//overridden
 	abstract function getDatabaseName();
 
 	abstract function getTableName();
@@ -23,7 +20,7 @@ abstract class DataAccessObject extends DataAccessArray
 		// setup $this->data
 		parent::__construct($row);
 
-		// if data is null setup with defaults from table
+		// if $this->data is null setup with defaults from table
 		if ($this->data == null)
 		{
 			$this->data = static::getDefaultRow();
