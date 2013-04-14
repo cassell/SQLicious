@@ -175,6 +175,7 @@ class SQLiciousGeneratorDatabase
 class SQLiciousGenerator
 {
 	var $databases = array();
+	var $generatedFileNameFormat = 'class.{{className}}DaoObject.php';
 	
 	function __construct()
 	{
@@ -225,6 +226,11 @@ class SQLiciousGenerator
 		return true;
 	}
 	
+	function setGeneratedFileNameForma($format)
+	{
+		$this->generatedFileNameFormat = $format;
+	}
+	
 	function generateTableClasses($database)
 	{
 		$tables = $database->getTableNames();
@@ -235,7 +241,11 @@ class SQLiciousGenerator
 			{
 				$className = ucfirst($this->toFieldCase($tableName));
 				
-				if(!$this->writeContents($database->getGeneratorDestinationDirectory().'/class.' . $className . 'DaoObject.php',$database->getDaoObjectClassContents($tableName)))
+				$m = new Mustache_Engine();
+//				$m->render($this->generatedFileNameFormat, array("tableName"=>$tableName,"className"=>$className));
+				//return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/extended_stub.template'),$this->getTemplatingDataFromTableName($tableName));
+				
+				if(!$this->writeContents($database->getGeneratorDestinationDirectory().'/'.$m->render($this->generatedFileNameFormat, array("tableName"=>$tableName,"className"=>$className)),$database->getDaoObjectClassContents($tableName)))
 				{
 					return false;
 				}
