@@ -242,9 +242,6 @@ class SQLiciousGenerator
 				$className = ucfirst($this->toFieldCase($tableName));
 				
 				$m = new Mustache_Engine();
-//				$m->render($this->generatedFileNameFormat, array("tableName"=>$tableName,"className"=>$className));
-				//return $m->render(file_get_contents(SQLICIOUS_INCLUDE_PATH.'/generator/lib/templates/extended_stub.template'),$this->getTemplatingDataFromTableName($tableName));
-				
 				if(!$this->writeContents($database->getGeneratorDestinationDirectory().'/'.$m->render($this->generatedFileNameFormat, array("tableName"=>$tableName,"className"=>$className)),$database->getDaoObjectClassContents($tableName)))
 				{
 					return false;
