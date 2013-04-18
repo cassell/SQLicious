@@ -201,11 +201,13 @@ Find method for writing a custom where clause (returns objects)
 	$users = $f->findObjectWhere("where archived != 1 and email like '%@example.com'");
 	
 	
+<!--
+Demo is offline.
 
 Web UI
 ===========
 http://demo.sqlicious.com
-
+->>
 
 Converting Timezones
 =============
