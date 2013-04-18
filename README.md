@@ -7,19 +7,17 @@ SQLicious is a PHP Active Record ORM that generates an object models from your M
 
 The features that make SQLicious easy and powerful are:
 
-1. Web UI for code generation and fast paced development. It helps with common programming tasks (object creation, APIs, class stubs, queries).
+1. Web UI for code generation and fast paced development. It helps with common programming tasks (object creation, APIs, class stubs, queries). Command line version also available.
 1. Easily output data as JSON for APIs
 1. Queries can easily be limited to a subset of fields in a table ("select first_name, last_name from table" vs. "select * from table"). You can still use objects when using a subset of the fields.
-1. UPDATEs are minimal and only changed columns are updated
-1. Closure based query processing that lets you handle data efficently and fully customizable manner
+1. SQL UPDATEs are minimal and only changed columns are updated
+1. Closure based query processing that lets you handle data efficiently and in a fully customizable manner
 1. Buffered queries for performance and Unbuffered queries for processing huge datasets while staying memory safe
 1. You can extend the Factories and Objects to encapsulate the logic of a model
-1. Process any SQL query (multiple tables and joins) using the same closure based process model, or get an Array, or JSON
+1. Process any SQL query (multiple tables and joins) using the same closure based process model. Easily output the results to an Array or JSON
 1. Handles the CRUD (Creating, Reading, Updating, and Deleting)
 1. Convert Timezones Using MySQL Timezone Tables
 1. Generated Code is creating using Mustache Templates
-1. Command line tool for generating code
-1. Generate JSON APIs easily
 
 
 CRUD: Creating, Reading, Updating, and Deleting
@@ -66,7 +64,7 @@ String based binding clauses
 Updating a record.
 	
 	$user = User::findId(17);
-	$user->setArchived(1);
+	$user->setFirstName("John");
 	$user->save();
 	
 Deleting a single record.
@@ -111,7 +109,7 @@ Getting a JSON ready array
 
 Closures
 ============
-Process each row queried with an anonymous function. To iterate over very large datasets without hitting memory constraints use unbufferedProcess()
+Process each row queried with a closure(anonymous function). Iterate over very large datasets without hitting memory constraints use unbufferedProcess()
 	
 	$f = new UserFactory();
 	$f->process(function($user)
@@ -218,10 +216,14 @@ Converting Timezones
 	$centralTime = $f->convertTimezone('2012-02-23 04:10PM', 'US/Eastern',  'US/Central');
 
 
+Composer (Packagist)
+=============
+https://packagist.org/packages/sqlicious/sqlicious
+
 Setup
 =============
 
-1. Download the source code
+1. Download the source code (or use composer)
 2. Use the example.config.inc.php to build your config.inc.php
 3. Make sure the generator has write access to the folders you specify in config
 4. Generate the DAO using the web UI or command line
@@ -232,7 +234,3 @@ Requirements
 =============
 * PHP 5.3 or greater
 * MySQL
-
-What next?
-=============
-Profit.

@@ -81,9 +81,9 @@ abstract class DataAccessObjectFactory extends DatabaseProcessor
 		$this->conditional->addBinding($binding);
 	}
 	
-	function addForeignKeyBinding($object, $localField = null, $remoteField = null)
+	function addForeignKeyObjectBinding($object, $localField = null, $remoteField = null)
 	{
-		$this->addBinding(new ForeignKeyBinding($object, $localField = null, $remoteField = null));
+		$this->addBinding(new ForeignKeyObjectBinding($object, $localField = null, $remoteField = null));
 	}
 
 	function addConditional($conditional)
@@ -808,7 +808,7 @@ class NotInBinding extends SQLString
 
 }
 
-class ForeignKeyBinding extends EqualsBinding
+class ForeignKeyObjectBinding extends EqualsBinding
 {
 	function __construct($object, $localField = null, $remoteField = null)
 	{
