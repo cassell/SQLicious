@@ -136,7 +136,7 @@ Getting count of Rows before process
 	});
 	$f->freeResult();
 
-
+<!--
 Memory Safe Outputs (works with billions of rows)
 ============	
 
@@ -149,7 +149,7 @@ Output directly to JSON
 	
 	$f = new UserFactory();
 	$f->outputJSONString();
-
+-->
 
 Memory Safe Closures
 ============
