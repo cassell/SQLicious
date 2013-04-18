@@ -124,8 +124,8 @@ Process each row queried with a closure(anonymous function). Iterate over very l
 Getting count of Rows before process
 	
 	$f = new UserFactory();
-	$f->query();
-	$countOfUsers = $f->getNumberOfRows();
+	$result = $f->getMysqlResult();
+	$countOfUsers = $f->getNumberOfRowsFromResult($result);
 	$f->process(function($user)
 	{
 		if(!validate_email($user->getEmail()))
