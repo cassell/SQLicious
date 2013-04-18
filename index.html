@@ -1,123 +1,57 @@
 <!DOCTYPE html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Sqlicious : SQLicious is a PHP Database ORM and abstraction layer for MySQL that handles generating an object model from your database schema. Its powerful closure based query processing and ability to handle large datasets make it powerful and flexible. It's included web interface and ease of development make it a joy to use." />
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
-	<script src="javascripts/readme.js" type="text/javascript"></script>
-    <title>Sqlicious</title>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Sqlicious by cassell</title>
   </head>
-<script type="text/javascript">
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-34641328-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
   <body>
+    <div id="container">
+      <div class="inner">
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/cassell/SQLicious">View on GitHub</a>
-
-          <img style="border:none; margin: 0px 0px 30px -5px; -webkit-box-shadow:none; box-shadow:none; width: 400px" src="images/sqlicious-logo-white.png" alt="Sqlicious">
-		  <h2 id="project_tagline" style="margin: 0;">SQLicious is a PHP ORM that generates an object model from your MySQL database. It's powerful closure based query processing and ability to handle large datasets make it powerful and flexible. Its included web interface and ease of development make it a joy to use.</h2>
-		  
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/cassell/SQLicious/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/cassell/SQLicious/tarball/master">Download this project as a tar.gz file</a>
-            </section>
+        <header>
+          <h1>Sqlicious</h1>
+          <h2>SQLicious is a PHP Database ORM and abstraction layer for MySQL that handles generating an object model from your database schema. Its powerful closure based query processing and ability to handle large datasets make it powerful and flexible. It's included web interface and ease of development make it a joy to use.</h2>
         </header>
-		
-	
-    </div>
-	
-	
-	
 
-    <!-- MAIN CONTENT -->
-<div id="main_content_wrap" class="outer">
-	<section id="main_content" class="inner">
-	
-		<br/>
-		<h2>Demos</h2>
-		<table>
-			<tr>
-				<th>
-					Live Web Demo
-				</th>
-				<td>
-					<a href="http://demo.sqlicious.com" target="_BLANK">demo.sqlicious.com</a>
-				</td>
-			</tr>
-			<tr>
-				<th>
-					Web Interface Demo Video
-				</th>
-				<td>
-					<a href="http://www.youtube.com/watch?v=OC7W1TpygQo">Watch on YouTube</a>
-				</td>
-			</tr>
-		</table>
-	
-<!--- README FROM GITHUB -->
-		
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/cassell/SQLicious/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/cassell/SQLicious/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/cassell/SQLicious" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
 
+        <hr>
 
+        <section id="main_content">
+          <p><img src="http://static.andrewcassell.com/github/sqlicious/SQLicious.png" alt="SQLicious Logo"></p>
 
+<h1>SQLicious</h1>
 
+<p>SQLicious is a PHP Active Record ORM that generates an object models from your MySQL database. Its powerful closure based query processing and ability to handle large datasets make it powerful and flexible. Its included web interface and ease of development make it a joy to use.</p>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<article class="markdown-body entry-content" itemprop="mainContentOfPage">
-
-<h2>Powerful Features</h2>
+<p>The features that make SQLicious easy and powerful are:</p>
 
 <ol>
-<li>Web UI for code generation and fast paced development. It helps with common programming tasks (object creation, APIs, class stubs, queries).</li>
+<li>Web UI for code generation and fast paced development. It helps with common programming tasks (object creation, APIs, class stubs, queries). Command line version also available.</li>
 <li>Easily output data as JSON for APIs</li>
 <li>Queries can easily be limited to a subset of fields in a table ("select first_name, last_name from table" vs. "select * from table"). You can still use objects when using a subset of the fields.</li>
-<li>UPDATEs are minimal and only changed columns are updated</li>
-<li>Closure based query processing that lets you handle data efficently and fully customizable manner</li>
+<li>SQL UPDATEs are minimal and only changed columns are updated</li>
+<li>Closure based query processing that lets you handle data efficiently and in a fully customizable manner</li>
 <li>Buffered queries for performance and Unbuffered queries for processing huge datasets while staying memory safe</li>
 <li>You can extend the Factories and Objects to encapsulate the logic of a model</li>
-<li>Process any SQL query (multiple tables and joins) using the same closure based process model</li>
-<li>Handles the CRUD</li>
+<li>Process any SQL query (multiple tables and joins) using the same closure based process model. Easily output the results to an Array or JSON</li>
+<li>Handles the CRUD (Creating, Reading, Updating, and Deleting)</li>
 <li>Convert Timezones Using MySQL Timezone Tables</li>
 <li>Generated Code is creating using Mustache Templates</li>
-<li>Command line tool for generating code</li>
-<li>Generate JSON APIs easily</li>
-
-</ol>
-
-<h1><a name="crud-creating-reading-updating-and-deleting" class="anchor" href="#crud-creating-reading-updating-and-deleting"><span class="mini-icon mini-icon-link"></span></a>CRUD <small>Creating, Reading, Updating, and Deleting</small></h1>
+</ol><h1>CRUD: Creating, Reading, Updating, and Deleting</h1>
 
 <p>Creating a new record</p>
 
@@ -164,7 +98,7 @@ $users = $f-&gt;getObjects();
 <p>Updating a record.</p>
 
 <pre><code>$user = User::findId(17);
-$user-&gt;setArchived(1);
+$user-&gt;setFirstName("John");
 $user-&gt;save();
 </code></pre>
 
@@ -196,8 +130,7 @@ $f-&gt;addArchivedFalseBinding()
 $count = $f-&gt;count(); // count of all not archived users
 </code></pre>
 
-<h1>
-<a name="performance" class="anchor" href="#performance"><span class="mini-icon mini-icon-link"></span></a>Performance</h1>
+<h1>Performance</h1>
 
 <p>Limiting the fields that are pulled back from the database. You can still use objects</p>
 
@@ -213,10 +146,9 @@ $f-&gt;setSelectFields("first_name","last_name","email");
 $userJSON = $f-&gt;getJSON(); // returns an an array of PHP objects that can be encoded to  [ { 'id' : 1, 'firstName' : 'John', 'lastName' : 'Doe', 'email' : 'doe@example.com'}, ... ]
 </code></pre>
 
-<h1>
-<a name="closures" class="anchor" href="#closures"><span class="mini-icon mini-icon-link"></span></a>Closures</h1>
+<h1>Closures</h1>
 
-<p>Process each row queried with an anonymous function. To iterate over very large datasets without hitting memory constraints use unbufferedProcess()</p>
+<p>Process each row queried with a closure(anonymous function). Iterate over very large datasets without hitting memory constraints use unbufferedProcess()</p>
 
 <pre><code>$f = new UserFactory();
 $f-&gt;process(function($user)
@@ -232,8 +164,8 @@ $f-&gt;process(function($user)
 <p>Getting count of Rows before process</p>
 
 <pre><code>$f = new UserFactory();
-$f-&gt;query();
-$countOfUsers = $f-&gt;getNumberOfRows();
+$result = $f-&gt;getMysqlResult();
+$countOfUsers = $f-&gt;getNumberOfRowsFromResult($result);
 $f-&gt;process(function($user)
 {
     if(!validate_email($user-&gt;getEmail()))
@@ -245,23 +177,9 @@ $f-&gt;process(function($user)
 $f-&gt;freeResult();
 </code></pre>
 
-<h1>
-<a name="memory-safe-outputs-works-with-billions-of-rows" class="anchor" href="#memory-safe-outputs-works-with-billions-of-rows"><span class="mini-icon mini-icon-link"></span></a>Memory Safe Outputs (works with billions of rows)</h1>
 
-<p>Output directly to CSV</p>
 
-<pre><code>$f = new UserFactory();
-$f-&gt;outputCSV();
-</code></pre>
-
-<p>Output directly to JSON</p>
-
-<pre><code>$f = new UserFactory();
-$f-&gt;outputJSONString();
-</code></pre>
-
-<h1>
-<a name="memory-safe-closures" class="anchor" href="#memory-safe-closures"><span class="mini-icon mini-icon-link"></span></a>Memory Safe Closures</h1>
+<h1>Memory Safe Closures</h1>
 
 <p>Unbuffered Processing of large datasets (will potentially lock the table while processing)</p>
 
@@ -276,8 +194,7 @@ $f-&gt;unbufferedProcess(function($user)
 });
 </code></pre>
 
-<h1>
-<a name="data-processors" class="anchor" href="#data-processors"><span class="mini-icon mini-icon-link"></span></a>Data Processors</h1>
+<h1>Data Processors</h1>
 
 <p>Data processors are great for processing the results from an entirely custom SELECT query with closures.</p>
 
@@ -303,100 +220,58 @@ $p-&gt;unbufferedProcess(function($row)
 });
 </code></pre>
 
-<h1>
-<a name="other-flexibile-queries" class="anchor" href="#other-flexibile-queries"><span class="mini-icon mini-icon-link"></span></a>Other flexibile queries</h1>
+<h1>Other flexibile queries</h1>
 
 <p>Find method for writing a custom where clause (returns objects)</p>
 
 <pre><code>$f = new UserFactory();
-$users = $f-&gt;find("where archived != 1 and email like '%@example.com'");
+$users = $f-&gt;findObjectWhere("where archived != 1 and email like '%@example.com'");
 </code></pre>
 
-<p>Count query with custom where clause (returns an integer)</p>
+<p>&lt;!--
+Demo is offline.</p>
 
-<pre><code>$f = new UserFactory();
-$countOfUsers = $f-&gt;getCount("where archived != 1 and email like '%@example.com'");
+<h1>Web UI</h1>
+
+<p><a href="http://demo.sqlicious.com">http://demo.sqlicious.com</a>
+-&gt;&gt;</p>
+
+<h1>Converting Timezones</h1>
+
+<pre><code>// Note requires time zones installed in mysql database
+// usage: ($dateTime,$sourceTimezone,$destTimezone). $dateTime may be string or time(), returns a timestamp
+$f = new UserLoginFactory();
+$centralTime = $f-&gt;convertTimezone('2012-02-23 04:10PM', 'US/Eastern',  'US/Central');
 </code></pre>
 
-<h1>
-<a name="web-ui" class="anchor" href="#web-ui"><span class="mini-icon mini-icon-link"></span></a>Web UI</h1>
+<h1>Composer (Packagist)</h1>
 
-<p><a href="http://demo.sqlicious.com">http://demo.sqlicious.com</a></p>
+<p><a href="https://packagist.org/packages/sqlicious/sqlicious">https://packagist.org/packages/sqlicious/sqlicious</a></p>
 
-<h1>
-<a name="converting-timezones" class="anchor" href="#converting-timezones"><span class="mini-icon mini-icon-link"></span></a>Converting Timezones</h1>
-
-<pre><code>$f = new UserLoginFactory();
-$centralTime = $f-&gt;convertTimezone('2012-02-23 04:10PM', 'US/Eastern',  'US/Central'); // usage: ($dateTime,$sourceTimezone,$destTimezone). $dateTime may be string or time(), returns a timestamp
-</code></pre>
-
-<h1>
-<a name="setup" class="anchor" href="#setup"><span class="mini-icon mini-icon-link"></span></a>Setup</h1>
+<h1>Setup</h1>
 
 <ol>
-<li>Download the source code</li>
+<li>Download the source code (or use composer)</li>
 <li>Use the example.config.inc.php to build your config.inc.php</li>
 <li>Make sure the generator has write access to the folders you specify in config</li>
-<li>Generate the DAO using the web UI</li>
+<li>Generate the DAO using the web UI or command line</li>
 <li>require_once('sqlicious.inc.php') in your project</li>
-<li>require_once or include any other generated factories that you need in your project</li>
-</ol><h1>
-<a name="requirements" class="anchor" href="#requirements"><span class="mini-icon mini-icon-link"></span></a>Requirements</h1>
+<li>require_once or include any other generated factories that you need in your project (suggestion: use an autoloader)</li>
+</ol><h1>Requirements</h1>
 
 <ul>
 <li>PHP 5.3 or greater</li>
 <li>MySQL</li>
-</ul><h1>
-<a name="what-next" class="anchor" href="#what-next"><span class="mini-icon mini-icon-link"></span></a>What next?</h1>
+</ul>
+        </section>
 
-<p>Profit.</p></article>
+        <footer>
+          Sqlicious is maintained by <a href="https://github.com/cassell">cassell</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- END OF README -->
-	</section>	
-</div>
-
-<!-- FOOTER  -->
-<div id="footer_wrap" class="outer">
-	<footer class="inner">
-	<p class="copyright">Sqlicious maintained by <a href="https://github.com/cassell">cassell</a></p>
-	<p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-	</footer>
-</div>
-
-    
-
+        
+      </div>
+    </div>
   </body>
 </html>
