@@ -1,0 +1,24 @@
+{
+	"name": "devq/devq",
+	
+	"require": {
+		"twitter/bootstrap-files": "2.3.1",
+		"frameworks/jquery" : "*",
+		"fortawesome/font-awesome" : "v3.0.3"
+	},
+	
+	"repositories": [
+		{
+			"type": "package", 
+			"package": {
+				"name" : "twitter/bootstrap-files",
+				"version" : "2.3.1",
+				"dist": {
+					"url": "http://twitter.github.io/bootstrap/assets/bootstrap.zip",
+					"type": "zip"
+				}
+			}
+		}
+	]
+		 
+}

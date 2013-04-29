@@ -1,0 +1,75 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "82153914cdbe8c6bb076fb5959ebd070",
+    "packages": [
+        {
+            "name": "fortawesome/font-awesome",
+            "version": "v3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/theoreticaLee/Font-Awesome.git",
+                "reference": "v3.0.3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/theoreticaLee/Font-Awesome/zipball/v3.0.3",
+                "reference": "v3.0.3",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OFL-1.1"
+            ],
+            "authors": [
+                {
+                    "name": "Dave Gandy",
+                    "email": "dave@davegandy.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The iconic font designed for use with Twitter Bootstrap",
+            "homepage": "http://fortawesome.github.com/Font-Awesome/",
+            "keywords": [
+                "bootstrap",
+                "css"
+            ],
+            "time": "2013-02-09 03:29:33"
+        },
+        {
+            "name": "twitter/bootstrap-files",
+            "version": "2.3.1",
+            "dist": {
+                "type": "zip",
+                "url": "http://twitter.github.io/bootstrap/assets/bootstrap.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": [
+
+    ],
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}

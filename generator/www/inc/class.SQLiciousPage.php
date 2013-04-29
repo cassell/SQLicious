@@ -16,13 +16,13 @@ class SQLiciousPage
 		$this->insertScript('/js/jquery.js');
 		$this->insertScript('/js/handlebars.js');
 		$this->insertScript('/js/ember.js');
-		$this->insertScript('/js/bootstrap.js');
+		$this->insertScript('/vendor/twitter/bootstrap-files/js/bootstrap.min.js');
 		$this->insertScript('/js/sqlicious.js');
 		
 		
-		$this->insertStyleSheet('/css/bootstrap.css');
-		$this->insertStyleSheet('/css/bootstrap-responsive.css');
-		$this->insertStyleSheet('/css/font-awesome.css');
+		$this->insertStyleSheet('/vendor/twitter/bootstrap-files/css/bootstrap.min.css');
+		$this->insertStyleSheet('/vendor/twitter/bootstrap-files/css/bootstrap-responsive.min.css');
+		$this->insertStyleSheet('/vendor/fortawesome/font-awesome/css/font-awesome.min.css');
 		$this->insertStyleSheet('/css/sqlicious.css');
 		
 		$this->insertJavascriptData($this->getConfigData(),'config');
