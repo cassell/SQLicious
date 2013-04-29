@@ -13,9 +13,9 @@ class SQLiciousPage
 	{
 		$this->sqlicious = $sqlicious;
 		
-		$this->insertScript('/js/jquery.js');
-		$this->insertScript('/js/handlebars.js');
-		$this->insertScript('/js/ember.js');
+		$this->insertScript('/vendor/frameworks/jquery/jquery.js');
+		$this->insertScript('/vendor/frameworks/handlebars.js/handlebars.js');
+		$this->insertScript('/vendor/frameworks/ember.js/ember.js');
 		$this->insertScript('/vendor/twitter/bootstrap-files/js/bootstrap.min.js');
 		$this->insertScript('/js/sqlicious.js');
 		

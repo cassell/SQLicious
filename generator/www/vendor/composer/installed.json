@@ -52,5 +52,70 @@
             "bootstrap",
             "css"
         ]
+    },
+    {
+        "name": "frameworks/ember.js",
+        "version": "0.1.3",
+        "version_normalized": "0.1.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/frameworks/ember.js.git",
+            "reference": "1.0.0-rc.3"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/frameworks/ember.js/zipball/1.0.0-rc.3",
+            "reference": "1.0.0-rc.3",
+            "shasum": ""
+        },
+        "time": "2013-04-29 04:36:26",
+        "type": "library",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/"
+    },
+    {
+        "name": "frameworks/jquery",
+        "version": "1.9.1",
+        "version_normalized": "1.9.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/frameworks/jquery.git",
+            "reference": "1.9.1"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/frameworks/jquery/zipball/1.9.1",
+            "reference": "1.9.1",
+            "shasum": ""
+        },
+        "time": "2013-04-27 14:39:58",
+        "type": "library",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "description": "jQuery JavaScript Library",
+        "homepage": "http://jquery.com"
+    },
+    {
+        "name": "frameworks/handlebars.js",
+        "version": "0.1.3",
+        "version_normalized": "0.1.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/frameworks/handlebars.js.git",
+            "reference": "1.0.0-rc.3"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/frameworks/handlebars.js/zipball/1.0.0-rc.3",
+            "reference": "1.0.0-rc.3",
+            "shasum": ""
+        },
+        "time": "2013-04-29 04:27:04",
+        "type": "library",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/"
     }
 ]
