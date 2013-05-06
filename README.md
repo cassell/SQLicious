@@ -207,7 +207,7 @@ Demo is offline.
 Web UI
 ===========
 http://demo.sqlicious.com
-->>
+-->
 
 Converting Timezones
 =============
